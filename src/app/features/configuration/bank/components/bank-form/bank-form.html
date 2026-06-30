@@ -1,0 +1,17 @@
+<form novalidate>
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <app-input-ng label="Código" [formField]="bankForm.code" [autoFocus]="true" tabIndex="1"/>    
+    <app-input-ng label="Nombre" [formField]="bankForm.name" class="col-span-full" tabIndex="2"/>
+    <app-toggle-button-ng [formField]="bankForm.active" onLabel="Activo" offLabel="Inactivo" tabIndex="3"/>
+  </div>
+  <div class="mt-5 flex gap-3 justify-end">
+    <p-button label="Guardar" [disabled]="bankForm().submitting()" (onClick)="onSubmit()">
+      <app-icon name="LucideCloud" />
+    </p-button>
+
+    <p-button label="Cancelar" severity="secondary" (onClick)="formClose(false)">
+      <app-icon name="LucideX" />
+    </p-button>
+  </div>
+</form>
+<app-loading-block [visible]="bankForm().submitting()" message="Guardando..."/>

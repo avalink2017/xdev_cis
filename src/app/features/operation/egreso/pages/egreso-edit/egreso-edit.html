@@ -1,0 +1,12 @@
+<app-page-layout title="Egreso" subtitle="Operaciones de Egreso" iconName="LucideBanknoteArrowDown">
+  <ng-template #headerActions>
+    <div class="flex gap-2">
+      <app-back-button />
+
+      <p-button [label]="device.isMobile() ? '' : 'Guardar'" [disabled]="!isFormValid()" (onClick)="onSave()">
+        <app-icon name="LucideCloud" />
+      </p-button>
+    </div>
+  </ng-template>
+  <ng-container #compo />
+</app-page-layout>

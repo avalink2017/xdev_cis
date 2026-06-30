@@ -1,0 +1,139 @@
+import { Component, inject, signal } from '@angular/core';
+import { Icon } from '../icon/icon';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Button } from 'primeng/button';
+import { AuthService } from '../../../core/services/auth.service';
+import { DeviceService } from '../../../core/services/device.service';
+
+interface MenuItem {
+  label: string;
+  icon: string;
+  routerLink: string;
+}
+
+interface MenuGroup {
+  label: string;
+  items: MenuItem[];
+}
+
+@Component({
+  selector: 'app-side-navbar',
+  imports: [Icon, RouterLink, RouterLinkActive, Button],
+  templateUrl: './side-navbar.html',
+  styleUrl: './side-navbar.css',
+})
+export class SideNavbar {
+  private auth = inject(AuthService);
+  device = inject(DeviceService);
+
+  openGroups = signal<string[]>(['INICIO','OPERACIONES','CATÁLOGOS']);
+
+  groups: MenuGroup[] = [
+    {
+      label: 'INICIO',
+      items: [
+        {
+          label: 'Dashboard',
+          icon: 'LucideLayoutDashboard',
+          routerLink: '/app/dashboard',
+        },
+      ],
+    },
+    {
+      label: 'OPERACIONES',
+      items: [
+        {
+          label: 'Ingresos',
+          icon: 'LucideBanknoteArrowUp',
+          routerLink: '/app/operation/ingreso',
+        },
+        {
+          label: 'Egreso',
+          icon: 'LucideBanknoteArrowDown',
+
+          routerLink: '/app/operation/egreso',
+        },
+      ],
+    },
+    {
+      label: 'CATÁLOGOS',
+      items: [
+        {
+          label: 'Bancos',
+          icon: 'LucideLandmark',
+          routerLink: '/app/config/bancos',
+        },
+        {
+          label: 'Tipo Ingreso',
+          icon: 'LucideBanknoteArrowUp',
+          routerLink: '/app/config/tipo-ingreso',
+        },
+        {
+          label: 'Tipo Egreso',
+          icon: 'LucideBanknoteArrowDown',
+          routerLink: '/app/config/tipo-egreso',
+        },
+        {
+          label: 'Tipo Documento',
+          icon: 'LucideFileCheck',
+          routerLink: '/app/config/tipo-doc',
+        },
+        {
+          label: 'Cuentas Bancarias',
+          icon: 'LucideWalletMinimal',
+          routerLink: '/app/config/cuentas-banco',
+        },
+      ],
+    },
+    {
+      label: 'SOCIOS COMERCIALES',
+      items: [
+        {
+          label: 'Socios',
+          icon: 'LucideUsers',
+          routerLink: '/app/partner',
+        },
+        {
+          label: 'Categorías',
+          icon: 'LucideSquareUser',
+          routerLink: '/app/partner/category',
+        },
+        {
+          label: 'Tipos',
+          icon: 'LucideListTree',
+          routerLink: '/app/partner/type',
+        },
+        {
+          label: 'Roles',
+          icon: 'LucideUserCog',
+          routerLink: '/app/partner/role',
+        },
+      ],
+    },
+    {
+      label: 'ADMINISTRACIÓN',
+      items: [
+        {
+          label: 'Usuarios',
+          icon: 'LucideUserRound',
+          routerLink: '/app/admin/user',
+        },
+        {
+          label: 'Roles',
+          icon: 'LucideUserRoundKey',
+          routerLink: '/app/admin/role',
+        },
+      ],
+    },
+  ];
+
+  protected toggleGroup(label: string) {
+    this.openGroups.update((open) =>
+      open.includes(label) ? open.filter((l) => l !== label) : [...open, label],
+    );
+  }
+
+  logOut() {
+    this.auth.logout();
+  }
+}

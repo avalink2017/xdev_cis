@@ -1,0 +1,51 @@
+<app-table-view
+  [url]="url"
+  dataKey="id"
+  [clickable]="true"
+  [(refresh)]="refresh"
+  (rowClick)="onRowClick($event)"
+  (onDelete)="onDelete($event)"
+  [showToolBar]="false"
+>
+  <app-table-column field="email" header="Correo electrónico" />
+  <app-table-column field="name" header="Nombre" />
+
+  
+
+  <app-table-column
+    field="active"
+    header="Activo"
+    [filterable]="true"
+    type="boolean"
+    width="10"
+    align="center"
+  >
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <div>
+        <p-select
+          [options]="actives"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="value"
+          (ngModelChange)="filterFn($event)"
+          appendTo="body"
+          [showClear]="true"
+          placeholder="Seleccionar"
+          size="small"
+          class="border-0! bg-transparent! shadow-none!"
+        />
+      </div>
+    </ng-template>
+  </app-table-column>
+</app-table-view>
+
+<p-drawer
+  #drawerRef
+  [header]="drawerTitle()"
+  [(visible)]="showDrawer"  
+  modal
+  position="right"
+  styleClass="w-full! sm:w-[500px]!"
+>
+  <ng-container #compo />
+</p-drawer>

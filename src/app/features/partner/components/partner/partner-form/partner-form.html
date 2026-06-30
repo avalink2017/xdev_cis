@@ -1,0 +1,152 @@
+<form novalidate [formRoot]="form">
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    @if (!isNew()) {
+      <app-input-ng label="Código" [formField]="form.code" tabIndex="1" />
+    }
+    <app-input-ng
+      label="Nombre"
+      [formField]="form.name"
+      [autoFocus]="true"
+      class="col-span-full"
+      tabIndex="1"
+    />
+
+    <app-input-ng
+      label="Nombre comercial"
+      [formField]="form.tradeName"
+      class="col-span-full"
+      tabIndex="2"
+    />
+
+    <app-select-ng
+      label="Tipo"
+      [formField]="form.partnerTypeId"
+      [options]="partnerService.partnerTypes()"
+      optionLabel="name"
+      optionValue="id"
+    />
+
+    <app-select-ng
+      label="Categoría"
+      [formField]="form.partnerCategoryId"
+      [options]="partnerService.partnerCategories()"
+      optionLabel="name"
+      optionValue="id"
+    />
+
+    <div class="flex flex-col gap-1 col-span-full">
+      <label for="roles" class="text-sm ms-2">Roles</label>
+      <p-multiselect
+        [options]="partnerService.partnerRoles()"
+        [formField]="form.roles"
+        name="roleIds"
+        optionLabel="name"
+        optionValue="id"
+        appendTo="body"
+        [invalid]="form.roles().invalid"
+        display="chip"
+        fluid
+        [maxSelectedLabels]="5"
+      />
+      @if (form.roles().invalid() && form.roles().touched()) {
+        @for (error of form.roles().errors(); track error) {
+          <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+        }
+      }
+    </div>
+
+    <app-input-ng type="email" label="Correo electrónico" [formField]="form.email" />
+
+    <app-input-ng label="Teléfono" [formField]="form.phone" />
+
+    <app-toggle-button-ng [formField]="form.active" onLabel="Activo" offLabel="Inactivo" />
+  </div>
+
+  <p-tabs value="0">
+    <p-tablist>
+      <p-tab value="0">Ubicación</p-tab>
+      <p-tab value="1">Identificación</p-tab>
+    </p-tablist>
+    <p-tabpanels>
+      <p-tabpanel value="1">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <app-input-ng
+            label="NIT"
+            [formField]="form.nit"
+            placeHolder="0000-000000-000-0"
+            inputMask="9999-999999-999-9"
+          />
+          <app-input-ng
+            label="NRC"
+            [formField]="form.nrc"
+            placeHolder="000000-0"
+            inputMask="999999-9"
+          />
+          <app-input-ng
+            label="DUI"
+            [formField]="form.dui"
+            placeHolder="00000000-0"
+            inputMask="99999999-9"
+          />
+          <app-input-ng label="Pasaporte" [formField]="form.passport" />
+        </div>
+      </p-tabpanel>
+      <p-tabpanel value="0">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <app-text-area-ng
+            label="Dirección"
+            [formField]="form.address"
+            class="col-span-full"
+            [rows]="3"
+          />
+
+          <app-select-ng
+            label="País"
+            [formField]="form.countryId"
+            [options]="countryService.countryList()"
+            optionLabel="name"
+            optionValue="id"
+            (selectChange)="countryService.onCountryChange($event.id)"
+          />
+
+          <app-select-ng
+            label="Región/Departamento"
+            [formField]="form.regionId"
+            [options]="countryService.regionList()"
+            optionLabel="name"
+            optionValue="id"
+            (selectChange)="countryService.onRegionChange($event.id)"
+          />
+
+          <app-select-ng
+            label="Ciudad/Municipio"
+            [formField]="form.cityId"
+            [options]="countryService.cityList()"
+            optionLabel="name"
+            optionValue="id"
+            (selectChange)="countryService.onCityChange($event.id)"
+          />
+
+          <app-select-ng
+            label="Distrito"
+            [formField]="form.districtId"
+            [options]="countryService.districtList()"
+            optionLabel="name"
+            optionValue="id"
+          />
+        </div>
+      </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
+
+  <div class="mt-5 flex gap-3 justify-end">
+    <p-button type="submit" label="Guardar" [disabled]="form().submitting() || form().invalid()">
+      <app-icon name="LucideCloud" />
+    </p-button>
+
+    <p-button label="Cancelar" severity="secondary" (onClick)="formClose.emit(false)">
+      <app-icon name="LucideX" />
+    </p-button>
+  </div>
+</form>
+<app-loading-block [visible]="form().submitting()" message="Guardando..." />

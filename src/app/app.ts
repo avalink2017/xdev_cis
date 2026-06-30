@@ -1,12 +1,60 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { afterNextRender, Component, inject, signal } from '@angular/core';
+import { RouterOutlet, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from './core/services/auth.service';
+import { ProgressSpinner } from 'primeng/progressspinner';
+import { Button } from "primeng/button";
+import { Icon } from "./shared/components/icon/icon";
+import { ThemeService } from './core/services/theme.service';
+import { Toast } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ProgressSpinner, Button, Icon, Toast, ConfirmDialogModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('xdev_cis');
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  private theme = inject(ThemeService);
+
+  readonly error = signal(false);
+  readonly shouldShowOverlay = signal(true);
+
+  constructor() {
+    this.theme.initialize();
+    afterNextRender(() => this.theme.applyPreset(this.theme.themeState().preset));
+
+    this.auth.checkAuth().subscribe({
+      next: () => this.resolve(),
+      error: (err: HttpErrorResponse) => {
+        if (this.auth.isOfflineError(err)) {
+          this.error.set(true);
+        } else {
+          this.resolve();
+        }
+      },
+    });
+  }
+
+  retry(): void {
+    this.error.set(false);
+    this.auth.checkAuth().subscribe({
+      next: () => this.resolve(),
+      error: (err: HttpErrorResponse) => {
+        if (this.auth.isOfflineError(err)) {
+          this.error.set(true);
+        }
+      },
+    });
+  }
+
+  private resolve(): void {
+    if (this.auth.authStatus() === 'unauthenticated') {
+      this.router.navigate(['/login']);
+    }
+    this.shouldShowOverlay.set(false);
+  }
 }

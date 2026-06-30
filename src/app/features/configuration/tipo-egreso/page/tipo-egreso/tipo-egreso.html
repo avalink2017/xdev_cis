@@ -1,0 +1,14 @@
+<app-page-layout title="Tipo Egreso" subtitle="Clasificación de Egresos" iconName="LucideBanknoteArrowDown">
+  <ng-template #headerActions>
+    <p-buttongroup>
+      <p-button [label]="device.isMobile() ? '':'Crear'" (onClick)="AddNew()">
+        <app-icon name="LucideCirclePlus" />
+      </p-button>
+
+      <p-button [label]="device.isMobile() ? '':'Refrescar'" (onClick)="refresh.set(true)">
+        <app-icon name="LucideRefreshCcw" />
+      </p-button>
+    </p-buttongroup>
+  </ng-template>
+  <ng-container #compo />
+</app-page-layout>

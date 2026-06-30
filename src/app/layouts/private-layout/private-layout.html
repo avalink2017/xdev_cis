@@ -1,0 +1,19 @@
+<div class="flex h-screen">
+  <aside class="h-full empty:hidden">
+    <ng-container #sideNavbarDesktop/>
+  </aside>
+
+  <div class="flex flex-1 flex-col min-w-0">
+    <header>
+      <ng-container #topNavbar />
+    </header>
+
+    <main class="flex-1 overflow-auto px-2 xs:px-3 sm:px-5 py-3">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+<p-drawer header="Navegación" #drawerRef [(visible)]="toggleSideBar" modal>
+  <ng-container #sideNavbarDrawer/>
+</p-drawer>

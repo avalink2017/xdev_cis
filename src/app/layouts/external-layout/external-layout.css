@@ -1,0 +1,16 @@
+
+:host ::ng-deep .bg-gradient-mesh {
+  background: var(--p-surface-500);
+  background: linear-gradient(
+    150deg,
+    rgba(61, 95, 158, 0.33) 0%,
+    rgba(242, 245, 244, 0.78) 50%,
+    rgba(61, 95, 158, 0.33) 100%
+  );
+}
+
+
+:host-context(.dark-theme) ::ng-deep .bg-gradient-mesh {
+ background: #172a4a;
+background: radial-gradient(circle, rgba(23, 42, 74, 0.80) 0%, rgba(20, 30, 43, 0.6) 100%);
+}

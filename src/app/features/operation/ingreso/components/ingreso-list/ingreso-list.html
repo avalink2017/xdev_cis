@@ -1,0 +1,88 @@
+<app-table-view
+  [url]="url"
+  dataKey="id"
+  [clickable]="true"
+  [(refresh)]="refresh"
+  (rowClick)="onRowClick($event)"
+  (onDelete)="onDelete($event)"
+  [showToolBar]="false"
+>
+  <app-table-column field="numero" header="Número" />
+  <app-table-column field="fechaMovimiento" header="Fecha" type="date" >  
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-datepicker
+        dateFormat="dd/mm/yy"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        appendTo="body"
+        [showClear]="true"
+        placeholder="Seleccionar"
+        size="small"
+        inputStyleClass="border-0! bg-transparent! shadow-none!"
+        [iconDisplay]="'input'"
+        [showIcon]="true"
+        fluid
+      />
+    </ng-template>
+  </app-table-column>
+
+  <app-table-column field="cuentaBancoNumero" header="Cuenta Banco" filterField="cuentaBancoId">
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-select
+        [options]="cuentasBanco()"
+        optionLabel="numeroCuenta"
+        optionValue="id"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        size="small"
+        class="border-0! bg-transparent! shadow-none!"
+        placeholder="Seleccionar"
+        [showClear]="true"
+        name="ambiente"
+        appendTo="body"
+        fluid
+      />
+    </ng-template>
+  </app-table-column>
+
+  <app-table-column field="tipoDocumentoFinancieroName" header="Documento Financiero" filterField="tipoDocumentoFinancieroId">
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-select
+        [options]="tipoDocumento()"
+        optionLabel="name"
+        optionValue="id"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        size="small"
+        class="border-0! bg-transparent! shadow-none!"
+        placeholder="Seleccionar"
+        [showClear]="true"
+        name="ambiente"
+        appendTo="body"
+        fluid
+      />
+    </ng-template>
+  </app-table-column>
+
+  <app-table-column field="noDocumento" header="Número Documento" />
+  <app-table-column field="monto" header="Importe" type="float"/>
+
+  <app-table-column field="tipoIngresoName" header="Tipo Ingreso" filterField="tipoIngresoId">
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-select
+        [options]="tipoIngreso()"
+        optionLabel="name"
+        optionValue="id"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        size="small"
+        class="border-0! bg-transparent! shadow-none!"
+        placeholder="Seleccionar"
+        [showClear]="true"
+        name="ambiente"
+        appendTo="body"
+        fluid
+      />
+    </ng-template>
+  </app-table-column>
+</app-table-view>

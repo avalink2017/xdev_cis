@@ -1,0 +1,17 @@
+<div
+  class="h-16 border-b border-surface-300 bg-surface-0 dark:bg-surface-900 dark:border-surface-700 flex justify-between items-center px-3"
+>
+  <div class="flex gap-3 items-center">
+    <div (click)="toggle.set(true)"
+      class="cursor-pointer border border-surface flex justify-center items-center h-9 w-9 rounded-full hover:bg-primary hover:text-primary-contrast"
+      [class.hidden]="device.isLg()"
+    >
+      <app-icon name="LucideMenu" />
+    </div>
+    <span class="font-semibold text-3xl text-primary" [class.hidden]="device.isLg()">CIS</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <app-theme-switcher />
+    <app-user-menu/>
+  </div>
+</div>

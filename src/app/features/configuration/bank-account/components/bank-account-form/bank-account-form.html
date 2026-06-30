@@ -1,0 +1,49 @@
+<form novalidate [formRoot]="form">
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <app-input-ng
+      label="Nombre"
+      [formField]="form.nombre"
+      [autoFocus]="true"
+      class="col-span-full"
+      tabIndex="1"
+    />
+    <app-input-ng label="Número de Cuenta" [formField]="form.numeroCuenta" />
+    <app-select-ng
+      label="Tipo Cuenta"
+      [formField]="form.tipoCuenta"
+      [options]="tipoCuentaOptions"
+      optionLabel="label"
+      optionValue="value"
+    />
+
+    <app-select-ng
+      label="Banco"
+      [formField]="form.bancoId"
+      [options]="bankService.bankList()!"
+      optionLabel="name"
+      optionValue="id"
+      class="col-span-full"
+    />
+
+    <app-date-picker-ng [formField]="form.fechaApertura" label="Fecha Apertura" />
+
+    <app-input-number-ng
+      [formField]="form.saldoInicial"
+      label="Saldo Inicial"
+      [minFractionDigits]="2"
+      [maxFractionDigits]="2"
+    />
+
+    <app-toggle-button-ng [formField]="form.active" onLabel="Activo" offLabel="Inactivo" />
+  </div>
+  <div class="mt-5 flex gap-3 justify-end">
+    <p-button type="submit" label="Guardar" [disabled]="form().submitting() || form().invalid()">
+      <app-icon name="LucideCloud" />
+    </p-button>
+
+    <p-button label="Cancelar" severity="secondary" (onClick)="formClose.emit(false)">
+      <app-icon name="LucideX" />
+    </p-button>
+  </div>
+</form>
+<app-loading-block [visible]="form().submitting()" message="Guardando..." />

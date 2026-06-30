@@ -1,0 +1,8 @@
+/* Forzar que p-columnFilter y sus contenedores internos ocupen el ancho completo */
+:host ::ng-deep .p-columnfilter {
+  width: 100%;
+}
+
+:host ::ng-deep p-columnfilterformelement {
+  width: 100%;
+}
