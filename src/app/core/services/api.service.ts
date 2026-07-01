@@ -1,7 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
+
+export interface FileResult {
+  blob: Blob;
+  filename: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -40,51 +45,46 @@ export class ApiService {
     });
   }
 
-  getFile(url: string, auto: boolean = false) {
+  getFile(url: string): Observable<FileResult> {
     return this.http
       .get(`${this.baseUrl}/${url}`, {
         observe: 'response',
         responseType: 'blob',
+        headers: this.getHeaders(),
         withCredentials: true,
       })
       .pipe(
-        tap((response) => {
-          // Descargar automáticamente el archivo
-          const blob = new Blob([response.body!]);
-          const fileUrl = window.URL.createObjectURL(blob);
-
-          if (auto) {
-            const contentDisposition = response.headers.get('Content-Disposition');
-            const filename = this.getFilenameFromContentDisposition(contentDisposition);
-
-            const a = document.createElement('a');
-            a.href = fileUrl;
-            a.download = filename;
-            a.click();
-            window.URL.revokeObjectURL(fileUrl);
-          }
+        map((response) => {
+          const contentDisposition = response.headers.get('Content-Disposition');
+          const filename = this.parseFilename(contentDisposition);
+          return { blob: response.body!, filename };
         }),
-        catchError((error: HttpErrorResponse) => {
-          return throwError(() => error);
-        }),
+        catchError((error: HttpErrorResponse) => throwError(() => error)),
       );
   }
 
-  private getFilenameFromContentDisposition(header: string | null): string {
-    if (!header) return 'download.csv';
+  downloadFile(url: string): Observable<void> {
+    return this.getFile(url).pipe(
+      map(({ blob, filename }) => {
+        const fileUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = fileUrl;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(fileUrl);
+      }),
+    );
+  }
 
-    // 1) Intentar con filename* (UTF-8)
-    const filenameStarMatch = header.match(/filename\*\s*=\s*UTF-8''([^;]+)/i);
-    if (filenameStarMatch?.[1]) {
-      return decodeURIComponent(filenameStarMatch[1].trim().replace(/"/g, ''));
-    }
+  private parseFilename(header: string | null): string {
+    if (!header) return 'download';
 
-    // 2) Fallback a filename=
-    const filenameMatch = header.match(/filename\s*=\s*"?([^";]+)"?/i);
-    if (filenameMatch?.[1]) {
-      return filenameMatch[1].trim();
-    }
+    const star = header.match(/filename\*\s*=\s*UTF-8''([^;\s]+)/i);
+    if (star?.[1]) return decodeURIComponent(star[1]);
 
-    return 'download.csv';
+    const plain = header.match(/filename\s*=\s*"?([^";\n]+)"?/i);
+    if (plain?.[1]) return plain[1].trim();
+
+    return 'download';
   }
 }

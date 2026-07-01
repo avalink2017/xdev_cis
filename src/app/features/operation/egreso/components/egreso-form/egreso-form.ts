@@ -152,12 +152,21 @@ export class EgresoForm implements OnInit {
     this.textLoader.set('Generando PDF...');
 
     this.api.getFile(`${urlEgreso}/print?id=${this.egid()}`).subscribe({
-      next: (res) => {
-        const blob = res.body!;
+      next: ({ blob }) => {
         const pdfUrl = URL.createObjectURL(blob);
         window.open(pdfUrl, '_blank');
         this.showLoader.set(false);
       },
+      error: () => this.showLoader.set(false),
+    });
+  }
+
+  download() {
+    this.showLoader.set(true);
+    this.textLoader.set('Descargando PDF...');
+
+    this.api.downloadFile(`${urlEgreso}/print?id=${this.egid()}`).subscribe({
+      next: () => this.showLoader.set(false),
       error: () => this.showLoader.set(false),
     });
   }

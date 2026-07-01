@@ -12,12 +12,26 @@
       </p-button>
 
       @if (!isNew()) {
-        <p-button
+        <!-- <p-button
           [label]="device.isMobile() ? '' : 'Imprimir'"          
           (onClick)="onPrint()"
         >
           <app-icon name="LucidePrinter" />
-        </p-button>
+        </p-button> -->
+        <p-splitbutton
+          [model]="items"
+          [label]="device.isMobile() ? '' : 'Imprimir'"
+          (onClick)="onPrint()"
+        >
+          <ng-template #content>
+            <div class="flex gap-1">
+              <app-icon name="LucidePrinter" />
+              @if (!device.isMobile()) {
+                <span class="my-auto">Imprimir</span>
+              }
+            </div>
+          </ng-template>
+        </p-splitbutton>
       }
     </div>
   </ng-template>

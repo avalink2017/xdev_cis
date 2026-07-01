@@ -4,10 +4,12 @@ import { PageLayout } from "../../../../../shared/components/page-layout/page-la
 import { BackButton } from "../../../../../shared/custom/back-button/back-button";
 import { Button } from "primeng/button";
 import { Icon } from "../../../../../shared/components/icon/icon";
+import { SplitButton } from 'primeng/splitbutton';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-egreso-edit',
-  imports: [PageLayout, BackButton, Button, Icon],
+  imports: [PageLayout, BackButton, Button, Icon, SplitButton],
   templateUrl: './egreso-edit.html',
   styleUrl: './egreso-edit.css',
 })
@@ -18,6 +20,14 @@ export class EgresoEdit implements OnInit {
   private formRef = signal<ComponentRef<any> | undefined>(undefined);
   isFormValid = computed(() => this.formRef()?.instance.isFormValid());
   isNew = computed(() => this.formRef()?.instance.isNew());
+
+  items: MenuItem[] = [
+    {
+      label:'Descargar',
+      icon:'pi pi-download',
+      command:() => this.onDownload()
+    }
+  ];
 
   device = inject(DeviceService);
 
@@ -39,7 +49,11 @@ export class EgresoEdit implements OnInit {
     this.formRef()?.instance.onSubmit();
   }
 
-  onPrint(){
+  onPrint() {
     this.formRef()?.instance.print();
+  }
+
+  onDownload() {
+    this.formRef()?.instance.download();
   }
 }
