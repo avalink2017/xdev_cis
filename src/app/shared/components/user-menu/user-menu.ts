@@ -5,23 +5,29 @@ import { Menu } from 'primeng/menu';
 import { AuthService } from '../../../core/services/auth.service';
 import { MenuItem } from 'primeng/api';
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
+import { DeviceService } from '../../../core/services/device.service';
 
 @Component({
   selector: 'app-user-menu',
   imports: [Button, Icon, Menu],
   template: ` <div>
-    <p-menu #menu [popup]="true" [model]="items"> </p-menu>
+    <p-menu #menu [popup]="true" [model]="items" appendTo="body"> </p-menu>
     <p-button styleClass="p-0! my-2! rounded-none!" text (click)="menu.toggle($event)">
       <app-icon name="LucideCircleUserRound" [size]="32" />
-      <div class="flex flex-col text-start">
-        <span class="text-sm font-semibold text-muted-color-emphasis">{{ auth.user()?.name }}</span>
-        <span class="text-sm text-muted-color">{{ auth.user()?.email }}</span>
-      </div>
+      @if (!device.isMobile()) {
+        <div class="flex flex-col text-start">
+          <span class="text-sm font-semibold text-muted-color-emphasis">{{
+            auth.user()?.name
+          }}</span>
+          <span class="text-sm text-muted-color">{{ auth.user()?.email }}</span>
+        </div>
+      }
     </p-button>
   </div>`,
 })
 export class UserMenu {
   auth = inject(AuthService);
+  device = inject(DeviceService);
 
   protected ref?: DynamicDialogRef | null;
   protected dialogService = inject(DialogService);
