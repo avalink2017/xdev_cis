@@ -17,6 +17,7 @@ export class EgresoEdit implements OnInit {
   private container = viewChild.required('compo', { read: ViewContainerRef });
   private formRef = signal<ComponentRef<any> | undefined>(undefined);
   isFormValid = computed(() => this.formRef()?.instance.isFormValid());
+  isNew = computed(() => this.formRef()?.instance.isNew());
 
   device = inject(DeviceService);
 
@@ -36,5 +37,9 @@ export class EgresoEdit implements OnInit {
 
   onSave() {
     this.formRef()?.instance.onSubmit();
+  }
+
+  onPrint(){
+    this.formRef()?.instance.print();
   }
 }

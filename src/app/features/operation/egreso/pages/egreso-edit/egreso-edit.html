@@ -3,9 +3,22 @@
     <div class="flex gap-2">
       <app-back-button />
 
-      <p-button [label]="device.isMobile() ? '' : 'Guardar'" [disabled]="!isFormValid()" (onClick)="onSave()">
+      <p-button
+        [label]="device.isMobile() ? '' : 'Guardar'"
+        [disabled]="!isFormValid()"
+        (onClick)="onSave()"
+      >
         <app-icon name="LucideCloud" />
       </p-button>
+
+      @if (!isNew()) {
+        <p-button
+          [label]="device.isMobile() ? '' : 'Imprimir'"          
+          (onClick)="onPrint()"
+        >
+          <app-icon name="LucidePrinter" />
+        </p-button>
+      }
     </div>
   </ng-template>
   <ng-container #compo />

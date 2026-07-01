@@ -86,6 +86,7 @@ export class EgresoForm implements OnInit {
   urlEntity = `${urlPartner}/{id}`;
   partnerInfo = signal<PartnerDTO | undefined>(undefined);
   showLoader = signal(false);
+  textLoader = signal<string>('Recuperando...')
 
   protected urlDocumentValue = computed(() => this.form().value().urlDocument);
   protected fileNameValue = computed(() => this.form().value().fileName);
@@ -106,8 +107,7 @@ export class EgresoForm implements OnInit {
     if (this.egid()) {
       this.showLoader.set(true);
       this.api.get<EgresoDTO>(`${urlEgreso}/${this.egid()}`).subscribe({
-        next: (res) => {
-          console.log(res)
+        next: (res) => {          
           this.patchModel(res);
           this.showLoader.set(false);
         },
@@ -119,6 +119,7 @@ export class EgresoForm implements OnInit {
   async onSubmit() {
     const ok = await submit(this.form, {
       action: async (raw) => {
+        this.textLoader.set('Guardando...')
         const fd = Egreso2FormData(raw().value());
 
         if (this.DocFile()) fd.append('file', this.DocFile() as File);
@@ -144,5 +145,20 @@ export class EgresoForm implements OnInit {
   private patchModel(data: EgresoDTO) {
     data.fechaMovimiento = new Date(data.fechaMovimiento);
     this.model.set(data);
+  }
+
+  print() {
+    this.showLoader.set(true);
+    this.textLoader.set('Generando PDF...');
+
+    this.api.getFile(`${urlEgreso}/print?id=${this.egid()}`).subscribe({
+      next: (res) => {
+        const blob = res.body!;
+        const pdfUrl = URL.createObjectURL(blob);
+        window.open(pdfUrl, '_blank');
+        this.showLoader.set(false);
+      },
+      error: () => this.showLoader.set(false),
+    });
   }
 }
