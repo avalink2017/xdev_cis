@@ -15,10 +15,13 @@ import { PageLayout } from '../../../../../shared/components/page-layout/page-la
 import { Button } from 'primeng/button';
 import { Icon } from '../../../../../shared/components/icon/icon';
 import { BackButton } from '../../../../../shared/custom/back-button/back-button';
+import { Card } from "primeng/card";
+import { SplitButton } from "primeng/splitbutton";
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-ingreso-edit',
-  imports: [PageLayout, Button, Icon, BackButton],
+  imports: [PageLayout, Button, Icon, BackButton, Card, SplitButton],
   templateUrl: './ingreso-edit.html',
   styleUrl: './ingreso-edit.css',
 })
@@ -28,11 +31,20 @@ export class IngresoEdit implements OnInit {
   private container = viewChild.required('compo', { read: ViewContainerRef });
   private formRef = signal<ComponentRef<any> | undefined>(undefined);
   isFormValid = computed(() => this.formRef()?.instance.isFormValid());
+  isNew = computed(() => this.formRef()?.instance.isNew());
+
+  items: MenuItem[] = [
+    {
+      label: 'Descargar',
+      icon: 'pi pi-download',
+      command: () => this.onDownload(),
+    },
+  ];
 
   device = inject(DeviceService);
 
   ngOnInit(): void {
-    this.createComponent()
+    this.createComponent();
   }
 
   createComponent() {
@@ -45,7 +57,15 @@ export class IngresoEdit implements OnInit {
     });
   }
 
-  onSave(){
+  onSave() {
     this.formRef()?.instance.onSubmit();
+  }
+
+  onPrint() {
+    this.formRef()?.instance.print();
+  }
+
+  onDownload() {
+    this.formRef()?.instance.download();
   }
 }

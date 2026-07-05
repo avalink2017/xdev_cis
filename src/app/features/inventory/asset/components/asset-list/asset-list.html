@@ -1,0 +1,154 @@
+<app-table-view
+  [url]="url"
+  dataKey="id"
+  [clickable]="true"
+  [(refresh)]="refresh"
+  (rowClick)="onRowClick($event)"
+  (onDelete)="onDelete($event)"
+  [showToolBar]="false"
+>
+  <app-table-column field="inventoryCode" header="Código" />
+  <app-table-column field="description" header="Descripción" />
+
+  <app-table-column field="brandName" header="Marca" filterField="brandId">
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-select
+        [options]="assetService.brandList()"
+        optionLabel="name"
+        optionValue="id"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        size="small"
+        class="border-0! bg-transparent! shadow-none!"
+        placeholder="Seleccionar"
+        [showClear]="true"
+        appendTo="body"
+        fluid
+      />
+    </ng-template>
+  </app-table-column>
+
+  <app-table-column field="serialNumber" header="Serial" />
+  <app-table-column field="model" header="Modelo" />
+
+  <app-table-column field="assetStatusName" header="Estatus" filterField="assetStatusId">
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-select
+        [options]="assetService.statusList()"
+        optionLabel="name"
+        optionValue="id"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        size="small"
+        class="border-0! bg-transparent! shadow-none!"
+        placeholder="Seleccionar"
+        [showClear]="true"
+        appendTo="body"
+        fluid
+      />
+    </ng-template>
+
+    <ng-template #cell let-row>
+      <div class="flex items-center justify-center">
+        <p-tag
+          [value]="row.assetStatusName"
+          [severity]="resolveSeverity(row.assetStatusId)"
+        />
+      </div>
+    </ng-template>
+  </app-table-column>
+
+  <app-table-column field="assetCategoryName" header="Categoría" filterField="assetCategoryId">
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-select
+        [options]="assetService.categoryList()"
+        optionLabel="name"
+        optionValue="id"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        size="small"
+        class="border-0! bg-transparent! shadow-none!"
+        placeholder="Seleccionar"
+        [showClear]="true"
+        appendTo="body"
+        fluid
+      />
+    </ng-template>
+  </app-table-column>
+
+  <app-table-column field="purchaseDate" header="Fecha Compra" type="date">
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-datepicker
+        dateFormat="dd/mm/yy"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        appendTo="body"
+        [showClear]="true"
+        placeholder="Seleccionar"
+        size="small"
+        inputStyleClass="border-0! bg-transparent! shadow-none!"
+        [iconDisplay]="'input'"
+        [showIcon]="true"
+        fluid
+      />
+    </ng-template>
+  </app-table-column>
+
+  <app-table-column
+    field="active"
+    header="Activo"
+    [filterable]="true"
+    type="boolean"
+    width="10"
+    align="center"
+  >
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <div>
+        <p-select
+          [options]="actives"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="value"
+          (ngModelChange)="filterFn($event)"
+          appendTo="body"
+          [showClear]="true"
+          placeholder="Seleccionar"
+          size="small"
+          class="border-0! bg-transparent! shadow-none!"
+        />
+      </div>
+    </ng-template>
+
+    <ng-template #cell let-row>
+      <div class="flex items-center justify-center">
+        <p-tag
+          [value]="row.active ? 'Activo' : 'Inactivo'"
+          [severity]="row.active ? 'success' : 'secondary'"
+        />
+      </div>
+    </ng-template>
+  </app-table-column>
+</app-table-view>
+
+<p-drawer
+  #drawerRef
+  [header]="drawerTitle()"
+  [(visible)]="showDrawer"
+  modal
+  position="right"
+  styleClass="w-full! sm:w-[600px]!"
+>
+  <ng-container #compo />
+
+  <ng-template #footer>
+    <div class="mt-5 flex gap-3 justify-end">
+      <p-button label="Guardar" [disabled]="!isFormValid()" (onClick)="submit()">
+        <app-icon name="LucideCloud" />
+      </p-button>
+
+      <p-button label="Cancelar" severity="secondary" (onClick)="formClose()">
+        <app-icon name="LucideX" />
+      </p-button>
+    </div>
+  </ng-template>
+</p-drawer>

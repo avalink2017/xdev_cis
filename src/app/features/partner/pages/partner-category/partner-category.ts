@@ -4,10 +4,11 @@ import { PageLayout } from "../../../../shared/components/page-layout/page-layou
 import { ButtonGroup } from "primeng/buttongroup";
 import { Icon } from "../../../../shared/components/icon/icon";
 import { Button } from "primeng/button";
+import { Card } from "primeng/card";
 
 @Component({
   selector: 'app-partner-category',
-  imports: [PageLayout, ButtonGroup, Icon, Button],
+  imports: [PageLayout, ButtonGroup, Icon, Button, Card],
   templateUrl: './partner-category.html',
   styleUrl: './partner-category.css',
 })

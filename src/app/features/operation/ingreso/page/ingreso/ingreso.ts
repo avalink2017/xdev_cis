@@ -4,10 +4,11 @@ import { PageLayout } from "../../../../../shared/components/page-layout/page-la
 import { ButtonGroup } from "primeng/buttongroup";
 import { Button } from "primeng/button";
 import { Icon } from "../../../../../shared/components/icon/icon";
+import { Card } from "primeng/card";
 
 @Component({
   selector: 'app-ingreso',
-  imports: [PageLayout, ButtonGroup, Button, Icon],
+  imports: [PageLayout, ButtonGroup, Button, Icon, Card],
   templateUrl: './ingreso.html',
   styleUrl: './ingreso.css',
 })

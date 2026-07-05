@@ -1,0 +1,38 @@
+<form [formRoot]="form">
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <app-select-ng
+      label="Cuenta de Banco"
+      [formField]="form.cuentaBancoId"
+      [options]="cuentas()"
+      optionLabel="fullName"
+      optionValue="id"
+      class="col-span-full"
+      [autoFocus]="true"
+    />
+
+    <app-select-ng
+      label="Mes"
+      [formField]="form.month"
+      [options]="months"
+      optionLabel="label"
+      optionValue="value"
+    />
+
+    <app-input-number-ng [formField]="form.year" label="Año" [useGrouping]="false"/>
+
+    <app-text-area-ng [formField]="form.observacion" [rows]="5" label="Observaciones" class="col-span-full"/>
+  </div>
+
+  <div class="mt-5 flex gap-3 justify-end">
+    <p-button type="submit" label="Cerrar Período" [disabled]="form().submitting() || form().invalid()" severity="warn">
+      <app-icon name="LucideCalendarX" />
+    </p-button>
+
+    <p-button label="Cancelar" severity="secondary" (onClick)="formClose.emit(false)">
+      <app-icon name="LucideX" />
+    </p-button>
+  </div>
+</form>
+
+<app-loading-block [visible]="form().submitting()" message="Abriendo período..."/>
+

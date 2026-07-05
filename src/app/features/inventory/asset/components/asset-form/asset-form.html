@@ -1,0 +1,72 @@
+<form>
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <app-input-ng
+      [formField]="form.inventoryCode"
+      label="Código"
+      [autoFocus]="isNew()"
+      class="col-span-full"
+    />
+    <app-text-area-ng
+      [rows]="3"
+      [formField]="form.description"
+      label="Descripción"
+      class="col-span-full"
+    />
+
+    <app-select-ng
+      [formField]="form.brandId"
+      label="Marca"
+      [options]="assetService.brandList()"
+      optionLabel="name"
+      optionValue="id"
+    />
+
+    <app-input-ng [formField]="form.serialNumber" label="Serial" />
+    <app-input-ng [formField]="form.model" label="Modelo" />
+    <app-input-ng [formField]="form.color" label="Color" />
+    <app-input-ng [formField]="form.invoiceNumber" label="Número Factura" />
+    <app-input-number-ng
+      [formField]="form.price"
+      label="Precio de compra"
+      [minFractionDigits]="2"
+      [maxFractionDigits]="2"
+    />
+
+    <app-search-autocomplete
+      [formField]="form.supplierId"
+      [urlList]="urlSearch"
+      [urlEntity]="urlEntity"
+      label="Proveedor"
+      optionLabel="name"
+      optionValue="id"
+      class="col-span-full"
+    />
+
+    <app-date-picker-ng [formField]="form.purchaseDate" label="fecha de compra"/>
+    <app-select-ng
+      [formField]="form.assetStatusId"
+      label="Estado"
+      [options]="assetService.statusList()"
+      optionLabel="name"
+      optionValue="id"
+    />
+    <app-select-ng
+      [formField]="form.assetCategoryId"
+      label="Categoría"
+      [options]="assetService.categoryList()"
+      optionLabel="name"
+      optionValue="id"
+    />
+    <app-select-ng
+      [formField]="form.assetLocationId"
+      label="Ubicación"
+      [options]="assetService.locationList()"
+      optionLabel="name"
+      optionValue="id"
+    />
+
+    <app-toggle-button-ng [formField]="form.active" onLabel="Activo" offLabel="Inactivo" />
+  </div>
+</form>
+
+<app-loading-block [visible]="form().submitting()"/>

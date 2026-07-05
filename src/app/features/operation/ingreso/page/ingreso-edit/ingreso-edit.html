@@ -1,12 +1,42 @@
 <app-page-layout title="Ingreso" subtitle="Operaciones de Ingreso" iconName="LucideBanknoteArrowUp">
   <ng-template #headerActions>
-    <div class="flex gap-2">
+    <!-- <div class="flex gap-2">
       <app-back-button />
 
       <p-button [label]="device.isMobile() ? '' : 'Guardar'" [disabled]="!isFormValid()" (onClick)="onSave()">
         <app-icon name="LucideCloud" />
       </p-button>
+    </div> -->
+    <div class="flex gap-2">
+      <app-back-button />
+
+      <p-button
+        [label]="device.isMobile() ? '' : 'Guardar'"
+        [disabled]="!isFormValid()"
+        (onClick)="onSave()"
+      >
+        <app-icon name="LucideCloud" />
+      </p-button>
+
+      @if (!isNew()) {        
+        <p-splitbutton
+          [model]="items"
+          [label]="device.isMobile() ? '' : 'Imprimir'"
+          (onClick)="onPrint()"
+        >
+          <ng-template #content>
+            <div class="flex gap-1">
+              <app-icon name="LucidePrinter" />
+              @if (!device.isMobile()) {
+                <span class="my-auto">Imprimir</span>
+              }
+            </div>
+          </ng-template>
+        </p-splitbutton>
+      }
     </div>
   </ng-template>
-  <ng-container #compo />
+  <p-card>
+    <ng-container #compo />
+  </p-card>
 </app-page-layout>

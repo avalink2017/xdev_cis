@@ -1,0 +1,16 @@
+<app-page-layout title="Ubicación de Activo" subtitle="Ubicaciones Físicas de Activos" iconName="LucideMapPin">
+  <ng-template #headerActions>
+    <p-buttongroup>
+      <p-button [label]="device.isMobile() ? '':'Crear'" (onClick)="AddNew()">
+        <app-icon name="LucideCirclePlus" />
+      </p-button>
+
+      <p-button [label]="device.isMobile() ? '':'Refrescar'" (onClick)="refresh.set(true)">
+        <app-icon name="LucideRefreshCcw" />
+      </p-button>
+    </p-buttongroup>
+  </ng-template>
+  <p-card>
+    <ng-container #compo />
+  </p-card>
+</app-page-layout>

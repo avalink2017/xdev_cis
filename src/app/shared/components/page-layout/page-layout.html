@@ -8,7 +8,7 @@
           </div>
         }
         <div class="min-w-0">
-          <h1 class="text-xl font-semibold tracking-tight text-muted-color-emphasis sm:text-2xl">
+          <h1 class="text-xl font-semibold tracking-tight text-muted-color sm:text-2xl">
             {{ title() }}
           </h1>
           @if (subtitle(); as sub) {
@@ -23,8 +23,11 @@
       }
     </div>    
   </div>
-  <p-card>
+
+  <div class="empty:hidden">
     <ng-content />
-  </p-card>
+  </div>
+  
+  <ng-content select="[plainContent]"/>
   
 </div>

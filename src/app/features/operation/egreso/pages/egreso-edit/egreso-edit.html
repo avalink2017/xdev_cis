@@ -11,13 +11,7 @@
         <app-icon name="LucideCloud" />
       </p-button>
 
-      @if (!isNew()) {
-        <!-- <p-button
-          [label]="device.isMobile() ? '' : 'Imprimir'"          
-          (onClick)="onPrint()"
-        >
-          <app-icon name="LucidePrinter" />
-        </p-button> -->
+      @if (!isNew()) {        
         <p-splitbutton
           [model]="items"
           [label]="device.isMobile() ? '' : 'Imprimir'"
@@ -35,5 +29,7 @@
       }
     </div>
   </ng-template>
-  <ng-container #compo />
+  <p-card>
+    <ng-container #compo />
+  </p-card>
 </app-page-layout>

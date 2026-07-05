@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { IngresoDTO } from '../ingreso.model.dto';
-import { form, required, submit, FormField, disabled, min } from '@angular/forms/signals';
+import { form, required, submit, FormField, disabled, min, maxLength } from '@angular/forms/signals';
 import {
   urlCuentaBanco,
   urlIngreso,
@@ -76,7 +76,9 @@ export class IngresoForm implements OnInit {
     required(schemaPath.tipoDocumentoFinancieroId, { message: 'Tipo documento requerido' });
     required(schemaPath.partnerId, { message: 'Proveedor requerido' });
     required(schemaPath.descripcion, { message: 'Descripción requerida' });
+    maxLength(schemaPath.descripcion, 500, { message: 'Longitud máxima 500' });
     required(schemaPath.noDocumento, { message: 'N°. Documento requerido' });
+    maxLength(schemaPath.noDocumento, 50, { message: 'Longitud máxima 50' });
     disabled(schemaPath.numero);
     min(schemaPath.monto, 0.01, { message: 'El monto debe ser mayor a cero' });
   });
@@ -91,6 +93,7 @@ export class IngresoForm implements OnInit {
   urlEntity = `${urlPartner}/{id}`;
   partnerInfo = signal<PartnerDTO | undefined>(undefined);
   showLoader = signal(false);
+  textLoader = signal<string>('Recuperando...');
 
   protected urlDocumentValue = computed(() => this.form().value().urlDocument);
   protected fileNameValue = computed(() => this.form().value().fileName);
@@ -123,6 +126,7 @@ export class IngresoForm implements OnInit {
   async onSubmit() {
     const ok = await submit(this.form, {
       action: async (raw) => {
+        this.textLoader.set('Guardando...');
         const fd = Ingreso2FormData(raw().value());
 
         if (this.DocFile()) fd.append('file', this.DocFile() as File);
@@ -148,5 +152,29 @@ export class IngresoForm implements OnInit {
   private patchModel(data: IngresoDTO) {
     data.fechaMovimiento = new Date(data.fechaMovimiento);
     this.model.set(data);
+  }
+
+  print() {
+    this.showLoader.set(true);
+    this.textLoader.set('Generando PDF...');
+
+    this.api.getFile(`${urlIngreso}/print?id=${this.form().value().id}`).subscribe({
+      next: ({ blob }) => {
+        const pdfUrl = URL.createObjectURL(blob);
+        window.open(pdfUrl, '_blank');
+        this.showLoader.set(false);
+      },
+      error: () => this.showLoader.set(false),
+    });
+  }
+
+  download() {
+    this.showLoader.set(true);
+    this.textLoader.set('Descargando PDF...');
+
+    this.api.downloadFile(`${urlIngreso}/print?id=${this.form().value().id}`).subscribe({
+      next: () => this.showLoader.set(false),
+      error: () => this.showLoader.set(false),
+    });
   }
 }

@@ -1,7 +1,7 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { TipoEgresoListDTO } from '../../../../configuration/tipo-egreso/components/tipo-egreso.model.dto';
 import { urlCuentaBanco, urlEgreso, urlPartner, urlTpoDocumento, urlTpoEgreso } from '../../../../../core/services/endpoint.service';
-import { disabled, form, FormField, min, required, submit } from '@angular/forms/signals';
+import { disabled, form, FormField, maxLength, min, required, submit } from '@angular/forms/signals';
 import { forkJoin, firstValueFrom } from 'rxjs';
 import { ApiService } from '../../../../../core/services/api.service';
 import { NotificationService } from '../../../../../core/services/notification.service';
@@ -70,8 +70,11 @@ export class EgresoForm implements OnInit {
     required(schemaPath.tipoDocumentoFinancieroId, { message: 'Tipo documento requerido' });
     required(schemaPath.partnerId, { message: 'Proveedor requerido' });
     required(schemaPath.descripcion, { message: 'Descripción requerida' });
+    maxLength(schemaPath.descripcion, 500, { message: 'Longitud máxima 500' });
     required(schemaPath.noDocumento, { message: 'N°. Documento requerido' });
+    maxLength(schemaPath.noDocumento, 50, { message: 'Longitud máxima 50' });
     required(schemaPath.noCheque, { message: 'N°. Cheque requerido' });
+    maxLength(schemaPath.noCheque, 20, { message: 'Longitud máxima 20' });
     disabled(schemaPath.numero);
     min(schemaPath.monto, 0.01, { message: 'El monto debe ser mayor a cero' });
   });
@@ -151,7 +154,7 @@ export class EgresoForm implements OnInit {
     this.showLoader.set(true);
     this.textLoader.set('Generando PDF...');
 
-    this.api.getFile(`${urlEgreso}/print?id=${this.egid()}`).subscribe({
+    this.api.getFile(`${urlEgreso}/print?id=${this.form().value().id}`).subscribe({
       next: ({ blob }) => {
         const pdfUrl = URL.createObjectURL(blob);
         window.open(pdfUrl, '_blank');
@@ -165,7 +168,7 @@ export class EgresoForm implements OnInit {
     this.showLoader.set(true);
     this.textLoader.set('Descargando PDF...');
 
-    this.api.downloadFile(`${urlEgreso}/print?id=${this.egid()}`).subscribe({
+    this.api.downloadFile(`${urlEgreso}/print?id=${this.form().value().id}`).subscribe({
       next: () => this.showLoader.set(false),
       error: () => this.showLoader.set(false),
     });

@@ -6,7 +6,7 @@ import { TipoIngresoDTO, TipoIngresoListDTO } from '../tipo-ingreso.model.dto';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ApiService } from '../../../../../core/services/api.service';
-import { Actives } from '../../../../../core/model/shared,model.dto';
+import { Actives } from '../../../../../core/model/shared.model.dto';
 import { FormsModule } from '@angular/forms';
 
 @Component({

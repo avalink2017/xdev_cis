@@ -44,6 +44,32 @@ export const PRIVATE_ROUTES: Routes = [
             (m) => m.BankAccount,
           ),
       },
+      {
+        path: 'config/asset-category',
+        loadComponent: () =>
+          import('../../features/configuration/asset-category/page/asset-category/asset-category').then(
+            (m) => m.AssetCategory,
+          ),
+      },
+      {
+        path: 'config/asset-location',
+        loadComponent: () =>
+          import('../../features/configuration/asset-location/page/asset-location/asset-location').then(
+            (m) => m.AssetLocation,
+          ),
+      },
+      {
+        path: 'config/asset-status',
+        loadComponent: () =>
+          import('../../features/configuration/asset-status/page/asset-status/asset-status').then(
+            (m) => m.AssetStatus,
+          ),
+      },
+      {
+        path: 'config/brand',
+        loadComponent: () =>
+          import('../../features/configuration/brand/page/brand/brand').then((m) => m.Brand),
+      },
 
       {
         path: 'partner/category',
@@ -73,6 +99,11 @@ export const PRIVATE_ROUTES: Routes = [
       },
 
       // Operaciones
+      {
+        path: 'operation/periodo',
+        loadComponent: () =>
+          import('../../features/operation/periodo/page/periodo/periodo').then((m) => m.Periodo),
+      },
       {
         path: 'operation/ingreso',
         loadComponent: () =>
@@ -116,9 +147,13 @@ export const PRIVATE_ROUTES: Routes = [
       {
         path: 'admin/user',
         loadComponent: () =>
-          import('../../features/administration/user/page/user/user').then(
-            (m) => m.User,
-          ),
+          import('../../features/administration/user/page/user/user').then((m) => m.User),
+      },
+
+      {
+        path: 'inventory/asset',
+        loadComponent: () =>
+          import('../../features/inventory/asset/page/asset/asset').then((m) => m.Asset),
       },
     ],
   },

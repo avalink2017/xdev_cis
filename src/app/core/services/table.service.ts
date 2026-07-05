@@ -79,41 +79,34 @@ export class TableService<T> {
       this.pagedSignal().sortOrder = 0;
     }
 
-    this.tableFilters = { ...event.filters };
+    this.tableFilters = event.filters ? { ...event.filters } : {};
 
+    this.pagedSignal().filter = '';
     const params: Record<string, any> = {};
-    Object.entries(event.filters!).forEach(([field, meta]) => {
-      // Puede venir como FilterMetadata o array de FilterMetadata
-      const metas = Array.isArray(meta) ? meta : [meta];
 
-      metas.forEach((m, idx) => {
-        const value = (m as FilterMetadata).value;
+    if (event.filters) {
+      Object.entries(event.filters).forEach(([field, meta]) => {
+        const metas = Array.isArray(meta) ? meta : [meta];
 
-        // Excluir null, undefined o, en strings, cadenas vacías
-        if (value == null) {
-          return;
-        }
-        if (typeof value === 'string' && value.trim() === '') {
-          return;
-        }
+        metas.forEach((m, idx) => {
+          const value = (m as FilterMetadata).value;
 
-        // const out = value instanceof Date ? (value as Date).toISOString() : value;
-        let out = value;
-        if (value instanceof Date) {
-          // Si solo quieres la fecha: out = value.toISOString().substring(0, 10);
-          out = value.toISOString();
-        } else {
-          out = value;
-        }
+          if (value == null) {
+            return;
+          }
+          if (typeof value === 'string' && value.trim() === '') {
+            return;
+          }
 
-        // Si hubo varios metadatos en array, los numeramos;
-        // si solo hay uno, usamos directamente el nombre de campo.
-        const key = metas.length > 1 ? `${field}[${idx}]` : field;
-        params[key] = out;
+          let out = value instanceof Date ? value.toISOString() : value;
+
+          const key = metas.length > 1 ? `${field}[${idx}]` : field;
+          params[key] = out;
+        });
       });
+    }
 
-      this.pagedSignal().filter = JSON.stringify(params);
-    });
+    this.pagedSignal().filter = Object.keys(params).length > 0 ? JSON.stringify(params) : '';
 
     this.loadData();
   }

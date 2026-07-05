@@ -34,7 +34,7 @@ export class TipoIngresoForm implements OnInit {
   form = form<TipoIngresoDTO>(this.tipoIngresoModel, (schemaPath) => {
     disabled(schemaPath.code, ({ valueOf }) => valueOf(schemaPath.id) !== '');
     required(schemaPath.code, { message: 'Código requerido' });
-    maxLength(schemaPath.code, 7, { message: 'Longitud máxima 7' });
+    maxLength(schemaPath.code, 4, { message: 'Longitud máxima 4' });
     required(schemaPath.name, { message: 'Nombre requerido' });
     maxLength(schemaPath.name, 100, { message: 'Longitud máxima 100' });
   });

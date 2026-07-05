@@ -1,11 +1,10 @@
 import { Component, input, TemplateRef, contentChild } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { Icon } from '../icon/icon';
-import { Card } from "primeng/card";
 
 @Component({
   selector: 'app-page-layout',
-  imports: [Icon, NgTemplateOutlet, Card],
+  imports: [Icon, NgTemplateOutlet],
   templateUrl: './page-layout.html',
 })
 export class PageLayout {
@@ -15,4 +14,5 @@ export class PageLayout {
   iconSize = input(24);
 
   headerActions = contentChild<TemplateRef<unknown>>('headerActions');
+  
 }

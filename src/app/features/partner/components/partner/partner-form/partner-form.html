@@ -1,21 +1,21 @@
 <form novalidate [formRoot]="form">
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     @if (!isNew()) {
-      <app-input-ng label="Código" [formField]="form.code" tabIndex="1" />
+      <app-input-ng label="Código" [formField]="form.code"/>
     }
     <app-input-ng
       label="Nombre"
       [formField]="form.name"
       [autoFocus]="true"
       class="col-span-full"
-      tabIndex="1"
+      
     />
 
     <app-input-ng
       label="Nombre comercial"
       [formField]="form.tradeName"
       class="col-span-full"
-      tabIndex="2"
+      
     />
 
     <app-select-ng

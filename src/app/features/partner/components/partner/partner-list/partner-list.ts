@@ -3,7 +3,7 @@ import { urlPartner } from '../../../../../core/services/endpoint.service';
 import { PartnerDTO, PartnerListDTO } from '../partner.model.dto';
 import { ConfirmationService } from 'primeng/api';
 import { Drawer } from 'primeng/drawer';
-import { Actives } from '../../../../../core/model/shared,model.dto';
+import { Actives } from '../../../../../core/model/shared.model.dto';
 import { ApiService } from '../../../../../core/services/api.service';
 import { rowData, TableView } from '../../../../../shared/components/table/table-view/table-view';
 import { TableColumn } from "../../../../../shared/components/table/table-column/table-column";

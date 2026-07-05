@@ -1,0 +1,228 @@
+<p-dataview
+  #dv
+  [value]="tableService.data()"
+  [pt]="{
+    content: { class: 'bg-transparent!' },
+    header: { class: 'bg-transparent! border-0' },
+    footer: { class: 'bg-transparent! border-0' },
+  }"
+>
+  <ng-template #header>
+    <div class="flex gap-5 justify-between">
+      <div>
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <app-icon name="LucideFunnel" />
+          </p-inputgroup-addon>
+          <p-select
+            [ngModel]="filterField()"
+            (ngModelChange)="onFilterFieldChange($event)"
+            [options]="fields"
+            optionValue="value"
+            optionLabel="label"
+            placeholder="Filtrar por"
+            appendTo="body"
+            [showClear]="true"
+          />
+          @switch (filterField()) {
+            @case ('cuentaBancoNumero') {
+              <input
+                type="text"
+                [ngModel]="filterValue()"
+                (ngModelChange)="onFilterValueChange($event)"
+                pInputText
+              />
+            }
+            @case ('month') {
+              <p-inputnumber
+                [ngModel]="filterValue()"
+                (ngModelChange)="onFilterValueChange($event)"
+                [min]="1"
+                [max]="12"
+              />
+            }
+            @case ('year') {
+              <p-inputnumber
+                [ngModel]="filterValue()"
+                (ngModelChange)="onFilterValueChange($event)"
+              />
+            }
+            @case ('fechaApertura') {
+              <p-datepicker
+                [ngModel]="filterValue()"
+                (ngModelChange)="onFilterValueChange($event)"
+                dateFormat="dd/mm/yy"
+                [showIcon]="true"
+                iconDisplay="input"
+              />
+            }
+            @case ('fechaCierre') {
+              <p-datepicker
+                [ngModel]="filterValue()"
+                (ngModelChange)="onFilterValueChange($event)"
+                dateFormat="dd/mm/yy"
+                [showIcon]="true"
+                iconDisplay="input"
+              />
+            }
+            @case ('cerrado') {
+              <p-select
+                [ngModel]="filterValue()"
+                (ngModelChange)="onFilterValueChange($event)"
+                [options]="[
+                  { label: 'Todos', value: null },
+                  { label: 'Abierto', value: false },
+                  { label: 'Cerrado', value: true },
+                ]"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccionar"
+              />
+            }
+          }          
+        </p-inputgroup>
+      </div>
+
+      <div>
+        <p-inputgroup>
+          <p-inputgroup-addon
+            class="cursor-pointer!"
+            (click)="toggleSortOrder()"
+          >
+            <app-icon [name]="sortIconName()" />
+          </p-inputgroup-addon>
+          <p-select
+            [ngModel]="sortField()"
+            (ngModelChange)="onSortFieldChange($event)"
+            [options]="fields"
+            optionValue="value"
+            optionLabel="label"
+            placeholder="Ordenar por"
+            appendTo="body"
+            [showClear]="true"
+          />
+        </p-inputgroup>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #list let-items>
+    <div class="flex flex-col gap-4">
+      @for (item of items; track item.id) {
+        <div
+          class="border border-surface p-3 rounded-xl bg-surface-0 dark:bg-surface-900 flex gap-3 justify-between shadow"
+        >
+          <div class="flex flex-col gap-1 min-w-0 flex-1">
+            <div class="flex gap-2 text-primary">
+              <span>Cuenta:</span>
+              <span class="truncate"
+                >{{ item.cuentaBancoNumero }} - {{ item.cuentaBancoNombre }}</span
+              >
+            </div>
+            <div class="flex flex-wrap gap-x-3 gap-y-0 items-center">
+              <div class="flex gap-2 text-xs">
+                <span class="text-muted-color">Mes:</span>
+                <span>{{ resolveMonth(item.month) }}</span>
+              </div>
+
+              <div class="flex gap-2 text-xs">
+                <span class="text-muted-color">Año:</span>
+                <span>{{ item.year }}</span>
+              </div>
+
+              <div class="flex gap-2 text-xs">
+                <span class="text-muted-color">Apertura:</span>
+                <span>{{ item.fechaApertura | date: 'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+
+              @if (item.cerrado) {
+                <div class="flex gap-2 text-xs">
+                  <span class="text-muted-color">Cierre:</span>
+                  <span>{{ item.fechaCierre | date: 'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+              }
+
+              <div class="flex gap-2 text-xs">
+                <span class="text-muted-color">Saldo Inicial:</span>
+                <span>{{ item.saldoInicial | number: '1.2-2' }}</span>
+              </div>
+
+              @if (item.cerrado) {
+                <div class="flex gap-2 text-xs">
+                  <span class="text-muted-color">Saldo final:</span>
+                  <span>{{ item.saldoFinal | number: '1.2-2' }}</span>
+                </div>
+              }
+
+              <div>
+                <p-tag
+                  [value]="item.cerrado ? 'Cerrado' : 'Abierto'"
+                  class="text-sm!"
+                  [severity]="item.cerrado ? 'warn' : 'success'"
+                />
+              </div>
+            </div>
+          </div>
+          @if (!item.cerrado) {
+            <div class="my-auto min-w-0">
+              @if (device.isMobile()) {
+                <p-button
+                  text
+                  icon="pi pi-ellipsis-h"
+                  rounded
+                  severity="secondary"
+                  (click)="op.toggle($event)"
+                />
+                <p-popover #op>
+                  <p-button
+                    label="Cerrar"
+                    size="small"
+                    severity="secondary"
+                    (onClick)="onClose(item.id)"
+                  />
+                </p-popover>
+              } @else {
+                <p-button
+                  label="Cerrar"
+                  size="small"
+                  severity="secondary"
+                  (onClick)="onClose(item.id)"
+                />
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </ng-template>
+  <ng-template #footer>
+    <div class="flex justify-end">
+      <p-paginator
+        (onPageChange)="tableService.onPageChange($event)"
+        [first]="tableService.first"
+        [rows]="tableService.pageSize"
+        [totalRecords]="tableService.totalRecords()"
+        [rowsPerPageOptions]="[5, 10, 20, 30, 50, 75, 100]"
+        [pageLinkSize]="tableService.pageLinkSize"
+        appendTo="body"
+        [pt]="{ root: { class: 'bg-transparent!' } }"
+      />
+    </div>
+  </ng-template>
+  <ng-template #emptymessage>
+    <div class="flex justify-center p-5 border border-surface rounded-xl">
+      <p-message>No existen períodos registrados</p-message>
+    </div>
+  </ng-template>
+</p-dataview>
+
+<p-drawer
+  #drawerRef
+  [header]="drawerTitle()"
+  [(visible)]="showDrawer"
+  modal
+  position="right"
+  styleClass="w-full! sm:w-[500px]!"
+>
+  <ng-container #compo />
+</p-drawer>

@@ -12,6 +12,7 @@ export interface CuentaBancoListDTO {
   tipoCuenta: TipoCuenta;
   fechaApertura: Date;
   active: boolean;
+  fullName:string;
 }
 
 export const TIPO_CUENTA_OPTIONS = [

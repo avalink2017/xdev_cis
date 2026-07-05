@@ -6,10 +6,11 @@ import { Button } from "primeng/button";
 import { Icon } from "../../../../../shared/components/icon/icon";
 import { SplitButton } from 'primeng/splitbutton';
 import { MenuItem } from 'primeng/api';
+import { Card } from "primeng/card";
 
 @Component({
   selector: 'app-egreso-edit',
-  imports: [PageLayout, BackButton, Button, Icon, SplitButton],
+  imports: [PageLayout, BackButton, Button, Icon, SplitButton, Card],
   templateUrl: './egreso-edit.html',
   styleUrl: './egreso-edit.css',
 })

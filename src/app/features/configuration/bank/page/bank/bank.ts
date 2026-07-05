@@ -13,10 +13,11 @@ import { Button } from 'primeng/button';
 import { Icon } from '../../../../../shared/components/icon/icon';
 import { ButtonGroup } from 'primeng/buttongroup';
 import { DeviceService } from '../../../../../core/services/device.service';
+import { Card } from "primeng/card";
 
 @Component({
   selector: 'app-bank',
-  imports: [PageLayout, Button, Icon, ButtonGroup],
+  imports: [PageLayout, Button, Icon, ButtonGroup, Card],
   templateUrl: './bank.html',
   styleUrl: './bank.css',
 })
