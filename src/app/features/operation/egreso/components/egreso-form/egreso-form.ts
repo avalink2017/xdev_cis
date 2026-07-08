@@ -1,7 +1,21 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { TipoEgresoListDTO } from '../../../../configuration/tipo-egreso/components/tipo-egreso.model.dto';
-import { urlCuentaBanco, urlEgreso, urlPartner, urlTpoDocumento, urlTpoEgreso } from '../../../../../core/services/endpoint.service';
-import { disabled, form, FormField, maxLength, min, required, submit } from '@angular/forms/signals';
+import {
+  urlCuentaBanco,
+  urlEgreso,
+  urlPartner,
+  urlTpoDocumento,
+  urlTpoEgreso,
+} from '../../../../../core/services/endpoint.service';
+import {
+  disabled,
+  form,
+  FormField,
+  maxLength,
+  min,
+  required,
+  submit,
+} from '@angular/forms/signals';
 import { forkJoin, firstValueFrom } from 'rxjs';
 import { ApiService } from '../../../../../core/services/api.service';
 import { NotificationService } from '../../../../../core/services/notification.service';
@@ -10,14 +24,18 @@ import { TipoDocumentoListDTO } from '../../../../configuration/tipo-documento/c
 import { PartnerDTO } from '../../../../partner/components/partner/partner.model.dto';
 import { EgresoDTO } from '../egreso.model.dto';
 import { Egreso2FormData } from '../../../../../core/functions/Form2FormData';
-import { InputNg } from "../../../../../shared/custom/input-ng/input-ng";
-import { DatePickerNg } from "../../../../../shared/custom/date-picker-ng/date-picker-ng";
+import { InputNg } from '../../../../../shared/custom/input-ng/input-ng';
+import { DatePickerNg } from '../../../../../shared/custom/date-picker-ng/date-picker-ng';
 import { Panel } from 'primeng/panel';
 import { LoadingBlock } from '../../../../../shared/components/loading-block/loading-block';
 import { InputNumberNg } from '../../../../../shared/custom/input-number-ng/input-number-ng';
 import { SearchAutocomplete } from '../../../../../shared/custom/search-autocomplete/search-autocomplete';
 import { SelectNg } from '../../../../../shared/custom/select-ng/select-ng';
 import { TextAreaNg } from '../../../../../shared/custom/text-area-ng/text-area-ng';
+import { StatusBarNg } from '../../../../../shared/custom/status-bar-ng/status-bar-ng';
+import { statusOperation } from '../../../../../core/model/shared.model.dto';
+import { DeviceService } from '../../../../../core/services/device.service';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-egreso-form',
@@ -28,9 +46,10 @@ import { TextAreaNg } from '../../../../../shared/custom/text-area-ng/text-area-
     SelectNg,
     InputNumberNg,
     TextAreaNg,
-    SearchAutocomplete,    
+    SearchAutocomplete,
     Panel,
     LoadingBlock,
+    StatusBarNg,
   ],
   templateUrl: './egreso-form.html',
   styleUrl: './egreso-form.css',
@@ -40,6 +59,8 @@ export class EgresoForm implements OnInit {
 
   private nt = inject(NotificationService);
   private api = inject(ApiService);
+  private _confirm = inject(ConfirmationService);
+  device = inject(DeviceService);
 
   DocFile = signal<File | null>(null);
 
@@ -94,6 +115,8 @@ export class EgresoForm implements OnInit {
 
   protected urlDocumentValue = computed(() => this.form().value().urlDocument);
   protected fileNameValue = computed(() => this.form().value().fileName);
+
+  readonly status = statusOperation;
 
   ngOnInit(): void {
     forkJoin({
@@ -176,28 +199,72 @@ export class EgresoForm implements OnInit {
   }
 
   confirm() {
-    this.showLoader.set(true);
-    this.textLoader.set('Confirmando...');
-
-    this.api.post<EgresoDTO>(`${urlEgreso}/confirm?id=${this.form().value().id}`, null).subscribe({
-      next: (res) => {
-        this.showLoader.set(false);
-        this.patchModel(res);
+    this._confirm.confirm({
+      message: `¿Desea confirmar el Ingreso número ${this.form().value().numero ?? ''}?`,
+      header: `Confirmar Ingreso`,
+      closable: true,
+      closeOnEscape: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'contrast',
+        outlined: true,
+        size: 'small',
       },
-      error: () => this.showLoader.set(false),
+      acceptButtonProps: {
+        label: '¡Si, Confirmar!',
+        size: 'small',
+        styleClass: 'ml-2!',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.showLoader.set(true);
+        this.textLoader.set('Confirmando...');
+
+        this.api
+          .post<EgresoDTO>(`${urlEgreso}/confirm?id=${this.form().value().id}`, null)
+          .subscribe({
+            next: (res) => {
+              this.showLoader.set(false);
+              this.patchModel(res);
+            },
+            error: () => this.showLoader.set(false),
+          });
+      },
     });
   }
 
   cancel() {
-    this.showLoader.set(true);
-    this.textLoader.set('Anulando...');
-
-    this.api.post<EgresoDTO>(`${urlEgreso}/cancel?id=${this.form().value().id}`, null).subscribe({
-      next: (res) => {
-        this.showLoader.set(false);
-        this.patchModel(res);
+    this._confirm.confirm({
+      message: `¿Desea Anular el Ingreso número ${this.form().value().numero ?? ''}?`,
+      header: `Anular Ingreso`,
+      closable: true,
+      closeOnEscape: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'contrast',
+        outlined: true,
+        size: 'small',
       },
-      error: () => this.showLoader.set(false),
+      acceptButtonProps: {
+        label: '¡Si, Anular!',
+        size: 'small',
+        styleClass: 'ml-2!',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.showLoader.set(true);
+        this.textLoader.set('Anulando...');
+
+        this.api
+          .post<EgresoDTO>(`${urlEgreso}/cancel?id=${this.form().value().id}`, null)
+          .subscribe({
+            next: (res) => {
+              this.showLoader.set(false);
+              this.patchModel(res);
+            },
+            error: () => this.showLoader.set(false),
+          });
+      },
     });
   }
 }
