@@ -200,7 +200,7 @@ export class EgresoForm implements OnInit {
 
   confirm() {
     this._confirm.confirm({
-      message: `¿Desea confirmar el Ingreso número ${this.form().value().numero ?? ''}?`,
+      message: `¿Desea confirmar el Egreso número ${this.form().value().numero ?? ''}?`,
       header: `Confirmar Ingreso`,
       closable: true,
       closeOnEscape: false,
@@ -235,7 +235,7 @@ export class EgresoForm implements OnInit {
 
   cancel() {
     this._confirm.confirm({
-      message: `¿Desea Anular el Ingreso número ${this.form().value().numero ?? ''}?`,
+      message: `¿Desea Anular el Egreso número ${this.form().value().numero ?? ''}?`,
       header: `Anular Ingreso`,
       closable: true,
       closeOnEscape: false,
