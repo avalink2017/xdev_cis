@@ -42,3 +42,4 @@ export const urlAssetStatus = 'assetstatus';
 export const urlBrand = 'brand';
 export const urlAsset = 'asset';
 export const urlCierreMes = 'cierremes'
+export const urlReports = 'reports'

@@ -155,6 +155,12 @@ export const PRIVATE_ROUTES: Routes = [
         loadComponent: () =>
           import('../../features/inventory/asset/page/asset/asset').then((m) => m.Asset),
       },
+
+      {
+        path: 'report/consolidated',
+        loadComponent: () =>
+          import('../../features/reports/consolidated-report/consolidated-report').then((m) => m.ConsolidatedReport),
+      },
     ],
   },
 ];

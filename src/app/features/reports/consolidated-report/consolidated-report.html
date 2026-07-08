@@ -1,0 +1,93 @@
+<app-page-layout title="Informe" subtitle="Consolidado" iconName="LucideBook">
+  <p-card>
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+      <div class="flex flex-col gap-2 col-span-full sm:col-span-1">
+        <label for="accountid">Cuenta de Banco</label>
+        <p-select
+          [options]="cuentas()"
+          optionLabel="fullName"
+          optionValue="id"
+          [(ngModel)]="account"
+          inputId="accountid"
+          appendTo="body"
+          fluid
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="month">Período</label>
+        <p-select
+          [options]="months"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="month"
+          inputId="month"
+          appendTo="body"
+          fluid
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="year">Año</label>
+        <p-inputnumber [(ngModel)]="year" inputId="year" useGrouping="false" fluid />
+      </div>
+
+      <div>
+        <p-button label="Generar" icon="pi pi-check-circle" (onClick)="GenerateReport()" />
+      </div>
+    </div>
+  </p-card>
+  <div class="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
+    <div>
+      <p-card>
+        @if (data()) {
+            <p-table [value]="data()?.lines!" [scrollable]="true" scrollHeight="400px" rowGroupMode="subheader" groupRowsBy="tipo">
+                <ng-template #header>
+                    <tr>
+                        <th>Concepto</th>
+                        <th class="text-end!">Importe</th>                        
+                    </tr>
+                </ng-template>
+                <ng-template #groupheader let-group>
+                    <tr pRowGroupHeader>
+                        <td colspan="2" class="p-0!">
+                            <div class="bg-surface-100 dark:bg-surface-800 p-3 text-primary-emphasis">
+                                <span>{{group.tipo}}</span>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template #groupfooter let-group>
+                    <tr>
+                        <td colspan="2" class="text-right! font-bold! text-primary-emphasis-alt">
+                            <div>Total Customers: $ {{ calculateSubTotal(group.tipo) | number:'1.2-2' }}</div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-line let-rowIndex="rowIndex">
+                    <tr>
+                        <td>
+                            {{ line.concepto }}
+                        </td>                        
+                        <td class="text-end!">
+                            $ {{ line.monto | number:'1.2-2'}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        } @else {
+          <p-message>Generar Informe</p-message>
+        }
+      </p-card>
+    </div>
+    <div>
+      <p-card>
+        @if (data()) {
+        } @else {
+          <p-message>Generar Informe</p-message>
+        }
+      </p-card>
+    </div>
+  </div>
+</app-page-layout>
+<app-loading-block [visible]="showLoader()" />

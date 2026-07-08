@@ -26,7 +26,7 @@ export class SideNavbar {
   private auth = inject(AuthService);
   device = inject(DeviceService);
 
-  openGroups = signal<string[]>(['INICIO', 'OPERACIONES', 'CATÁLOGOS', 'INVENTARIO']);
+  openGroups = signal<string[]>(['INICIO', 'OPERACIONES', 'INFORMES', 'INVENTARIO']);
 
   groups: MenuGroup[] = [
     {
@@ -55,7 +55,7 @@ export class SideNavbar {
         {
           label: 'Períodos',
           icon: 'LucideCalendarCog',
-          routerLink:'/app/operation/periodo'
+          routerLink: '/app/operation/periodo',
         },
       ],
     },
@@ -66,6 +66,16 @@ export class SideNavbar {
           label: 'Activo Fijo',
           icon: 'LucideBox',
           routerLink: '/app/inventory/asset',
+        },
+      ],
+    },
+    {
+      label: 'INFORMES',
+      items: [
+        {
+          label: 'Consolidado',
+          icon: 'LucideBook',
+          routerLink: '/app/report/consolidated',
         },
       ],
     },
