@@ -1,3 +1,5 @@
+import { StatusItem } from "../../shared/custom/status-bar-ng/statusbar.model.dto";
+
 export const Actives = [
   { label: 'Activo', value: true },
   { label: 'Inactivo', value: false },
@@ -26,4 +28,25 @@ export const severityNG:
     { label: 'Octubre', value: '10' },
     { label: 'Noviembre', value: '11' },
     { label: 'Diciembre', value: '12' },
+  ];
+
+  export const statusOperation: StatusItem[] = [
+    {
+      id: 'draft',
+      label: 'Borrador',
+      icon: 'LucideEraser',
+      classes: 'bg-orange-300 dark:bg-orange-500',
+    },
+    {
+      id: 'confirmed',
+      label: 'Confirmado',
+      icon: 'LucideCircleCheckBig',
+      classes: 'bg-green-300 dark:bg-green-700',
+    },
+    {
+      id: 'canceled',
+      label: 'Anulada',
+      icon: 'LucideCircleX',
+      classes: 'bg-red-600 text-white',
+    },
   ];

@@ -11,6 +11,7 @@ export interface EgresoListDTO {
   noDocumento: string;
   noCheque: string;
   monto: number;
+  status:string;
 }
 
 export interface EgresoDTO {
@@ -23,10 +24,11 @@ export interface EgresoDTO {
   partnerId: string;
   descripcion: string;
   noDocumento: string;
-  noCheque:string;
+  noCheque: string;
   monto: number;
   urlDocument: string;
   fileName: string;
   file: File | undefined;
+  status: string;
   concurrencyStamp: string;
 }

@@ -1,7 +1,15 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { PartnerService } from '../service/partner-service';
 import { PartnerDTO } from '../partner.model.dto';
-import { form, disabled, required, maxLength, FormField, FormRoot, minLength } from '@angular/forms/signals';
+import {
+  form,
+  disabled,
+  required,
+  maxLength,
+  FormField,
+  FormRoot,
+  minLength,
+} from '@angular/forms/signals';
 import { firstValueFrom } from 'rxjs';
 import { ApiResponse } from '../../../../../core/model/api-response.model';
 import { ApiService } from '../../../../../core/services/api.service';
@@ -14,10 +22,10 @@ import { ToggleButtonNg } from '../../../../../shared/custom/toggle-button-ng/to
 import { LoadingBlock } from '../../../../../shared/components/loading-block/loading-block';
 import { SelectNg } from '../../../../../shared/custom/select-ng/select-ng';
 import { CountryService } from '../../../../../core/services/country.service';
-import { TextAreaNg } from "../../../../../shared/custom/text-area-ng/text-area-ng";
+import { TextAreaNg } from '../../../../../shared/custom/text-area-ng/text-area-ng';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
 import { MultiSelect } from 'primeng/multiselect';
-import { Message } from "primeng/message";
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'app-partner-form',
@@ -37,8 +45,8 @@ import { Message } from "primeng/message";
     MultiSelect,
     TabPanels,
     TabPanel,
-    Message
-],
+    Message,
+  ],
   templateUrl: './partner-form.html',
   styleUrl: './partner-form.css',
 })
@@ -62,7 +70,7 @@ export class PartnerForm {
     partnerCategoryId: '',
     email: '',
     phone: '',
-    active: false,
+    active: true,
     address: '',
     countryId: '',
     regionId: '',
@@ -83,8 +91,7 @@ export class PartnerForm {
       required(schemaPath.name, { message: 'Nombre requerido' });
       maxLength(schemaPath.name, 100, { message: 'Longitud máxima 100' });
       maxLength(schemaPath.tradeName, 100, { message: 'Longitud máxima 100' });
-      required(schemaPath.partnerTypeId, { message: 'Tipo requerido' });
-      required(schemaPath.partnerCategoryId, { message: 'Categoría requerida' });
+      required(schemaPath.partnerTypeId, { message: 'Tipo requerido' });      
       required(schemaPath.countryId, { message: 'País requerido' });
       required(schemaPath.regionId, { message: 'Región requerida' });
       required(schemaPath.cityId, { message: 'Ciudad requerida' });
@@ -110,7 +117,7 @@ export class PartnerForm {
   );
 
   ngOnInit(): void {
-    if (this.entityId())
+    if (this.entityId()) {
       this.api.get<PartnerDTO>(`${urlPartner}/${this.entityId()}`).subscribe({
         next: async (res) => {
           this.model.set(res);
@@ -122,5 +129,11 @@ export class PartnerForm {
           );
         },
       });
+    }else{
+      this.model().partnerTypeId = this.partnerService.partnerTypes()[0].id
+      //this.model().partnerCategoryId = this.partnerService.partnerCategories()[0].id
+
+      
+    }
   }
 }

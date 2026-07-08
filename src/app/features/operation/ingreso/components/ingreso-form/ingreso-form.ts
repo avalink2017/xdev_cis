@@ -1,6 +1,14 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { IngresoDTO } from '../ingreso.model.dto';
-import { form, required, submit, FormField, disabled, min, maxLength } from '@angular/forms/signals';
+import {
+  form,
+  required,
+  submit,
+  FormField,
+  disabled,
+  min,
+  maxLength,
+} from '@angular/forms/signals';
 import {
   urlCuentaBanco,
   urlIngreso,
@@ -21,11 +29,13 @@ import { SelectNg } from '../../../../../shared/custom/select-ng/select-ng';
 import { InputNumberNg } from '../../../../../shared/custom/input-number-ng/input-number-ng';
 import { TextAreaNg } from '../../../../../shared/custom/text-area-ng/text-area-ng';
 import { SearchAutocomplete } from '../../../../../shared/custom/search-autocomplete/search-autocomplete';
-import { FilePickerNg } from '../../../../../shared/custom/file-picker-ng/file-picker-ng';
 import { Panel } from 'primeng/panel';
 import { PartnerDTO } from '../../../../partner/components/partner/partner.model.dto';
 import { LoadingBlock } from '../../../../../shared/components/loading-block/loading-block';
 import { Ingreso2FormData } from '../../../../../core/functions/Form2FormData';
+import { statusOperation } from '../../../../../core/model/shared.model.dto';
+import { StatusBarNg } from '../../../../../shared/custom/status-bar-ng/status-bar-ng';
+import { DeviceService } from '../../../../../core/services/device.service';
 
 @Component({
   selector: 'app-ingreso-form',
@@ -37,9 +47,10 @@ import { Ingreso2FormData } from '../../../../../core/functions/Form2FormData';
     InputNumberNg,
     TextAreaNg,
     SearchAutocomplete,
-    FilePickerNg,
+    
     Panel,
     LoadingBlock,
+    StatusBarNg,
   ],
   templateUrl: './ingreso-form.html',
   styleUrl: './ingreso-form.css',
@@ -49,6 +60,7 @@ export class IngresoForm implements OnInit {
 
   private nt = inject(NotificationService);
   private api = inject(ApiService);
+  device = inject(DeviceService);
 
   DocFile = signal<File | null>(null);
 
@@ -66,6 +78,7 @@ export class IngresoForm implements OnInit {
     urlDocument: '',
     fileName: '',
     file: undefined,
+    status: 'draft',
     concurrencyStamp: '',
   });
 
@@ -77,19 +90,25 @@ export class IngresoForm implements OnInit {
     required(schemaPath.partnerId, { message: 'Proveedor requerido' });
     required(schemaPath.descripcion, { message: 'Descripción requerida' });
     maxLength(schemaPath.descripcion, 500, { message: 'Longitud máxima 500' });
-    required(schemaPath.noDocumento, { message: 'N°. Documento requerido' });
     maxLength(schemaPath.noDocumento, 50, { message: 'Longitud máxima 50' });
     disabled(schemaPath.numero);
+    disabled(schemaPath, ({ valueOf }) => valueOf(schemaPath.status) !== 'draft');
     min(schemaPath.monto, 0.01, { message: 'El monto debe ser mayor a cero' });
   });
 
   isNew = computed(() => this.form().value().id === 0);
   isFormValid = computed(() => this.form().valid());
+  statusId = computed(() => this.form().value().status);
   cuentasBanco = signal<CuentaBancoListDTO[]>([]);
   tipoDocumento = signal<TipoDocumentoListDTO[]>([]);
   tipoIngreso = signal<TipoIngresoListDTO[]>([]);
 
-  urlSearch = `${urlPartner}/search?rolecode=CU`;
+  selectedTI = computed(() => this.form().value().tipoIngresoId);
+  urlSearch = computed(() =>
+    this.selectedTI() === ''
+      ? `${urlPartner}/search?rolecode=CU`
+      : `${urlPartner}/search?rolecode=CU&tipoingreso=${this.selectedTI()}`,
+  );
   urlEntity = `${urlPartner}/{id}`;
   partnerInfo = signal<PartnerDTO | undefined>(undefined);
   showLoader = signal(false);
@@ -97,6 +116,8 @@ export class IngresoForm implements OnInit {
 
   protected urlDocumentValue = computed(() => this.form().value().urlDocument);
   protected fileNameValue = computed(() => this.form().value().fileName);
+
+  readonly status = statusOperation;
 
   ngOnInit(): void {
     forkJoin({
@@ -108,6 +129,15 @@ export class IngresoForm implements OnInit {
         this.tipoIngreso.set(ti);
         this.tipoDocumento.set(td);
         this.cuentasBanco.set(cb);
+
+        if (!this.inid()) {
+          this.model.update((m) => ({
+            ...m,
+            tipoIngresoId: ti.length > 0 ? ti[0].id : m.tipoIngresoId,
+            cuentaBancoId: cb.length > 0 ? cb[0].id : m.cuentaBancoId,
+            tipoDocumentoFinancieroId: td.length > 0 ? td[0].id : m.tipoDocumentoFinancieroId,
+          }));
+        }
       },
     });
 
@@ -174,6 +204,32 @@ export class IngresoForm implements OnInit {
 
     this.api.downloadFile(`${urlIngreso}/print?id=${this.form().value().id}`).subscribe({
       next: () => this.showLoader.set(false),
+      error: () => this.showLoader.set(false),
+    });
+  }
+
+  confirm() {
+    this.showLoader.set(true);
+    this.textLoader.set('Confirmando...');
+
+    this.api.post<IngresoDTO>(`${urlIngreso}/confirm?id=${this.form().value().id}`, null).subscribe({
+      next: (res) => {
+        this.showLoader.set(false);
+        this.patchModel(res);        
+      },
+      error: () => this.showLoader.set(false),
+    });
+  }
+
+  cancel() {
+    this.showLoader.set(true);
+    this.textLoader.set('Anulando...');
+
+    this.api.post<IngresoDTO>(`${urlIngreso}/cancel?id=${this.form().value().id}`, null).subscribe({
+      next: (res) => {
+        this.showLoader.set(false);
+        this.patchModel(res);
+      },
       error: () => this.showLoader.set(false),
     });
   }
