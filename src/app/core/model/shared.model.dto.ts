@@ -45,7 +45,7 @@ export const severityNG:
     },
     {
       id: 'canceled',
-      label: 'Anulada',
+      label: 'Anulado',
       icon: 'LucideCircleX',
       classes: 'bg-red-600 text-white',
     },

@@ -18,7 +18,6 @@ import {
 } from '../../../../../core/services/endpoint.service';
 import { NotificationService } from '../../../../../core/services/notification.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
-import { ApiResponse } from '../../../../../core/model/api-response.model';
 import { ApiService } from '../../../../../core/services/api.service';
 import { InputNg } from '../../../../../shared/custom/input-ng/input-ng';
 import { CuentaBancoListDTO } from '../../../../configuration/bank-account/components/bank-account.model.dto';
@@ -36,6 +35,7 @@ import { Ingreso2FormData } from '../../../../../core/functions/Form2FormData';
 import { statusOperation } from '../../../../../core/model/shared.model.dto';
 import { StatusBarNg } from '../../../../../shared/custom/status-bar-ng/status-bar-ng';
 import { DeviceService } from '../../../../../core/services/device.service';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-ingreso-form',
@@ -47,7 +47,7 @@ import { DeviceService } from '../../../../../core/services/device.service';
     InputNumberNg,
     TextAreaNg,
     SearchAutocomplete,
-    
+
     Panel,
     LoadingBlock,
     StatusBarNg,
@@ -60,6 +60,7 @@ export class IngresoForm implements OnInit {
 
   private nt = inject(NotificationService);
   private api = inject(ApiService);
+  private _confirm = inject(ConfirmationService);
   device = inject(DeviceService);
 
   DocFile = signal<File | null>(null);
@@ -209,28 +210,72 @@ export class IngresoForm implements OnInit {
   }
 
   confirm() {
-    this.showLoader.set(true);
-    this.textLoader.set('Confirmando...');
-
-    this.api.post<IngresoDTO>(`${urlIngreso}/confirm?id=${this.form().value().id}`, null).subscribe({
-      next: (res) => {
-        this.showLoader.set(false);
-        this.patchModel(res);        
+    this._confirm.confirm({
+      message: `¿Desea confirmar el Ingreso número ${this.form().value().numero ?? ''}?`,
+      header: `Confirmar Ingreso`,
+      closable: true,
+      closeOnEscape: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'contrast',
+        outlined: true,
+        size: 'small',
       },
-      error: () => this.showLoader.set(false),
-    });
+      acceptButtonProps: {
+        label: '¡Si, Confirmar!',
+        size: 'small',
+        styleClass: 'ml-2!',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.showLoader.set(true);
+        this.textLoader.set('Confirmando...');
+
+        this.api
+          .post<IngresoDTO>(`${urlIngreso}/confirm?id=${this.form().value().id}`, null)
+          .subscribe({
+            next: (res) => {
+              this.showLoader.set(false);
+              this.patchModel(res);
+            },
+            error: () => this.showLoader.set(false),
+          });
+      },
+    });    
   }
 
   cancel() {
-    this.showLoader.set(true);
-    this.textLoader.set('Anulando...');
-
-    this.api.post<IngresoDTO>(`${urlIngreso}/cancel?id=${this.form().value().id}`, null).subscribe({
-      next: (res) => {
-        this.showLoader.set(false);
-        this.patchModel(res);
+    this._confirm.confirm({
+      message: `¿Desea Anular el Ingreso número ${this.form().value().numero ?? ''}?`,
+      header: `Anular Ingreso`,
+      closable: true,
+      closeOnEscape: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'contrast',
+        outlined: true,
+        size: 'small',
       },
-      error: () => this.showLoader.set(false),
-    });
+      acceptButtonProps: {
+        label: '¡Si, Anular!',
+        size: 'small',
+        styleClass: 'ml-2!',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.showLoader.set(true);
+        this.textLoader.set('Anulando...');
+
+        this.api
+          .post<IngresoDTO>(`${urlIngreso}/cancel?id=${this.form().value().id}`, null)
+          .subscribe({
+            next: (res) => {
+              this.showLoader.set(false);
+              this.patchModel(res);
+            },
+            error: () => this.showLoader.set(false),
+          });
+      },
+    });        
   }
 }

@@ -4,7 +4,7 @@
   [clickable]="true"
   [(refresh)]="refresh"
   (rowClick)="onRowClick($event)"
-  (onDelete)="onDelete($event)"
+  [allowDelete]="false"
   [showToolBar]="false"
 >
   <app-table-column field="numero" header="Número" />
