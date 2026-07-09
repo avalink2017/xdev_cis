@@ -1,7 +1,8 @@
 export interface TipoIngresoDTO {
   id: string;
   code: string;
-  name: string;  
+  name: string;
+  partnerCategoryId:string;  
   concurrencyStamp: string;
 }
 
