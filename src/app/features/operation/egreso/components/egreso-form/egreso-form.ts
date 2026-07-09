@@ -91,7 +91,7 @@ export class EgresoForm implements OnInit {
     required(schemaPath.partnerId, { message: 'Proveedor requerido' });
     required(schemaPath.descripcion, { message: 'Descripción requerida' });
     maxLength(schemaPath.descripcion, 500, { message: 'Longitud máxima 500' });
-    required(schemaPath.noDocumento, { message: 'N°. Documento requerido' });
+    required(schemaPath.noDocumento, { message: 'N°. Factura requerida' });
     maxLength(schemaPath.noDocumento, 50, { message: 'Longitud máxima 50' });
     required(schemaPath.noCheque, { message: 'N°. Cheque requerido' });
     maxLength(schemaPath.noCheque, 20, { message: 'Longitud máxima 20' });
