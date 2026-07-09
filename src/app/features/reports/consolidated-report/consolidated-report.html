@@ -37,54 +37,88 @@
       </div>
     </div>
   </p-card>
-  <div class="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
-    <div>
-      <p-card>
+  <div class="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2 items-stretch">
+    <div class="flex flex-col">
+      <p-card header="Movimientos">
         @if (data()) {
-            <p-table [value]="data()?.lines!" [scrollable]="true" scrollHeight="400px" rowGroupMode="subheader" groupRowsBy="tipo">
-                <ng-template #header>
-                    <tr>
-                        <th>Concepto</th>
-                        <th class="text-end!">Importe</th>                        
-                    </tr>
-                </ng-template>
-                <ng-template #groupheader let-group>
-                    <tr pRowGroupHeader>
-                        <td colspan="2" class="p-0!">
-                            <div class="bg-surface-100 dark:bg-surface-800 p-3 text-primary-emphasis">
-                                <span>{{group.tipo}}</span>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template #groupfooter let-group>
-                    <tr>
-                        <td colspan="2" class="text-right! font-bold! text-primary-emphasis-alt">
-                            <div>Total Customers: $ {{ calculateSubTotal(group.tipo) | number:'1.2-2' }}</div>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template #body let-line let-rowIndex="rowIndex">
-                    <tr>
-                        <td>
-                            {{ line.concepto }}
-                        </td>                        
-                        <td class="text-end!">
-                            $ {{ line.monto | number:'1.2-2'}}
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
+          <p-table
+            [value]="data()?.lines!"
+            [scrollable]="true"
+            scrollHeight="350px"
+            rowGroupMode="subheader"
+            groupRowsBy="tipo"
+          >
+            <ng-template #caption>
+              <div class="flex gap-3">
+                <div class="flex gap-2">
+                  <span class="text-muted-color">Saldo Inicial:</span>
+                  <span class="text-muted-color-emphasis">$ {{getSaldo(0) | number:'1.2-2'}}</span>
+                </div>
+                <div class="flex gap-2">
+                  <span class="text-muted-color">Saldo Final:</span>
+                  <span class="text-muted-color-emphasis">$ {{getSaldo(3) | number:'1.2-2'}}</span>
+                </div>
+              </div>
+            </ng-template>
+            <ng-template #header>
+              <tr>
+                <th>Concepto</th>
+                <th class="text-end!">Importe</th>
+              </tr>
+            </ng-template>
+            <ng-template #groupheader let-group>
+              <tr pRowGroupHeader>
+                <td colspan="2" class="p-0!">
+                  <div class="bg-surface-100 dark:bg-surface-800 p-3 text-primary-emphasis">
+                    <span>{{ group.tipo }}</span>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template #groupfooter let-group>
+              <tr>
+                <td colspan="2" class="text-right! font-bold! text-primary-emphasis-alt">
+                  <div>Total: $ {{ calculateSubTotal(group.tipo) | number: '1.2-2' }}</div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template #body let-line let-rowIndex="rowIndex">
+              <tr>
+                <td class="text-sm!">
+                  {{ line.concepto }}
+                </td>
+                <td class="text-end! text-sm!">$ {{ line.monto | number: '1.2-2' }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
         } @else {
-          <p-message>Generar Informe</p-message>
+          <div class="flex justify-center">
+            <p-message>Generar Informe</p-message>
+          </div>
         }
       </p-card>
     </div>
-    <div>
-      <p-card>
-        @if (data()) {
+    <div class="flex flex-col">
+      <p-card
+        header="Consolidado"
+        [pt]="{
+          root: { class: 'h-full!' },
+          body: { class: 'h-full!' },
+          content: { class: 'h-full! flex' },
+        }"
+      >
+        @if (chartData()) {
+          <div class="m-auto">
+            <p-chart
+              type="doughnut"
+              [data]="chartData()"
+              [responsive]="true"
+            />
+          </div>
         } @else {
-          <p-message>Generar Informe</p-message>
+          <div class="m-auto">
+            <p-message>Generar Informe</p-message>
+          </div>
         }
       </p-card>
     </div>

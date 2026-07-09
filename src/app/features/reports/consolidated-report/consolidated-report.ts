@@ -1,4 +1,6 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
+import { UIChart } from 'primeng/chart';
 import { ApiService } from '../../../core/services/api.service';
 import { PageLayout } from '../../../shared/components/page-layout/page-layout';
 import { Card } from 'primeng/card';
@@ -14,9 +16,11 @@ import { Message } from "primeng/message";
 import { TableModule } from "primeng/table";
 import { DecimalPipe } from '@angular/common';
 
+Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
+
 @Component({
   selector: 'app-consolidated-report',
-  imports: [PageLayout, Card, Select, FormsModule, InputNumber, Button, LoadingBlock, Message, TableModule, DecimalPipe],
+  imports: [PageLayout, Card, Select, FormsModule, InputNumber, Button, LoadingBlock, Message, TableModule, DecimalPipe, UIChart],
   templateUrl: './consolidated-report.html',
   styleUrl: './consolidated-report.css',
 })
@@ -30,6 +34,19 @@ export class ConsolidatedReport implements OnInit {
   account = signal<string>('');
   cuentas = signal<CuentaBancoListDTO[]>([]);
   data = signal<ConsolidatedReportDTO | undefined>(undefined);
+
+  chartData = computed(() => {
+    const s = this.data()?.summary?.filter(x => x.concepto && !/^saldo/i.test(x.concepto));
+    if (!s || s.length === 0) return null;
+    return {
+      labels: s.map(x => x.concepto),
+      datasets: [{
+        data: s.map(x => x.monto),
+        backgroundColor: ['#22c55e', '#ef4444'],
+        hoverBackgroundColor: ['#16a34a', '#dc2626'],
+      }],
+    };
+  });
 
   ngOnInit(): void {
     this.api.get<CuentaBancoListDTO[]>(`${urlCuentaBanco}/list`).subscribe({
@@ -66,5 +83,9 @@ export class ConsolidatedReport implements OnInit {
     }
 
     return total;
+  }
+
+  getSaldo(idx:number){    
+    return this.data()?.summary?.[idx]?.monto ?? 0;
   }
 }
