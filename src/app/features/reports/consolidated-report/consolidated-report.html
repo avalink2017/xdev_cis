@@ -32,8 +32,9 @@
         <p-inputnumber [(ngModel)]="year" inputId="year" useGrouping="false" fluid />
       </div>
 
-      <div>
+      <div class="flex gap-2">
         <p-button label="Generar" icon="pi pi-check-circle" (onClick)="GenerateReport()" />
+        <p-button label="Imprimir" icon="pi pi-print" (onClick)="PrintReport()" />
       </div>
     </div>
   </p-card>

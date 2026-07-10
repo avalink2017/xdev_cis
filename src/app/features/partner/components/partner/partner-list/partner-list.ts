@@ -10,10 +10,11 @@ import { TableColumn } from "../../../../../shared/components/table/table-column
 import { PartnerService } from '../service/partner-service';
 import { Select } from "primeng/select";
 import { FormsModule } from '@angular/forms';
+import { LoadingBlock } from "../../../../../shared/components/loading-block/loading-block";
 
 @Component({
   selector: 'app-partner-list',
-  imports: [TableView, TableColumn, Select, FormsModule, Drawer],
+  imports: [TableView, TableColumn, Select, FormsModule, Drawer, LoadingBlock],
   templateUrl: './partner-list.html',
   styleUrl: './partner-list.css',
   providers:[PartnerService]
@@ -30,6 +31,7 @@ export class PartnerList {
   actives = Actives;  
   showDrawer = signal(false);
   drawerTitle = signal<string>('Crear Socio');
+  showLoader = signal(false);
 
   url = `${urlPartner}/paged`;  
 
@@ -64,8 +66,13 @@ export class PartnerList {
         severity: 'danger',
       },
       accept: () => {
+        this.showLoader.set(true)
         this.api.delete(`${urlPartner}`, [row.id]).subscribe({
-          next: () => this.refresh.set(true),
+          next: () => {
+            this.refresh.set(true);
+            this.showLoader.set(false);
+          },
+          error: () => this.showLoader.set(false),
         });
       },
     });

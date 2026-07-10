@@ -12,15 +12,27 @@ import { FormsModule } from '@angular/forms';
 import { InputNumber } from 'primeng/inputnumber';
 import { Button } from 'primeng/button';
 import { LoadingBlock } from '../../../shared/components/loading-block/loading-block';
-import { Message } from "primeng/message";
-import { TableModule } from "primeng/table";
+import { Message } from 'primeng/message';
+import { TableModule } from 'primeng/table';
 import { DecimalPipe } from '@angular/common';
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
 @Component({
   selector: 'app-consolidated-report',
-  imports: [PageLayout, Card, Select, FormsModule, InputNumber, Button, LoadingBlock, Message, TableModule, DecimalPipe, UIChart],
+  imports: [
+    PageLayout,
+    Card,
+    Select,
+    FormsModule,
+    InputNumber,
+    Button,
+    LoadingBlock,
+    Message,
+    TableModule,
+    DecimalPipe,
+    UIChart,
+  ],
   templateUrl: './consolidated-report.html',
   styleUrl: './consolidated-report.css',
 })
@@ -36,15 +48,17 @@ export class ConsolidatedReport implements OnInit {
   data = signal<ConsolidatedReportDTO | undefined>(undefined);
 
   chartData = computed(() => {
-    const s = this.data()?.summary?.filter(x => x.concepto && !/^saldo/i.test(x.concepto));
+    const s = this.data()?.summary?.filter((x) => x.concepto && !/^saldo/i.test(x.concepto));
     if (!s || s.length === 0) return null;
     return {
-      labels: s.map(x => x.concepto),
-      datasets: [{
-        data: s.map(x => x.monto),
-        backgroundColor: ['#22c55e', '#ef4444'],
-        hoverBackgroundColor: ['#16a34a', '#dc2626'],
-      }],
+      labels: s.map((x) => x.concepto),
+      datasets: [
+        {
+          data: s.map((x) => x.monto),
+          backgroundColor: ['#22c55e', '#ef4444'],
+          hoverBackgroundColor: ['#16a34a', '#dc2626'],
+        },
+      ],
     };
   });
 
@@ -68,24 +82,39 @@ export class ConsolidatedReport implements OnInit {
           this.data.set(res);
           this.showLoader.set(false);
         },
-        error:() => this.showLoader.set(false)
+        error: () => this.showLoader.set(false),
       });
   }
 
-  calculateSubTotal(tipo:string){
+  PrintReport() {
+    this.showLoader.set(true);
+    this.api
+      .getFile(
+        `${urlReports}/consolidado/pdf?accountid=${this.account()}&month=${this.month()}&year=${this.year()}`,
+      )
+      .subscribe({
+        next: ({ blob }) => {
+          const pdfUrl = URL.createObjectURL(blob);
+          window.open(pdfUrl, '_blank');
+          this.showLoader.set(false);
+        },
+        error: () => this.showLoader.set(false),
+      });
+  }
+
+  calculateSubTotal(tipo: string) {
     let total = 0;
 
-    if(this.data() && this.data()?.lines){
-      for(let line of this.data()?.lines!){
-        if(line.tipo === tipo)
-          total += line.monto;
+    if (this.data() && this.data()?.lines) {
+      for (let line of this.data()?.lines!) {
+        if (line.tipo === tipo) total += line.monto;
       }
     }
 
     return total;
   }
 
-  getSaldo(idx:number){    
+  getSaldo(idx: number) {
     return this.data()?.summary?.[idx]?.monto ?? 0;
   }
 }
