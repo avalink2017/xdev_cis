@@ -11,10 +11,11 @@ import { LoadingBlock } from "../../../../../shared/components/loading-block/loa
 import { firstValueFrom } from 'rxjs';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { NotificationService } from '../../../../../core/services/notification.service';
+import { ToggleButtonNg } from '../../../../../shared/custom/toggle-button-ng/toggle-button-ng';
 
 @Component({
   selector: 'app-asset-status-form',
-  imports: [FormField, InputNg, Button, Icon, LoadingBlock],
+  imports: [FormField, InputNg, Button, Icon, LoadingBlock, ToggleButtonNg],
   templateUrl: './asset-status-form.html',
   styleUrl: './asset-status-form.css',
 })
@@ -27,6 +28,7 @@ export class AssetStatusForm implements OnInit {
   private model = signal<AssetStatusDTO>({
     id: '',
     name: '',
+    disposed:false,
     concurrencyStamp: '',
   });
 

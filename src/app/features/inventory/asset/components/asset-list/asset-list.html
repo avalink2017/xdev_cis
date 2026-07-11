@@ -31,6 +31,24 @@
   <app-table-column field="serialNumber" header="Serial" />
   <app-table-column field="model" header="Modelo" />
 
+  <app-table-column field="assetCategoryName" header="Categoría" filterField="assetCategoryId">
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-select
+        [options]="assetService.categoryList()"
+        optionLabel="name"
+        optionValue="id"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        size="small"
+        class="border-0! bg-transparent! shadow-none!"
+        placeholder="Seleccionar"
+        [showClear]="true"
+        appendTo="body"
+        fluid
+      />
+    </ng-template>
+  </app-table-column>
+
   <app-table-column field="assetStatusName" header="Estatus" filterField="assetStatusId">
     <ng-template #filter let-col let-value="value" let-filterFn="filter">
       <p-select
@@ -56,27 +74,45 @@
         />
       </div>
     </ng-template>
-  </app-table-column>
+  </app-table-column>  
 
-  <app-table-column field="assetCategoryName" header="Categoría" filterField="assetCategoryId">
+  <app-table-column field="fechaDescargo" header="Fecha Descargo" type="date">
     <ng-template #filter let-col let-value="value" let-filterFn="filter">
-      <p-select
-        [options]="assetService.categoryList()"
-        optionLabel="name"
-        optionValue="id"
+      <p-datepicker
+        dateFormat="dd/mm/yy"
         [ngModel]="value"
         (ngModelChange)="filterFn($event)"
-        size="small"
-        class="border-0! bg-transparent! shadow-none!"
-        placeholder="Seleccionar"
-        [showClear]="true"
         appendTo="body"
+        [showClear]="true"
+        placeholder="Seleccionar"
+        size="small"
+        inputStyleClass="border-0! bg-transparent! shadow-none!"
+        [iconDisplay]="'input'"
+        [showIcon]="true"
         fluid
       />
     </ng-template>
   </app-table-column>
 
   <app-table-column field="purchaseDate" header="Fecha Compra" type="date">
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-datepicker
+        dateFormat="dd/mm/yy"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        appendTo="body"
+        [showClear]="true"
+        placeholder="Seleccionar"
+        size="small"
+        inputStyleClass="border-0! bg-transparent! shadow-none!"
+        [iconDisplay]="'input'"
+        [showIcon]="true"
+        fluid
+      />
+    </ng-template>
+  </app-table-column>
+
+  <app-table-column field="lastUpdatedAt" header="Modificado en" type="datetime">
     <ng-template #filter let-col let-value="value" let-filterFn="filter">
       <p-datepicker
         dateFormat="dd/mm/yy"

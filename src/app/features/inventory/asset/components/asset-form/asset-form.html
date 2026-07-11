@@ -40,15 +40,15 @@
       optionLabel="name"
       optionValue="id"
       class="col-span-full"
-    />
+    />    
 
-    <app-date-picker-ng [formField]="form.purchaseDate" label="fecha de compra"/>
     <app-select-ng
       [formField]="form.assetStatusId"
       label="Estado"
       [options]="assetService.statusList()"
       optionLabel="name"
       optionValue="id"
+      (selectChange)="selectedStatus.set($event)"
     />
     <app-select-ng
       [formField]="form.assetCategoryId"
@@ -63,9 +63,19 @@
       [options]="assetService.locationList()"
       optionLabel="name"
       optionValue="id"
+      
     />
 
-    <app-toggle-button-ng [formField]="form.active" onLabel="Activo" offLabel="Inactivo" />
+    <app-date-picker-ng [formField]="form.purchaseDate" label="Fecha de compra"/>
+    @if(selectedStatus() && selectedStatus()?.disposed){
+      <app-date-picker-ng [formField]="form.fechaDescargo" label="Fecha de baja" [showTime]="true"/>
+    }
+    
+    @if(!isNew()){
+      <app-date-picker-ng [formField]="form.lastUpdatedAt" label="Modificado en" [showTime]="true" />
+    }
+    
+    <app-toggle-button-ng [formField]="form.active" onLabel="Activo" offLabel="Inactivo" class="col-span-full" />
   </div>
 </form>
 

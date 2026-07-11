@@ -7,11 +7,13 @@ export interface AssetListDTO {
   serialNumber: string;
   model: string;
   purchaseDate: Date;
+  fechaDescargo: Date;
+  lastUpdatedAt:Date;
   assetStatusId: string;
   assetStatusName: string;
   assetCategoryId: string;
   assetCategoryName: string;
-  active:boolean;
+  active: boolean;
 }
 
 export interface AssetDTO {
@@ -26,10 +28,12 @@ export interface AssetDTO {
   supplierId: string;
   invoiceNumber: string;
   purchaseDate: Date;
+  fechaDescargo: Date;
+  lastUpdatedAt: Date;
   assetStatusId: string;
   assetCategoryId: string;
-  assetLocationId:string;
-  active:boolean;
-  notes:string;
+  assetLocationId: string;
+  active: boolean;
+  notes: string;
   concurrencyStamp: string;
 }

@@ -22,6 +22,7 @@ import { SearchAutocomplete } from '../../../../../shared/custom/search-autocomp
 import { DatePickerNg } from '../../../../../shared/custom/date-picker-ng/date-picker-ng';
 import { ToggleButtonNg } from '../../../../../shared/custom/toggle-button-ng/toggle-button-ng';
 import { LoadingBlock } from '../../../../../shared/components/loading-block/loading-block';
+import { AssetStatusListDTO } from '../../../../configuration/asset-status/components/asset-status.model.dto';
 
 @Component({
   selector: 'app-asset-form',
@@ -51,6 +52,7 @@ export class AssetForm implements OnInit {
   urlEntity = `${urlPartner}/{id}`;
   textLoading = signal<string>('');
   isLoading = signal(false);
+  selectedStatus = signal<AssetStatusListDTO | undefined>(undefined);
 
   private model = signal<AssetDTO>({
     id: '',
@@ -64,6 +66,8 @@ export class AssetForm implements OnInit {
     price: 0,
     supplierId: '',
     purchaseDate: new Date(),
+    fechaDescargo: new Date(),
+    lastUpdatedAt: new Date(),
     assetStatusId: '',
     assetCategoryId: '',
     assetLocationId: '',
@@ -87,6 +91,8 @@ export class AssetForm implements OnInit {
     required(schemaPath.assetCategoryId, { message: 'Categoría requerida' });
     required(schemaPath.assetLocationId, { message: 'Ubicación requerida' });
     required(schemaPath.assetStatusId, { message: 'Estado requerido' });
+    disabled(schemaPath.fechaDescargo);
+    disabled(schemaPath.lastUpdatedAt);
   });
 
   formValid = computed(() => this.form().valid());
@@ -94,15 +100,21 @@ export class AssetForm implements OnInit {
 
   ngOnInit(): void {
     if (this.entityId()) {
-      this.textLoading.set('Recuperando...')
+      this.textLoading.set('Recuperando...');
       this.isLoading.set(true);
       this.api.get<AssetDTO>(`${urlAsset}/${this.entityId()}`).subscribe({
         next: (res) => {
-          res.purchaseDate = new Date(res.purchaseDate)
+          res.purchaseDate = new Date(res.purchaseDate);
+          res.lastUpdatedAt = new Date(res.lastUpdatedAt);
+          res.fechaDescargo = new Date(res.fechaDescargo);
           this.model.set(res);
           this.isLoading.set(false);
+          
+          var st = this.assetService.statusList().find(f => f.id === res.assetStatusId)
+          if(st)
+            this.selectedStatus.set(st)
         },
-        error:() => this.isLoading.set(false)
+        error: () => this.isLoading.set(false),
       });
     }
   }
