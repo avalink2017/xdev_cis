@@ -66,8 +66,8 @@ export class AssetForm implements OnInit {
     price: 0,
     supplierId: '',
     purchaseDate: new Date(),
-    fechaDescargo: new Date(),
-    lastUpdatedAt: new Date(),
+    fechaDescargo: null,
+    lastUpdatedAt: null,
     assetStatusId: '',
     assetCategoryId: '',
     assetLocationId: '',
@@ -104,9 +104,10 @@ export class AssetForm implements OnInit {
       this.isLoading.set(true);
       this.api.get<AssetDTO>(`${urlAsset}/${this.entityId()}`).subscribe({
         next: (res) => {
+          console.log(res)
           res.purchaseDate = new Date(res.purchaseDate);
-          res.lastUpdatedAt = new Date(res.lastUpdatedAt);
-          res.fechaDescargo = new Date(res.fechaDescargo);
+          if (res.lastUpdatedAt) res.lastUpdatedAt = new Date(res.lastUpdatedAt);
+          if (res.fechaDescargo) res.fechaDescargo = new Date(res.fechaDescargo);
           this.model.set(res);
           this.isLoading.set(false);
           

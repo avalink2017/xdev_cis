@@ -77,6 +77,11 @@ export class SideNavbar {
           icon: 'LucideBook',
           routerLink: '/app/report/consolidated',
         },
+        {
+          label: 'Libro Banco',
+          icon: 'LucideBook',
+          routerLink: '/app/report/bankingbook',
+        },
       ],
     },
     {

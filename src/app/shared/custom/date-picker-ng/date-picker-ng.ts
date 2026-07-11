@@ -39,9 +39,9 @@ import { Message } from "primeng/message";
   </div>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DatePickerNg implements FormValueControl<Date> {
+export class DatePickerNg implements FormValueControl<Date|null> {
   // Required
-  value = model<Date>(new Date());
+  value = model<Date|null>(null);
 
   // Writable interaction state - control updates these
   touched = model<boolean>(false);

@@ -1,0 +1,113 @@
+<app-page-layout title="Informe" subtitle="Libro Banco" iconName="LucideBook">
+  <p-card>
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+      <div class="flex flex-col gap-2 col-span-full sm:col-span-1">
+        <label for="accountid">Cuenta de Banco</label>
+        <p-select
+          [options]="cuentas()"
+          optionLabel="fullName"
+          optionValue="id"
+          [(ngModel)]="account"
+          inputId="accountid"
+          appendTo="body"
+          fluid
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="month">Período</label>
+        <p-select
+          [options]="months"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="month"
+          inputId="month"
+          appendTo="body"
+          fluid
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="year">Año</label>
+        <p-inputnumber [(ngModel)]="year" inputId="year" useGrouping="false" fluid />
+      </div>
+
+      <div class="flex gap-2">
+        <p-button label="Generar" icon="pi pi-check-circle" (onClick)="GenerateReport()" />
+        <p-button label="Imprimir" icon="pi pi-print" (onClick)="PrintReport()" />
+      </div>
+    </div>
+  </p-card>
+  <div class="mt-5">
+    <p-card header="Movimientos">
+      @if (data()) {
+        <p-table [value]="data()?.lines!" showGridlines>
+          <ng-template #caption>
+            <div class="flex gap-3">
+              <div class="flex gap-2">
+                <span class="text-muted-color">Saldo Inicial:</span>
+                <span class="text-muted-color-emphasis"
+                  >$ {{ data()?.saldoInical | number: '1.2-2' }}</span
+                >
+              </div>
+              <div class="flex gap-2">
+                <span class="text-muted-color">Saldo Final:</span>
+                <span class="text-muted-color-emphasis"
+                  >$ {{ data()?.saldoFinal | number: '1.2-2' }}</span
+                >
+              </div>
+            </div>
+          </ng-template>
+          <ng-template #header>
+            <tr>
+              <th>Fecha</th>
+              <th>Transacción</th>
+              <th>Concepto</th>
+              <th>N° Folio/Factura</th>
+              <th>N° Cheque</th>
+              <th class="text-right!">Débito</th>
+              <th class="text-right!">Crédito</th>
+              <th class="text-right!">Saldo</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-line let-rowIndex="rowIndex">
+            <tr>
+              <td class="text-sm!">
+                {{ line.fecha | date: 'dd/MM/yyyy HH:mm' }}
+              </td>
+              <td class="text-sm!">
+                <button
+                  [routerLink]="`/app/operation/${line.tipo.toLowerCase()}/edit/${line.id}`"
+                  class="cursor-pointer text-primary"
+                >
+                  {{ line.transaction }}
+                </button>
+              </td>
+              <td class="text-sm!">{{ line.concepto }}</td>
+              <td class="text-sm!">{{ line.reference }}</td>
+              <td class="text-sm!">{{ line.noCheque }}</td>
+              <td class="text-sm! text-right!">{{ line.debito | number: '1.2-2' }}</td>
+              <td class="text-sm! text-right!">{{ line.credito | number: '1.2-2' }}</td>
+              <td class="text-sm! text-right!">$ {{ line.saldo | number: '1.2-2' }}</td>
+            </tr>
+          </ng-template>
+          <ng-template #footer>
+            <tr>
+              <td colspan="7" class="text-right! font-bold! text-primary-emphasis-alt">
+                <div>Saldo Final</div>
+              </td>
+              <td class="text-right! font-bold! text-primary-emphasis-alt">
+                <div>$ {{ data()?.saldoFinal | number: '1.2-2' }}</div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      } @else {
+        <div class="flex justify-center">
+          <p-message>Generar Informe</p-message>
+        </div>
+      }
+    </p-card>
+  </div>
+</app-page-layout>
+<app-loading-block [visible]="showLoader()" />

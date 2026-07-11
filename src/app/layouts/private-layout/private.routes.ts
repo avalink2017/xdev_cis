@@ -159,7 +159,16 @@ export const PRIVATE_ROUTES: Routes = [
       {
         path: 'report/consolidated',
         loadComponent: () =>
-          import('../../features/reports/consolidated-report/consolidated-report').then((m) => m.ConsolidatedReport),
+          import('../../features/reports/consolidated-report/consolidated-report').then(
+            (m) => m.ConsolidatedReport,
+          ),
+      },
+      {
+        path: 'report/bankingbook',
+        loadComponent: () =>
+          import('../../features/reports/bankingbook-report/bankingbook-report').then(
+            (m) => m.BankingbookReport,
+          ),
       },
     ],
   },

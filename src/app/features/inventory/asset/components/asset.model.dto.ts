@@ -28,8 +28,8 @@ export interface AssetDTO {
   supplierId: string;
   invoiceNumber: string;
   purchaseDate: Date;
-  fechaDescargo: Date;
-  lastUpdatedAt: Date;
+  fechaDescargo: Date|null;
+  lastUpdatedAt: Date|null;
   assetStatusId: string;
   assetCategoryId: string;
   assetLocationId: string;
