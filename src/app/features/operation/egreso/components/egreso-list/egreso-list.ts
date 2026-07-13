@@ -13,10 +13,12 @@ import { TableColumn } from "../../../../../shared/components/table/table-column
 import { DatePicker } from "primeng/datepicker";
 import { Select } from "primeng/select";
 import { FormsModule } from '@angular/forms';
+import { Tag } from "primeng/tag";
+import { severityNG, statusOperation } from '../../../../../core/model/shared.model.dto';
 
 @Component({
   selector: 'app-egreso-list',
-  imports: [TableView, TableColumn, DatePicker, Select, FormsModule],
+  imports: [TableView, TableColumn, DatePicker, Select, FormsModule, Tag],
   templateUrl: './egreso-list.html',
   styleUrl: './egreso-list.css',
 })
@@ -31,6 +33,8 @@ export class EgresoList implements OnInit {
   cuentasBanco = signal<CuentaBancoListDTO[]>([]);
   tipoDocumento = signal<TipoDocumentoListDTO[]>([]);
   tipoEgreso = signal<TipoEgresoListDTO[]>([]);
+
+  status = statusOperation;
 
   ngOnInit(): void {
     forkJoin({
@@ -78,5 +82,26 @@ export class EgresoList implements OnInit {
         });
       },
     });
+  }
+
+  resolveTagValue(val:string){
+    const rec = this.status.find(f => f.id === val)
+    if(rec)
+    return rec.label
+
+    return '';
+  }
+
+  resolveStatusSeverity(val: string): typeof severityNG {
+    switch (val) {
+      case 'draft':
+        return 'warn';
+      case 'confirmed':
+        return 'success';
+      case 'canceled':
+        return 'danger';
+      default:
+        return 'secondary';
+    }
   }
 }

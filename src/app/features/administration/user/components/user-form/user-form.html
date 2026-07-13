@@ -4,16 +4,14 @@
       label="Correo electrónico"
       [formField]="form.email"
       [autoFocus]="isNew()"
-      class="col-span-full"
-      tabIndex="1"
+      class="col-span-full"      
     />
 
     <app-input-ng
       label="Nombre"
       [formField]="form.name"
       [autoFocus]="!isNew()"
-      class="col-span-full"
-      tabIndex="2"
+      class="col-span-full"      
     />
 
     @if (isNew()) {

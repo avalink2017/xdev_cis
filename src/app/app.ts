@@ -7,11 +7,11 @@ import { Button } from "primeng/button";
 import { Icon } from "./shared/components/icon/icon";
 import { ThemeService } from './core/services/theme.service';
 import { Toast } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ProgressSpinner, Button, Icon, Toast, ConfirmDialogModule],
+  imports: [RouterOutlet, ProgressSpinner, Button, Icon, Toast, ConfirmDialog],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

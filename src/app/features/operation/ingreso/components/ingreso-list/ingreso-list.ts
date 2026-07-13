@@ -13,10 +13,12 @@ import { TipoIngresoListDTO } from '../../../../configuration/tipo-ingreso/compo
 import { forkJoin } from 'rxjs';
 import { Select } from 'primeng/select';
 import { Router } from '@angular/router';
+import { Tag } from "primeng/tag";
+import { severityNG, statusOperation } from '../../../../../core/model/shared.model.dto';
 
 @Component({
   selector: 'app-ingreso-list',
-  imports: [TableView, TableColumn, DatePicker, FormsModule, Select],
+  imports: [TableView, TableColumn, DatePicker, FormsModule, Select, Tag],
   templateUrl: './ingreso-list.html',
   styleUrl: './ingreso-list.css',
 })
@@ -31,6 +33,8 @@ export class IngresoList implements OnInit {
   cuentasBanco = signal<CuentaBancoListDTO[]>([])
   tipoDocumento = signal<TipoDocumentoListDTO[]>([])
   tipoIngreso = signal<TipoIngresoListDTO[]>([])
+
+  status = statusOperation;
 
   ngOnInit(): void {
     forkJoin({
@@ -77,4 +81,25 @@ export class IngresoList implements OnInit {
       },
     });
   }  
+
+  resolveTagValue(val:string){
+      const rec = this.status.find(f => f.id === val)
+      if(rec)
+      return rec.label
+  
+      return '';
+    }
+  
+    resolveStatusSeverity(val: string): typeof severityNG {
+      switch (val) {
+        case 'draft':
+          return 'warn';
+        case 'confirmed':
+          return 'success';
+        case 'canceled':
+          return 'danger';
+        default:
+          return 'secondary';
+      }
+    }
 }

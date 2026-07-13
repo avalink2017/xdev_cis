@@ -26,7 +26,7 @@ export class SideNavbar {
   private auth = inject(AuthService);
   device = inject(DeviceService);
 
-  openGroups = signal<string[]>(['INICIO','OPERACIONES','CATÁLOGOS']);
+  openGroups = signal<string[]>(['INICIO', 'OPERACIONES', 'INFORMES', 'INVENTARIO']);
 
   groups: MenuGroup[] = [
     {
@@ -50,8 +50,37 @@ export class SideNavbar {
         {
           label: 'Egreso',
           icon: 'LucideBanknoteArrowDown',
-
           routerLink: '/app/operation/egreso',
+        },
+        {
+          label: 'Períodos',
+          icon: 'LucideCalendarCog',
+          routerLink: '/app/operation/periodo',
+        },
+      ],
+    },
+    {
+      label: 'INVENTARIO',
+      items: [
+        {
+          label: 'Activo Fijo',
+          icon: 'LucideBox',
+          routerLink: '/app/inventory/asset',
+        },
+      ],
+    },
+    {
+      label: 'INFORMES',
+      items: [
+        {
+          label: 'Consolidado',
+          icon: 'LucideBook',
+          routerLink: '/app/report/consolidated',
+        },
+        {
+          label: 'Libro Banco',
+          icon: 'LucideBook',
+          routerLink: '/app/report/bankingbook',
         },
       ],
     },
@@ -82,6 +111,26 @@ export class SideNavbar {
           label: 'Cuentas Bancarias',
           icon: 'LucideWalletMinimal',
           routerLink: '/app/config/cuentas-banco',
+        },
+        {
+          label: 'Categoría Activo',
+          icon: 'LucideFolderTree',
+          routerLink: '/app/config/asset-category',
+        },
+        {
+          label: 'Ubicación Activo',
+          icon: 'LucideMapPin',
+          routerLink: '/app/config/asset-location',
+        },
+        {
+          label: 'Estado Activo',
+          icon: 'LucideBadgeCheck',
+          routerLink: '/app/config/asset-status',
+        },
+        {
+          label: 'Marca',
+          icon: 'LucideTag',
+          routerLink: '/app/config/brand',
         },
       ],
     },

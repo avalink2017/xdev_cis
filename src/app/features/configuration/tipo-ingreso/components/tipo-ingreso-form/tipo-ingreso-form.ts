@@ -6,15 +6,17 @@ import { Button } from 'primeng/button';
 import { Icon } from '../../../../../shared/components/icon/icon';
 import { ApiService } from '../../../../../core/services/api.service';
 import { ApiResponse } from '../../../../../core/model/api-response.model';
-import { urlTpoIngreso } from '../../../../../core/services/endpoint.service';
-import { LoadingBlock } from "../../../../../shared/components/loading-block/loading-block";
+import { urlPartnerCategory, urlTpoIngreso } from '../../../../../core/services/endpoint.service';
+import { LoadingBlock } from '../../../../../shared/components/loading-block/loading-block';
 import { firstValueFrom } from 'rxjs';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { NotificationService } from '../../../../../core/services/notification.service';
+import { PartnerCategoryListDTO } from '../../../../partner/components/partner-category/partner.category.model.dto';
+import { SelectNg } from "../../../../../shared/custom/select-ng/select-ng";
 
 @Component({
   selector: 'app-tipo-ingreso-form',
-  imports: [FormField, InputNg, Button, Icon, LoadingBlock],
+  imports: [FormField, InputNg, Button, Icon, LoadingBlock, SelectNg],
   templateUrl: './tipo-ingreso-form.html',
   styleUrl: './tipo-ingreso-form.css',
 })
@@ -23,29 +25,37 @@ export class TipoIngresoForm implements OnInit {
   private ref = inject(DynamicDialogRef);
   private nt = inject(NotificationService);
   private config = inject(DynamicDialogConfig);
-  private isNew = signal(true)
+  private isNew = signal(true);
   private tipoIngresoModel = signal<TipoIngresoDTO>({
     id: '',
     code: '',
     name: '',
+    partnerCategoryId: '',
     concurrencyStamp: '',
   });
 
   form = form<TipoIngresoDTO>(this.tipoIngresoModel, (schemaPath) => {
     disabled(schemaPath.code, ({ valueOf }) => valueOf(schemaPath.id) !== '');
     required(schemaPath.code, { message: 'Código requerido' });
-    maxLength(schemaPath.code, 7, { message: 'Longitud máxima 7' });
+    maxLength(schemaPath.code, 4, { message: 'Longitud máxima 4' });
     required(schemaPath.name, { message: 'Nombre requerido' });
+    required(schemaPath.partnerCategoryId, { message: 'Categoría socio requerida' });
     maxLength(schemaPath.name, 100, { message: 'Longitud máxima 100' });
   });
 
+  categories = signal<PartnerCategoryListDTO[]>([]);
+
   ngOnInit(): void {
+    this.api
+      .get<PartnerCategoryListDTO[]>(`${urlPartnerCategory}/list`)
+      .subscribe({ next: (res) => this.categories.set(res) });
+
     const entityId = this.config.data?.entityId;
     if (entityId)
       this.api.get<TipoIngresoDTO>(`${urlTpoIngreso}/${entityId}`).subscribe({
         next: (res) => {
           this.tipoIngresoModel.set(res);
-          this.isNew.set(false)
+          this.isNew.set(false);
         },
       });
   }

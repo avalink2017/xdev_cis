@@ -1,7 +1,17 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Chart, registerables } from 'chart.js';
+import {
+  Chart,
+  BarController,
+  DoughnutController,
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import { Select } from 'primeng/select';
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
@@ -12,7 +22,7 @@ import { Icon } from '../../../shared/components/icon/icon';
 import { DashboardService } from './dashboard.service';
 import { DashboardKPI } from './dashboard.model.dto';
 
-Chart.register(...registerables);
+Chart.register(BarController, DoughnutController, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const INGRESO_COLORS = ['#16a34a', '#22c55e', '#4ade80', '#86efac', '#bbf7d0', '#10b981'];
 const EGRESO_COLORS = ['#dc2626', '#ef4444', '#f87171', '#fca5a5', '#fecaca', '#e11d48'];

@@ -3,17 +3,18 @@ import { urlPartner } from '../../../../../core/services/endpoint.service';
 import { PartnerDTO, PartnerListDTO } from '../partner.model.dto';
 import { ConfirmationService } from 'primeng/api';
 import { Drawer } from 'primeng/drawer';
-import { Actives } from '../../../../../core/model/shared,model.dto';
+import { Actives } from '../../../../../core/model/shared.model.dto';
 import { ApiService } from '../../../../../core/services/api.service';
 import { rowData, TableView } from '../../../../../shared/components/table/table-view/table-view';
 import { TableColumn } from "../../../../../shared/components/table/table-column/table-column";
 import { PartnerService } from '../service/partner-service';
 import { Select } from "primeng/select";
 import { FormsModule } from '@angular/forms';
+import { LoadingBlock } from "../../../../../shared/components/loading-block/loading-block";
 
 @Component({
   selector: 'app-partner-list',
-  imports: [TableView, TableColumn, Select, FormsModule, Drawer],
+  imports: [TableView, TableColumn, Select, FormsModule, Drawer, LoadingBlock],
   templateUrl: './partner-list.html',
   styleUrl: './partner-list.css',
   providers:[PartnerService]
@@ -30,6 +31,7 @@ export class PartnerList {
   actives = Actives;  
   showDrawer = signal(false);
   drawerTitle = signal<string>('Crear Socio');
+  showLoader = signal(false);
 
   url = `${urlPartner}/paged`;  
 
@@ -64,8 +66,13 @@ export class PartnerList {
         severity: 'danger',
       },
       accept: () => {
+        this.showLoader.set(true)
         this.api.delete(`${urlPartner}`, [row.id]).subscribe({
-          next: () => this.refresh.set(true),
+          next: () => {
+            this.refresh.set(true);
+            this.showLoader.set(false);
+          },
+          error: () => this.showLoader.set(false),
         });
       },
     });

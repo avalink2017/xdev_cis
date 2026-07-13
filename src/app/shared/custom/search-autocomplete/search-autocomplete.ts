@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnInit,
   ViewChild,
   contentChild,
   effect,
@@ -65,7 +64,7 @@ import { NgTemplateOutlet } from '@angular/common';
   </div>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchAutocomplete implements FormValueControl<string>, OnInit {
+export class SearchAutocomplete implements FormValueControl<string> {
   // Required — stores only the ID (primitive) for the form model
   value = model<string>('');
 
@@ -121,10 +120,11 @@ export class SearchAutocomplete implements FormValueControl<string>, OnInit {
         this.selectedObject = null;
       }
     });
-  }
 
-  ngOnInit(): void {
-    if (this.urlList()) this.getList('');
+    effect(() => {
+      const url = this.urlList();
+      if (url) this.getList('');
+    });
   }
 
   filterItems(event: AutoCompleteCompleteEvent): void {

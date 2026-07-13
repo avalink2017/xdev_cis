@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { form, FormField, required, submit } from '@angular/forms/signals';
-import { InputNg } from '../../shared/custom/input-ng/input-ng';
+import { AutoFocusModule } from 'primeng/autofocus';
 import { AuthService } from '../../core/services/auth.service';
 import { firstValueFrom } from 'rxjs';
 import { Button } from 'primeng/button';
@@ -13,7 +13,7 @@ import { Message } from "primeng/message";
 
 @Component({
   selector: 'app-login',
-  imports: [FormField, Button, Icon, InputIcon, IconField, InputText, Message],
+  imports: [FormField, Button, Icon, InputIcon, IconField, InputText, Message,AutoFocusModule],
   template: `
     <div class="relative flex flex-col items-center justify-center px-4 py-12">
       <!-- <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
@@ -51,9 +51,8 @@ import { Message } from "primeng/message";
                       pInputText
                       id="email"
                       [formField]="loginForm.email"
-                      fluid
-                      tabindex="1"
-                      autofocus
+                      fluid                      
+                      [pAutoFocus]="true"
                     />
                   </p-iconfield>
                   @if (loginForm.email().touched() && loginForm.email().invalid()) {
@@ -76,8 +75,7 @@ import { Message } from "primeng/message";
                       pInputText
                       id="password"
                       [formField]="loginForm.password"
-                      fluid
-                      tabindex="2"
+                      fluid                      
                     />
                   </p-iconfield>
                   @if (loginForm.password().touched() && loginForm.password().invalid()) {

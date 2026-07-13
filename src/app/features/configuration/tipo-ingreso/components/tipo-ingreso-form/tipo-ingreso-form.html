@@ -1,7 +1,15 @@
 <form novalidate>
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-    <app-input-ng label="Código" [formField]="form.code" [autoFocus]="true" />    
+    <app-input-ng label="Código" [formField]="form.code" [autoFocus]="true" />
     <app-input-ng label="Nombre" [formField]="form.name" class="col-span-full" />
+    <app-select-ng
+      [options]="categories()"
+      optionLabel="name"
+      optionValue="id"
+      label="Cateoría Socio"
+      [formField]="form.partnerCategoryId"
+      class="col-span-full"
+    />
   </div>
   <div class="mt-5 flex gap-3 justify-end">
     <p-button label="Guardar" [disabled]="form().submitting()" (onClick)="onSubmit()">

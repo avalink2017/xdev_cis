@@ -18,7 +18,7 @@ export class EndpointService {
   }
 }
 
-export const urlAccount = 'account'
+export const urlAccount = 'account';
 export const urlBank = 'banco';
 export const urlTpoIngreso = 'tipoingreso';
 export const urlTpoEgreso = 'tipoegreso';
@@ -35,4 +35,11 @@ export const urlDistrict = 'district';
 export const urlIngreso = 'ingreso';
 export const urlEgreso = 'egreso';
 export const urlUser = 'user';
-export const urlRole = 'role'
+export const urlRole = 'role';
+export const urlAssetCategory = 'assetcategory';
+export const urlAssetLocation = 'assetlocation';
+export const urlAssetStatus = 'assetstatus';
+export const urlBrand = 'brand';
+export const urlAsset = 'asset';
+export const urlCierreMes = 'cierremes'
+export const urlReports = 'reports'

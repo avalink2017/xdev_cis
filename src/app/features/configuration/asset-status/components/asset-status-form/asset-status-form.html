@@ -1,0 +1,16 @@
+<form novalidate>
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <app-input-ng label="Nombre" [formField]="form.name" [autoFocus]="true" class="col-span-full" />
+    <app-toggle-button-ng [formField]="form.disposed" onLabel="Descargado" offLabel="Normal" />
+  </div>
+  <div class="mt-5 flex gap-3 justify-end">
+    <p-button label="Guardar" [disabled]="form().submitting()" (onClick)="onSubmit()">
+      <app-icon name="LucideCloud" />
+    </p-button>
+
+    <p-button label="Cancelar" severity="secondary" (onClick)="formClose(false)">
+      <app-icon name="LucideX" />
+    </p-button>
+  </div>
+</form>
+<app-loading-block [visible]="form().submitting()" message="Guardando..." />

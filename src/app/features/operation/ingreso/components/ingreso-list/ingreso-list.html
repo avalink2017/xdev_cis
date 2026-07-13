@@ -4,7 +4,7 @@
   [clickable]="true"
   [(refresh)]="refresh"
   (rowClick)="onRowClick($event)"
-  (onDelete)="onDelete($event)"
+  [allowDelete]="false"
   [showToolBar]="false"
 >
   <app-table-column field="numero" header="Número" />
@@ -64,7 +64,7 @@
     </ng-template>
   </app-table-column>
 
-  <app-table-column field="noDocumento" header="Número Documento" />
+  <app-table-column field="noDocumento" header="Número Folio" />
   <app-table-column field="monto" header="Importe" type="float"/>
 
   <app-table-column field="tipoIngresoName" header="Tipo Ingreso" filterField="tipoIngresoId">
@@ -82,6 +82,31 @@
         name="ambiente"
         appendTo="body"
         fluid
+      />
+    </ng-template>
+  </app-table-column>
+
+  <app-table-column field="status" header="Estatus" align="center" >
+    <ng-template #cell let-row>
+      <p-tag
+        [value]="resolveTagValue(row.status)"
+        [severity]="resolveStatusSeverity(row.status)"
+      />
+    </ng-template>
+
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-select
+        [options]="status"
+        optionLabel="label"
+        optionValue="id"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        size="small"
+        class="border-0! bg-transparent! shadow-none!"
+        placeholder="Seleccionar"
+        [showClear]="true"
+        name="ambiente"
+        appendTo="body"
       />
     </ng-template>
   </app-table-column>

@@ -37,7 +37,7 @@
       <div class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         @for (kpi of kpiCards(); track kpi.label) {
           <div
-            class="flex items-start gap-3 rounded-xl bg-surface-50 p-3 sm:p-4 shadow-sm transition-shadow hover:shadow-md dark:bg-surface-800 border-l-4"
+            class="flex items-start gap-3 rounded-xl bg-surface-0 p-3 sm:p-4 shadow-sm transition-shadow hover:shadow-md dark:bg-surface-800 border-l-4"
             [class]="kpi.tone === 'green' ? 'border-green-600 dark:border-green-600' : kpi.tone === 'red' ? 'border-red-600 dark:border-red-800' : 'border-blue-500 dark:border-blue-600'"
           >
             <div

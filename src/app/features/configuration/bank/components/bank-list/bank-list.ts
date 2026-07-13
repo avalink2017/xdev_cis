@@ -8,7 +8,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ApiService } from '../../../../../core/services/api.service';
 import { Select } from "primeng/select";
-import { Actives } from '../../../../../core/model/shared,model.dto';
+import { Actives } from '../../../../../core/model/shared.model.dto';
 import { FormsModule } from '@angular/forms';
 
 @Component({

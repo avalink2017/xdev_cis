@@ -1,7 +1,16 @@
 <form>
+  <div class="flex gap-5 relative mb-5">
+    <app-input-ng [formField]="form.numero" label="N° Ingreso" />
+    <div class="pointer-events-none select-none absolute -right-3 -top-3">
+      <app-status-bar-ng
+        [statuses]="status"
+        [activeId]="form().value().status"
+        [compact]="!device.isMd()"
+      />
+    </div>
+  </div>
   <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <app-input-ng [formField]="form.numero" label="N° Ingreso" />
       <app-date-picker-ng [formField]="form.fechaMovimiento" label="Fecha Ingreso" />
       <app-select-ng
         [formField]="form.tipoIngresoId"
@@ -27,7 +36,7 @@
         optionValue="id"
       />
 
-      <app-input-ng [formField]="form.noDocumento" label="N° Documento" />
+      <app-input-ng [formField]="form.noDocumento" label="N° Folio" />
       <app-input-number-ng
         [formField]="form.monto"
         label="Monto Ingreso"
@@ -36,53 +45,51 @@
         [showButtons]="true"
       />
 
-      <div class="md:col-span-2">
-      <app-file-picker-ng
-        [(value)]="DocFile"
-        [urlDocument]="urlDocumentValue()"
-        [fileName]="fileNameValue()"
-        label="Documento"
-      />
+      <!-- <div class="md:col-span-2">
+        <app-file-picker-ng
+          [(value)]="DocFile"
+          [urlDocument]="urlDocumentValue()"
+          [fileName]="fileNameValue()"
+          label="Documento"
+        />
+      </div> -->
     </div>
-    </div>
-
-    
 
     <div class="flex flex-col gap-4">
       <app-search-autocomplete
-      [formField]="form.partnerId"
-        [urlList]="urlSearch"
+        [formField]="form.partnerId"
+        [urlList]="urlSearch()"
         [urlEntity]="urlEntity"
         label="Cliente"
         optionLabel="name"
         optionValue="id"
         (selectionChange)="onPartnerChanged($event)"
       />
-      @if(partnerInfo()){
+      @if (partnerInfo()) {
         <div>
-        <p-panel header="Información" toggleable>
+          <p-panel header="Información" toggleable collapsed>
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 text-sm">
-                <div class="flex gap-2">
-                    <span class="text-muted-color">NIT:</span>
-                    <span class="text-muted-color-emphasis">{{partnerInfo()?.nit}}</span>
-                </div>
+              <div class="flex gap-2">
+                <span class="text-muted-color">NIT:</span>
+                <span class="text-muted-color-emphasis">{{ partnerInfo()?.nit }}</span>
+              </div>
 
-                <div class="flex gap-2">
-                    <span class="text-muted-color">NRC:</span>
-                    <span class="text-muted-color-emphasis">{{partnerInfo()?.nrc}}</span>
-                </div>
+              <div class="flex gap-2">
+                <span class="text-muted-color">NRC:</span>
+                <span class="text-muted-color-emphasis">{{ partnerInfo()?.nrc }}</span>
+              </div>
 
-                <div class="flex gap-2">
-                    <span class="text-muted-color">DUI:</span>
-                    <span class="text-muted-color-emphasis">{{partnerInfo()?.dui}}</span>
-                </div>
+              <div class="flex gap-2">
+                <span class="text-muted-color">DUI:</span>
+                <span class="text-muted-color-emphasis">{{ partnerInfo()?.dui }}</span>
+              </div>
             </div>
-        </p-panel>  
-      </div>
+          </p-panel>
+        </div>
       }
-      
+
       <app-text-area-ng [formField]="form.descripcion" label="Descripción" [rows]="5" />
     </div>
   </div>
 </form>
-<app-loading-block [visible]="form().submitting() || showLoader()"/>
+<app-loading-block [visible]="form().submitting() || showLoader()" />

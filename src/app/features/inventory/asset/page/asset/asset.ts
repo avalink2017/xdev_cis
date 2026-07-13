@@ -1,0 +1,39 @@
+import { Component, ComponentRef, inject, OnInit, signal, twoWayBinding, viewChild, ViewContainerRef } from '@angular/core';
+import { DeviceService } from '../../../../../core/services/device.service';
+import { PageLayout } from "../../../../../shared/components/page-layout/page-layout";
+import { ButtonGroup } from "primeng/buttongroup";
+import { Button } from "primeng/button";
+import { Icon } from "../../../../../shared/components/icon/icon";
+import { Card } from "primeng/card";
+
+@Component({
+  selector: 'app-asset',
+  imports: [PageLayout, ButtonGroup, Button, Icon, Card],
+  templateUrl: './asset.html',
+  styleUrl: './asset.css',
+})
+export class Asset implements OnInit {
+  private container = viewChild.required('compo', { read: ViewContainerRef });
+  private formRef = signal<ComponentRef<any> | undefined>(undefined);
+  device = inject(DeviceService);
+
+  ngOnInit(): void {
+    this.createComponent();
+  }
+
+  refresh = signal(false);
+
+  createComponent() {
+    import('../../components/asset-list/asset-list').then(m=>{
+      const ref = this.container().createComponent(m.AssetList, {
+        bindings: [twoWayBinding('refresh', this.refresh)],
+      });
+
+      this.formRef.set(ref);
+    });
+  }
+
+  AddNew() {
+    this.formRef()?.instance.onAddNew();
+  }
+}

@@ -1,6 +1,14 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { IngresoDTO } from '../ingreso.model.dto';
-import { form, required, submit, FormField, disabled, min } from '@angular/forms/signals';
+import {
+  form,
+  required,
+  submit,
+  FormField,
+  disabled,
+  min,
+  maxLength,
+} from '@angular/forms/signals';
 import {
   urlCuentaBanco,
   urlIngreso,
@@ -10,7 +18,6 @@ import {
 } from '../../../../../core/services/endpoint.service';
 import { NotificationService } from '../../../../../core/services/notification.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
-import { ApiResponse } from '../../../../../core/model/api-response.model';
 import { ApiService } from '../../../../../core/services/api.service';
 import { InputNg } from '../../../../../shared/custom/input-ng/input-ng';
 import { CuentaBancoListDTO } from '../../../../configuration/bank-account/components/bank-account.model.dto';
@@ -21,11 +28,14 @@ import { SelectNg } from '../../../../../shared/custom/select-ng/select-ng';
 import { InputNumberNg } from '../../../../../shared/custom/input-number-ng/input-number-ng';
 import { TextAreaNg } from '../../../../../shared/custom/text-area-ng/text-area-ng';
 import { SearchAutocomplete } from '../../../../../shared/custom/search-autocomplete/search-autocomplete';
-import { FilePickerNg } from '../../../../../shared/custom/file-picker-ng/file-picker-ng';
 import { Panel } from 'primeng/panel';
 import { PartnerDTO } from '../../../../partner/components/partner/partner.model.dto';
 import { LoadingBlock } from '../../../../../shared/components/loading-block/loading-block';
 import { Ingreso2FormData } from '../../../../../core/functions/Form2FormData';
+import { statusOperation } from '../../../../../core/model/shared.model.dto';
+import { StatusBarNg } from '../../../../../shared/custom/status-bar-ng/status-bar-ng';
+import { DeviceService } from '../../../../../core/services/device.service';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-ingreso-form',
@@ -37,9 +47,10 @@ import { Ingreso2FormData } from '../../../../../core/functions/Form2FormData';
     InputNumberNg,
     TextAreaNg,
     SearchAutocomplete,
-    FilePickerNg,
+
     Panel,
     LoadingBlock,
+    StatusBarNg,
   ],
   templateUrl: './ingreso-form.html',
   styleUrl: './ingreso-form.css',
@@ -49,6 +60,8 @@ export class IngresoForm implements OnInit {
 
   private nt = inject(NotificationService);
   private api = inject(ApiService);
+  private _confirm = inject(ConfirmationService);
+  device = inject(DeviceService);
 
   DocFile = signal<File | null>(null);
 
@@ -66,6 +79,7 @@ export class IngresoForm implements OnInit {
     urlDocument: '',
     fileName: '',
     file: undefined,
+    status: 'draft',
     concurrencyStamp: '',
   });
 
@@ -76,24 +90,35 @@ export class IngresoForm implements OnInit {
     required(schemaPath.tipoDocumentoFinancieroId, { message: 'Tipo documento requerido' });
     required(schemaPath.partnerId, { message: 'Proveedor requerido' });
     required(schemaPath.descripcion, { message: 'Descripción requerida' });
-    required(schemaPath.noDocumento, { message: 'N°. Documento requerido' });
+    maxLength(schemaPath.descripcion, 500, { message: 'Longitud máxima 500' });
+    maxLength(schemaPath.noDocumento, 50, { message: 'Longitud máxima 50' });
     disabled(schemaPath.numero);
+    disabled(schemaPath, ({ valueOf }) => valueOf(schemaPath.status) !== 'draft');
     min(schemaPath.monto, 0.01, { message: 'El monto debe ser mayor a cero' });
   });
 
   isNew = computed(() => this.form().value().id === 0);
   isFormValid = computed(() => this.form().valid());
+  statusId = computed(() => this.form().value().status);
   cuentasBanco = signal<CuentaBancoListDTO[]>([]);
   tipoDocumento = signal<TipoDocumentoListDTO[]>([]);
   tipoIngreso = signal<TipoIngresoListDTO[]>([]);
 
-  urlSearch = `${urlPartner}/search?rolecode=CU`;
+  selectedTI = computed(() => this.form().value().tipoIngresoId);
+  urlSearch = computed(() =>
+    this.selectedTI() === ''
+      ? `${urlPartner}/search?rolecode=CU`
+      : `${urlPartner}/search?rolecode=CU&tipoingreso=${this.selectedTI()}`,
+  );
   urlEntity = `${urlPartner}/{id}`;
   partnerInfo = signal<PartnerDTO | undefined>(undefined);
   showLoader = signal(false);
+  textLoader = signal<string>('Recuperando...');
 
   protected urlDocumentValue = computed(() => this.form().value().urlDocument);
   protected fileNameValue = computed(() => this.form().value().fileName);
+
+  readonly status = statusOperation;
 
   ngOnInit(): void {
     forkJoin({
@@ -105,6 +130,15 @@ export class IngresoForm implements OnInit {
         this.tipoIngreso.set(ti);
         this.tipoDocumento.set(td);
         this.cuentasBanco.set(cb);
+
+        if (!this.inid()) {
+          this.model.update((m) => ({
+            ...m,
+            tipoIngresoId: ti.length > 0 ? ti[0].id : m.tipoIngresoId,
+            cuentaBancoId: cb.length > 0 ? cb[0].id : m.cuentaBancoId,
+            tipoDocumentoFinancieroId: td.length > 0 ? td[0].id : m.tipoDocumentoFinancieroId,
+          }));
+        }
       },
     });
 
@@ -123,6 +157,7 @@ export class IngresoForm implements OnInit {
   async onSubmit() {
     const ok = await submit(this.form, {
       action: async (raw) => {
+        this.textLoader.set('Guardando...');
         const fd = Ingreso2FormData(raw().value());
 
         if (this.DocFile()) fd.append('file', this.DocFile() as File);
@@ -148,5 +183,99 @@ export class IngresoForm implements OnInit {
   private patchModel(data: IngresoDTO) {
     data.fechaMovimiento = new Date(data.fechaMovimiento);
     this.model.set(data);
+  }
+
+  print() {
+    this.showLoader.set(true);
+    this.textLoader.set('Generando PDF...');
+
+    this.api.getFile(`${urlIngreso}/print?id=${this.form().value().id}`).subscribe({
+      next: ({ blob }) => {
+        const pdfUrl = URL.createObjectURL(blob);
+        window.open(pdfUrl, '_blank');
+        this.showLoader.set(false);
+      },
+      error: () => this.showLoader.set(false),
+    });
+  }
+
+  download() {
+    this.showLoader.set(true);
+    this.textLoader.set('Descargando PDF...');
+
+    this.api.downloadFile(`${urlIngreso}/print?id=${this.form().value().id}`).subscribe({
+      next: () => this.showLoader.set(false),
+      error: () => this.showLoader.set(false),
+    });
+  }
+
+  confirm() {
+    this._confirm.confirm({
+      message: `¿Desea confirmar el Ingreso número ${this.form().value().numero ?? ''}?`,
+      header: `Confirmar Ingreso`,
+      closable: true,
+      closeOnEscape: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'contrast',
+        outlined: true,
+        size: 'small',
+      },
+      acceptButtonProps: {
+        label: '¡Si, Confirmar!',
+        size: 'small',
+        styleClass: 'ml-2!',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.showLoader.set(true);
+        this.textLoader.set('Confirmando...');
+
+        this.api
+          .post<IngresoDTO>(`${urlIngreso}/confirm?id=${this.form().value().id}`, null)
+          .subscribe({
+            next: (res) => {
+              this.showLoader.set(false);
+              this.patchModel(res);
+            },
+            error: () => this.showLoader.set(false),
+          });
+      },
+    });    
+  }
+
+  cancel() {
+    this._confirm.confirm({
+      message: `¿Desea Anular el Ingreso número ${this.form().value().numero ?? ''}?`,
+      header: `Anular Ingreso`,
+      closable: true,
+      closeOnEscape: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'contrast',
+        outlined: true,
+        size: 'small',
+      },
+      acceptButtonProps: {
+        label: '¡Si, Anular!',
+        size: 'small',
+        styleClass: 'ml-2!',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.showLoader.set(true);
+        this.textLoader.set('Anulando...');
+
+        this.api
+          .post<IngresoDTO>(`${urlIngreso}/cancel?id=${this.form().value().id}`, null)
+          .subscribe({
+            next: (res) => {
+              this.showLoader.set(false);
+              this.patchModel(res);
+            },
+            error: () => this.showLoader.set(false),
+          });
+      },
+    });        
   }
 }

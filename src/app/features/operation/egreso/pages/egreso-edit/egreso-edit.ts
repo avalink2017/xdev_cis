@@ -4,10 +4,13 @@ import { PageLayout } from "../../../../../shared/components/page-layout/page-la
 import { BackButton } from "../../../../../shared/custom/back-button/back-button";
 import { Button } from "primeng/button";
 import { Icon } from "../../../../../shared/components/icon/icon";
+import { MenuItem } from 'primeng/api';
+import { Card } from "primeng/card";
+import { Menu } from "primeng/menu";
 
 @Component({
   selector: 'app-egreso-edit',
-  imports: [PageLayout, BackButton, Button, Icon],
+  imports: [PageLayout, BackButton, Button, Icon, Card, Menu],
   templateUrl: './egreso-edit.html',
   styleUrl: './egreso-edit.css',
 })
@@ -17,6 +20,42 @@ export class EgresoEdit implements OnInit {
   private container = viewChild.required('compo', { read: ViewContainerRef });
   private formRef = signal<ComponentRef<any> | undefined>(undefined);
   isFormValid = computed(() => this.formRef()?.instance.isFormValid());
+  isNew = computed(() => this.formRef()?.instance.isNew());
+  statusId = computed(() => this.formRef()?.instance.statusId());
+
+  items = computed<MenuItem[]>(() => [
+    {
+      label: 'Guardar',
+      icon: 'pi pi-cloud',
+      visible: this.statusId() === 'draft',
+      disabled: !this.isFormValid(),
+      command: () => this.onSave(),
+    },
+    {
+      label: 'Imprimir',
+      icon: 'pi pi-print',
+      visible: this.statusId() === 'confirmed',
+      command: () => this.onPrint(),
+    },
+    {
+      label: 'Descargar',
+      icon: 'pi pi-download',
+      visible: this.statusId() === 'confirmed',
+      command: () => this.onDownload(),
+    },
+    {
+      label: 'Confirmar',
+      icon: 'pi pi-check-circle',
+      visible: this.statusId() === 'draft' && !this.isNew(),
+      command: () => this.onConfirm(),
+    },
+    {
+      label: 'Anular',
+      icon: 'pi pi-times',
+      visible: this.statusId() !== 'canceled' && !this.isNew(),
+      command: () => this.onCancel(),
+    },
+  ]);
 
   device = inject(DeviceService);
 
@@ -36,5 +75,21 @@ export class EgresoEdit implements OnInit {
 
   onSave() {
     this.formRef()?.instance.onSubmit();
+  }
+
+  onPrint() {
+    this.formRef()?.instance.print();
+  }
+
+  onDownload() {
+    this.formRef()?.instance.download();
+  }
+
+  onCancel() {
+    this.formRef()?.instance.cancel();
+  }
+
+  onConfirm() {
+    this.formRef()?.instance.confirm();
   }
 }

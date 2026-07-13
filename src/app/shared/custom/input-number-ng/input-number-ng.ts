@@ -31,6 +31,7 @@ import { Message } from "primeng/message";
         [showClear]="showClear()"
         (onFocus)="inng.input.nativeElement.select()"
         [showButtons]="showButtons()"
+        [useGrouping]="useGrouping()"
       />
       @if (invalid() && touched()) {
         @for (error of errors(); track error) {
@@ -66,4 +67,5 @@ export class InputNumberNg implements FormValueControl<number> {
   max = input<number | undefined>(undefined);
   minFractionDigits = input<number>(0);
   maxFractionDigits = input<number>(0);
+  useGrouping = input(true);
 }

@@ -1,3 +1,4 @@
+
 export interface IngresoListDTO {
   id: number;
   numero: string;
@@ -8,8 +9,9 @@ export interface IngresoListDTO {
   tipoIngresoName: string;
   tipoDocumentoFinancieroId: string;
   tipoDocumentoFinancieroName: string;
-  noDocumento: string;
+  noDocumento: string;  
   monto: number;
+  status:string;
 }
 
 export interface IngresoDTO {
@@ -24,7 +26,9 @@ export interface IngresoDTO {
   noDocumento: string;
   monto: number;
   urlDocument: string;
-  fileName:string;
+  fileName: string;
   file: File | undefined;
-  concurrencyStamp:string;
+  status: string;
+  concurrencyStamp: string;
 }
+

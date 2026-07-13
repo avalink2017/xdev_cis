@@ -1,0 +1,16 @@
+<app-page-layout
+  title="Períodos" subtitle="Administración períodos" iconName="LucideCalendarCog">
+  <ng-template #headerActions>
+    <p-buttongroup>
+      <p-button [label]="device.isMobile() ? '':'Abrir'" (onClick)="AddNew()">
+        <app-icon name="LucideCirclePlus" />
+      </p-button>
+
+      <p-button [label]="device.isMobile() ? '':'Refrescar'" (onClick)="refresh.set(true)">
+        <app-icon name="LucideRefreshCcw" />
+      </p-button>
+    </p-buttongroup>
+  </ng-template>
+
+  <ng-container plainContent #compo />
+</app-page-layout>

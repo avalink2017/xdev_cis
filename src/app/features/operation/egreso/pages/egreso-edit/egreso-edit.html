@@ -1,12 +1,57 @@
 <app-page-layout title="Egreso" subtitle="Operaciones de Egreso" iconName="LucideBanknoteArrowDown">
   <ng-template #headerActions>
     <div class="flex gap-2">
-      <app-back-button />
+      <app-back-button [label]="device.isMobile() ? '' : 'Regresar'" />
 
-      <p-button [label]="device.isMobile() ? '' : 'Guardar'" [disabled]="!isFormValid()" (onClick)="onSave()">
-        <app-icon name="LucideCloud" />
-      </p-button>
+      @if (device.isMobile() && statusId() !== 'canceled') {
+        <p-menu #menu [model]="items()" [popup]="true" />
+        <p-button icon="pi pi-ellipsis-h" (onClick)="menu.toggle($event)"/>
+      } @else {
+        @if (statusId() === 'draft') {
+          <p-button
+            [label]="device.isMobile() ? '' : 'Guardar'"
+            [disabled]="!isFormValid()"
+            (onClick)="onSave()"
+          >
+            <app-icon name="LucideCloud" />
+          </p-button>
+
+          @if (!isNew()) {
+            <p-button
+              [label]="device.isMobile() ? '' : 'Confirmar'"
+              (onClick)="onConfirm()"
+              severity="success"
+            >
+              <app-icon name="LucideCircleCheckBig" />
+            </p-button>
+          }
+        }
+
+        @if (statusId() === 'confirmed') {
+          <p-button [label]="device.isMobile() ? '' : 'Imprimir'" (onClick)="onPrint()">
+            <app-icon name="LucidePrinter" />
+          </p-button>
+
+          <p-button [label]="device.isMobile() ? '' : 'Descargar'" (onClick)="onDownload()">
+            <app-icon name="LucideDownload" />
+          </p-button>
+        }
+
+        @if (statusId() !== 'canceled' && !isNew()) {
+          <p-button
+            [label]="device.isMobile() ? '' : 'Anular'"
+            (onClick)="onCancel()"
+            severity="danger"
+          >
+            <app-icon name="LucideX" />
+          </p-button>
+        }
+      }
+
+      
     </div>
   </ng-template>
-  <ng-container #compo />
+  <p-card>
+    <ng-container #compo />
+  </p-card>
 </app-page-layout>

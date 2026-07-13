@@ -1,0 +1,34 @@
+
+@if (!compact()) {
+  <div
+    class="inline-flex items-center rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-100 dark:bg-surface-800 p-0.75 gap-0.5"
+    role="status"
+    aria-label="Estado del documento"
+  >
+    @for (item of statuses(); track item.id) {
+      <span [class]="itemClass(item)" [attr.aria-current]="isActive(item) ? 'true' : null">
+        <app-icon [name]="item.icon" [size]="14" />
+        {{ item.label }}
+      </span>
+    }
+  </div>
+}
+
+@if (compact()) {
+  @if (activeStatus(); as active) {
+    <span
+      [class]="
+        'inline-flex items-center gap-2 px-2 py-1 rounded-lg text-sm font-medium select-none ' +
+        active.classes
+      "
+      role="status"
+      [attr.aria-label]="'Estado: ' + active.label"
+    >
+      @if (active.icon) {
+        <app-icon [name]="active.icon" [size]="14" />
+      }
+
+      {{ active.label }}
+    </span>
+  }
+}

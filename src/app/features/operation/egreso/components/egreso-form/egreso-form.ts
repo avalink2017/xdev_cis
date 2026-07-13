@@ -1,7 +1,21 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { TipoEgresoListDTO } from '../../../../configuration/tipo-egreso/components/tipo-egreso.model.dto';
-import { urlCuentaBanco, urlEgreso, urlPartner, urlTpoDocumento, urlTpoEgreso } from '../../../../../core/services/endpoint.service';
-import { disabled, form, FormField, min, required, submit } from '@angular/forms/signals';
+import {
+  urlCuentaBanco,
+  urlEgreso,
+  urlPartner,
+  urlTpoDocumento,
+  urlTpoEgreso,
+} from '../../../../../core/services/endpoint.service';
+import {
+  disabled,
+  form,
+  FormField,
+  maxLength,
+  min,
+  required,
+  submit,
+} from '@angular/forms/signals';
 import { forkJoin, firstValueFrom } from 'rxjs';
 import { ApiService } from '../../../../../core/services/api.service';
 import { NotificationService } from '../../../../../core/services/notification.service';
@@ -10,15 +24,18 @@ import { TipoDocumentoListDTO } from '../../../../configuration/tipo-documento/c
 import { PartnerDTO } from '../../../../partner/components/partner/partner.model.dto';
 import { EgresoDTO } from '../egreso.model.dto';
 import { Egreso2FormData } from '../../../../../core/functions/Form2FormData';
-import { InputNg } from "../../../../../shared/custom/input-ng/input-ng";
-import { DatePickerNg } from "../../../../../shared/custom/date-picker-ng/date-picker-ng";
+import { InputNg } from '../../../../../shared/custom/input-ng/input-ng';
+import { DatePickerNg } from '../../../../../shared/custom/date-picker-ng/date-picker-ng';
 import { Panel } from 'primeng/panel';
 import { LoadingBlock } from '../../../../../shared/components/loading-block/loading-block';
-import { FilePickerNg } from '../../../../../shared/custom/file-picker-ng/file-picker-ng';
 import { InputNumberNg } from '../../../../../shared/custom/input-number-ng/input-number-ng';
 import { SearchAutocomplete } from '../../../../../shared/custom/search-autocomplete/search-autocomplete';
 import { SelectNg } from '../../../../../shared/custom/select-ng/select-ng';
 import { TextAreaNg } from '../../../../../shared/custom/text-area-ng/text-area-ng';
+import { StatusBarNg } from '../../../../../shared/custom/status-bar-ng/status-bar-ng';
+import { statusOperation } from '../../../../../core/model/shared.model.dto';
+import { DeviceService } from '../../../../../core/services/device.service';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-egreso-form',
@@ -30,9 +47,9 @@ import { TextAreaNg } from '../../../../../shared/custom/text-area-ng/text-area-
     InputNumberNg,
     TextAreaNg,
     SearchAutocomplete,
-    FilePickerNg,
     Panel,
     LoadingBlock,
+    StatusBarNg,
   ],
   templateUrl: './egreso-form.html',
   styleUrl: './egreso-form.css',
@@ -42,6 +59,8 @@ export class EgresoForm implements OnInit {
 
   private nt = inject(NotificationService);
   private api = inject(ApiService);
+  private _confirm = inject(ConfirmationService);
+  device = inject(DeviceService);
 
   DocFile = signal<File | null>(null);
 
@@ -60,6 +79,7 @@ export class EgresoForm implements OnInit {
     urlDocument: '',
     fileName: '',
     file: undefined,
+    status: 'draft',
     concurrencyStamp: '',
   });
 
@@ -70,15 +90,20 @@ export class EgresoForm implements OnInit {
     required(schemaPath.tipoDocumentoFinancieroId, { message: 'Tipo documento requerido' });
     required(schemaPath.partnerId, { message: 'Proveedor requerido' });
     required(schemaPath.descripcion, { message: 'Descripción requerida' });
-    required(schemaPath.noDocumento, { message: 'N°. Documento requerido' });
+    maxLength(schemaPath.descripcion, 500, { message: 'Longitud máxima 500' });
+    required(schemaPath.noDocumento, { message: 'N°. Factura requerida' });
+    maxLength(schemaPath.noDocumento, 50, { message: 'Longitud máxima 50' });
     required(schemaPath.noCheque, { message: 'N°. Cheque requerido' });
+    maxLength(schemaPath.noCheque, 20, { message: 'Longitud máxima 20' });
     disabled(schemaPath.numero);
+    disabled(schemaPath, ({ valueOf }) => valueOf(schemaPath.status) !== 'draft');
     min(schemaPath.monto, 0.01, { message: 'El monto debe ser mayor a cero' });
   });
 
   isNew = computed(() => this.form().value().id === 0);
   isFormValid = computed(() => this.form().valid());
   cuentasBanco = signal<CuentaBancoListDTO[]>([]);
+  statusId = computed(() => this.form().value().status);
   tipoDocumento = signal<TipoDocumentoListDTO[]>([]);
   tipoEgreso = signal<TipoEgresoListDTO[]>([]);
 
@@ -86,9 +111,12 @@ export class EgresoForm implements OnInit {
   urlEntity = `${urlPartner}/{id}`;
   partnerInfo = signal<PartnerDTO | undefined>(undefined);
   showLoader = signal(false);
+  textLoader = signal<string>('Recuperando...');
 
   protected urlDocumentValue = computed(() => this.form().value().urlDocument);
   protected fileNameValue = computed(() => this.form().value().fileName);
+
+  readonly status = statusOperation;
 
   ngOnInit(): void {
     forkJoin({
@@ -107,7 +135,6 @@ export class EgresoForm implements OnInit {
       this.showLoader.set(true);
       this.api.get<EgresoDTO>(`${urlEgreso}/${this.egid()}`).subscribe({
         next: (res) => {
-          console.log(res)
           this.patchModel(res);
           this.showLoader.set(false);
         },
@@ -119,6 +146,7 @@ export class EgresoForm implements OnInit {
   async onSubmit() {
     const ok = await submit(this.form, {
       action: async (raw) => {
+        this.textLoader.set('Guardando...');
         const fd = Egreso2FormData(raw().value());
 
         if (this.DocFile()) fd.append('file', this.DocFile() as File);
@@ -144,5 +172,99 @@ export class EgresoForm implements OnInit {
   private patchModel(data: EgresoDTO) {
     data.fechaMovimiento = new Date(data.fechaMovimiento);
     this.model.set(data);
+  }
+
+  print() {
+    this.showLoader.set(true);
+    this.textLoader.set('Generando PDF...');
+
+    this.api.getFile(`${urlEgreso}/print?id=${this.form().value().id}`).subscribe({
+      next: ({ blob }) => {
+        const pdfUrl = URL.createObjectURL(blob);
+        window.open(pdfUrl, '_blank');
+        this.showLoader.set(false);
+      },
+      error: () => this.showLoader.set(false),
+    });
+  }
+
+  download() {
+    this.showLoader.set(true);
+    this.textLoader.set('Descargando PDF...');
+
+    this.api.downloadFile(`${urlEgreso}/print?id=${this.form().value().id}`).subscribe({
+      next: () => this.showLoader.set(false),
+      error: () => this.showLoader.set(false),
+    });
+  }
+
+  confirm() {
+    this._confirm.confirm({
+      message: `¿Desea confirmar el Egreso número ${this.form().value().numero ?? ''}?`,
+      header: `Confirmar Ingreso`,
+      closable: true,
+      closeOnEscape: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'contrast',
+        outlined: true,
+        size: 'small',
+      },
+      acceptButtonProps: {
+        label: '¡Si, Confirmar!',
+        size: 'small',
+        styleClass: 'ml-2!',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.showLoader.set(true);
+        this.textLoader.set('Confirmando...');
+
+        this.api
+          .post<EgresoDTO>(`${urlEgreso}/confirm?id=${this.form().value().id}`, null)
+          .subscribe({
+            next: (res) => {
+              this.showLoader.set(false);
+              this.patchModel(res);
+            },
+            error: () => this.showLoader.set(false),
+          });
+      },
+    });
+  }
+
+  cancel() {
+    this._confirm.confirm({
+      message: `¿Desea Anular el Egreso número ${this.form().value().numero ?? ''}?`,
+      header: `Anular Ingreso`,
+      closable: true,
+      closeOnEscape: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'contrast',
+        outlined: true,
+        size: 'small',
+      },
+      acceptButtonProps: {
+        label: '¡Si, Anular!',
+        size: 'small',
+        styleClass: 'ml-2!',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.showLoader.set(true);
+        this.textLoader.set('Anulando...');
+
+        this.api
+          .post<EgresoDTO>(`${urlEgreso}/cancel?id=${this.form().value().id}`, null)
+          .subscribe({
+            next: (res) => {
+              this.showLoader.set(false);
+              this.patchModel(res);
+            },
+            error: () => this.showLoader.set(false),
+          });
+      },
+    });
   }
 }
