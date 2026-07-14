@@ -21,6 +21,7 @@ import { PageLayout } from '../../../shared/components/page-layout/page-layout';
 import { Icon } from '../../../shared/components/icon/icon';
 import { DashboardService } from './dashboard.service';
 import { DashboardKPI } from './dashboard.model.dto';
+import { MeterGroup } from 'primeng/metergroup';
 
 Chart.register(BarController, DoughnutController, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -46,12 +47,23 @@ function currencyFormatter(value: string | number) {
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [PageLayout, Icon, Card, Button, Skeleton, Select, FormsModule, UIChart, CurrencyPipe],
+  imports: [
+    PageLayout,
+    Icon,
+    Card,
+    Button,
+    Skeleton,
+    Select,
+    FormsModule,
+    UIChart,
+    CurrencyPipe,
+    MeterGroup,    
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export default class DashboardPage implements OnInit {
-  private dashboardService = inject(DashboardService);
+  dashboardService = inject(DashboardService);
 
   data = this.dashboardService.data;
   loading = this.dashboardService.loading;
@@ -70,7 +82,7 @@ export default class DashboardPage implements OnInit {
   }
 
   loadData() {
-    this.dashboardService.load(this.selectedYear());
+    this.dashboardService.load(this.selectedYear());    
   }
 
   /**
@@ -143,11 +155,6 @@ export default class DashboardPage implements OnInit {
     ];
   });
 
-  totalTransacciones = computed(() => {
-    const k = this.data()?.kpis;
-    return (Number(k?.cantidadIngresosYTD) || 0) + (Number(k?.cantidadEgresosYTD) || 0);
-  });
-
   barData = computed(() => {
     // El backend no garantiza el orden; se ordena explícitamente por año/mes
     // para que el eje X siempre vaya de enero a diciembre del año seleccionado.
@@ -180,7 +187,7 @@ export default class DashboardPage implements OnInit {
       datasets: [
         {
           data: items.map((i) => Number(i.value) || 0),
-          backgroundColor: INGRESO_COLORS.slice(0, items.length),
+          // backgroundColor: INGRESO_COLORS.slice(0, items.length),
           borderWidth: 0,
         },
       ],
@@ -194,7 +201,7 @@ export default class DashboardPage implements OnInit {
       datasets: [
         {
           data: items.map((i) => Number(i.value) || 0),
-          backgroundColor: EGRESO_COLORS.slice(0, items.length),
+          // backgroundColor: EGRESO_COLORS.slice(0, items.length),
           borderWidth: 0,
         },
       ],

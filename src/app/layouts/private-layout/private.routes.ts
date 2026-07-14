@@ -151,6 +151,12 @@ export const PRIVATE_ROUTES: Routes = [
       },
 
       {
+        path: 'admin/role',
+        loadComponent: () =>
+          import('../../features/administration/role/page/role/role').then((m) => m.Role),
+      },
+
+      {
         path: 'inventory/asset',
         loadComponent: () =>
           import('../../features/inventory/asset/page/asset/asset').then((m) => m.Asset),

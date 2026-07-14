@@ -26,9 +26,19 @@ export interface CategorySeriesDTO {
   percentage: number;
 }
 
+export interface StatusCountDTO {
+  status: string;
+  statusName: string;
+  monthlyIncomes: number;
+  yearlyIncomes: number;
+  monthlyExpenses: number;
+  yearlyExpenses:number;
+}
+
 export interface DashboardResponseDTO {
   kpis: DashboardKPI;
   monthlySeries: MonthlySeriesDTO[];
   ingresosByType: CategorySeriesDTO[];
   egresosByType: CategorySeriesDTO[];
+  statusCount:StatusCountDTO[];
 }

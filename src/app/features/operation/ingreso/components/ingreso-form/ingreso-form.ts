@@ -131,12 +131,15 @@ export class IngresoForm implements OnInit {
         this.tipoDocumento.set(td);
         this.cuentasBanco.set(cb);
 
+        const typing = ti.find((f) => f.id === 'f145e139-202b-4117-8ca5-58740eac76b1');
+        const typdoc = td.find((f) => f.id === '22527582-3132-4ea4-be6d-2f98c1c47129');
+
         if (!this.inid()) {
           this.model.update((m) => ({
             ...m,
-            tipoIngresoId: ti.length > 0 ? ti[0].id : m.tipoIngresoId,
+            tipoIngresoId: typing ? typing.id  : m.tipoIngresoId,
             cuentaBancoId: cb.length > 0 ? cb[0].id : m.cuentaBancoId,
-            tipoDocumentoFinancieroId: td.length > 0 ? td[0].id : m.tipoDocumentoFinancieroId,
+            tipoDocumentoFinancieroId: typdoc ? typdoc.id : m.tipoDocumentoFinancieroId,
           }));
         }
       },

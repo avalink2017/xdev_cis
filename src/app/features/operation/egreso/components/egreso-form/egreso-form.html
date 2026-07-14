@@ -1,6 +1,6 @@
 <form>
   <div class="flex gap-5 relative mb-5">
-    <app-input-ng [formField]="form.numero" label="N° Ingreso" />
+    <app-input-ng [formField]="form.numero" label="N° Egreso" />
     <div class="pointer-events-none select-none absolute -right-3 -top-3">
       <app-status-bar-ng
         [statuses]="status"
@@ -9,9 +9,8 @@
       />
     </div>
   </div>
-  <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <app-input-ng [formField]="form.numero" label="N° Egreso" />
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 items-start">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">      
       <app-date-picker-ng [formField]="form.fechaMovimiento" label="Fecha Egreso" />
       <app-select-ng
         [formField]="form.tipoEgresoId"
