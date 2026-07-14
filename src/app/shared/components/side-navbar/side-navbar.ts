@@ -73,9 +73,14 @@ export class SideNavbar {
       label: 'INFORMES',
       items: [
         {
-          label: 'Consolidado',
+          label: 'Consolidado operaciones',
           icon: 'LucideBook',
-          routerLink: '/app/report/consolidated',
+          routerLink: '/app/report/consolidated-operation',
+        },
+        {
+          label: 'Detalle operaciones',
+          icon: 'LucideBook',
+          routerLink: '/app/report/detail-operation',
         },
         {
           label: 'Libro Banco',

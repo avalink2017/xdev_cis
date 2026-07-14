@@ -63,8 +63,8 @@
               <th>Fecha</th>
               <th>Transacción</th>
               <th>Concepto</th>
-              <th>N° Folio/Factura</th>
-              <th>N° Cheque</th>
+              <th class="text-nowrap!">N° Folio/Factura</th>
+              <th class="text-nowrap!">N° Cheque</th>
               <th class="text-right!">Débito</th>
               <th class="text-right!">Crédito</th>
               <th class="text-right!">Saldo</th>
@@ -72,7 +72,7 @@
           </ng-template>
           <ng-template #body let-line let-rowIndex="rowIndex">
             <tr>
-              <td class="text-sm!">
+              <td class="text-sm! text-nowrap!">
                 {{ line.fecha | date: 'dd/MM/yyyy HH:mm' }}
               </td>
               <td class="text-sm!">

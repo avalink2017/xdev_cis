@@ -163,10 +163,17 @@ export const PRIVATE_ROUTES: Routes = [
       },
 
       {
-        path: 'report/consolidated',
+        path: 'report/consolidated-operation',
         loadComponent: () =>
           import('../../features/reports/consolidated-report/consolidated-report').then(
             (m) => m.ConsolidatedReport,
+          ),
+      },
+      {
+        path: 'report/detail-operation',
+        loadComponent: () =>
+          import('../../features/reports/details-report/details-report').then(
+            (m) => m.DetailsReport,
           ),
       },
       {
