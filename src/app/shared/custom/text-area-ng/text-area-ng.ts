@@ -28,6 +28,7 @@ import { AutoFocusModule } from 'primeng/autofocus';
         [pAutoFocus]="autoFocus()"
         [disabled]="disabled()"
         [pSize]="pSizeValue"
+        (input)="onInput($event)"
         fluid
         autoResize
       ></textarea>
@@ -63,8 +64,21 @@ export class TextAreaNg implements FormValueControl<string> {
   rows = input<number>(3);
   cols = input<number | undefined>(undefined);
   size = input<'small' | 'large' | undefined>(undefined);
+  upperCase = input(false);
 
   protected get pSizeValue(): 'small' | 'large' {
     return this.size() as 'small' | 'large';
+  }
+
+  onInput(event: Event) {
+    const target = event.target as HTMLTextAreaElement;
+    const upper = this.upperCase() ? target.value.toUpperCase(): target.value;
+    const cursorStart = target.selectionStart;
+    const cursorEnd = target.selectionEnd;
+
+    target.value = upper; // corrige el DOM al instante (sin parpadeo)
+    this.value.set(upper); // actualiza el modelo del Signal Form
+
+    queueMicrotask(() => target.setSelectionRange(cursorStart, cursorEnd));
   }
 }

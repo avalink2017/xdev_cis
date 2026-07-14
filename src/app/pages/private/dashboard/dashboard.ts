@@ -117,14 +117,14 @@ export default class DashboardPage implements OnInit {
         icon: 'LucideBanknoteArrowUp',
         tone: 'green',
         value: n(d.ingresosYTD),
-        sub: `${n(d.cantidadIngresosYTD)} transacciones`,
+        sub: `${n(this.dashboardService.getIngresosYTD())} transacciones`,
       },
       {
         label: 'Egresos YTD',
         icon: 'LucideBanknoteArrowDown',
         tone: 'red',
         value: n(d.egresosYTD),
-        sub: `${n(d.cantidadEgresosYTD)} transacciones`,
+        sub: `${n(this.dashboardService.getEgresosYTD())} transacciones`,
       },
       {
         label: 'Balance YTD',
@@ -137,14 +137,14 @@ export default class DashboardPage implements OnInit {
         icon: 'LucideBanknoteArrowUp',
         tone: 'green',
         value: n(d.ingresosMesActual),
-        sub: `${n(d.cantidadIngresosMes)} transacciones`,
+        sub: `${n(this.dashboardService.getIngresosMonthly())} transacciones`,
       },
       {
         label: 'Egresos del Mes',
         icon: 'LucideBanknoteArrowDown',
         tone: 'red',
         value: n(d.egresosMesActual),
-        sub: `${n(d.cantidadEgresosMes)} transacciones`,
+        sub: `${n(this.dashboardService.getEgresosMonthly())} transacciones`,
       },
       {
         label: 'Balance del Mes',

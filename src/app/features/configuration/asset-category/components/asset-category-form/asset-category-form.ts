@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { disabled, form, FormField, maxLength, required, submit } from '@angular/forms/signals';
+import { form, FormField, maxLength, required, submit } from '@angular/forms/signals';
 import { AssetCategoryDTO } from '../asset-category.model.dto';
 import { InputNg } from '../../../../../shared/custom/input-ng/input-ng';
 import { Button } from 'primeng/button';

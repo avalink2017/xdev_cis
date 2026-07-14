@@ -52,7 +52,7 @@ function normalizeKpis(kpis: Partial<DashboardKPI> | undefined): DashboardKPI {
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
   private api = inject(ApiService);
-  private status = statusOperation
+  private status = statusOperation;
 
   data = signal<DashboardResponseDTO | undefined>(undefined);
   loading = signal(false);
@@ -70,7 +70,7 @@ export class DashboardService {
       if (this.data()) {
         this.buildIncomeStatusMeter();
         this.buildExpenseStatusMeter();
-      };
+      }
     });
   }
 
@@ -100,7 +100,7 @@ export class DashboardService {
 
   buildIncomeStatusMeter() {
     const items: MeterItem[] = [];
-    let cnt = 0;    
+    let cnt = 0;
     this.data()?.statusCount.map((pos, idx) => {
       cnt += pos.yearlyIncomes;
       items.push({
@@ -116,7 +116,7 @@ export class DashboardService {
 
   buildExpenseStatusMeter() {
     const items: MeterItem[] = [];
-    let cnt = 0;    
+    let cnt = 0;
     this.data()?.statusCount.map((pos, idx) => {
       cnt += pos.yearlyExpenses;
       items.push({
@@ -130,11 +130,38 @@ export class DashboardService {
     this.countExpenses.set(cnt);
   }
 
-  resolveStatusLabel(id:string){
-    const st = this.status.find(f => f.id == id)
-    if(st)
-      return st.label
+  resolveStatusLabel(id: string) {
+    const st = this.status.find((f) => f.id == id);
+    if (st) return st.label;
 
     return '';
+  }
+
+  getIngresosYTD() {
+    const data = this.data()?.statusCount.find((f) => f.status === 'confirmed');
+    if (data) return data.yearlyIncomes;
+
+    return 0;
+  }
+
+  getEgresosYTD() {
+    const data = this.data()?.statusCount.find((f) => f.status === 'confirmed');
+    if (data) return data.yearlyExpenses;
+
+    return 0;
+  }
+
+  getIngresosMonthly() {
+    const data = this.data()?.statusCount.find((f) => f.status === 'confirmed');
+    if (data) return data.monthlyIncomes;
+
+    return 0;
+  }
+
+  getEgresosMonthly() {
+    const data = this.data()?.statusCount.find((f) => f.status === 'confirmed');
+    if (data) return data.monthlyExpenses;
+
+    return 0;
   }
 }
