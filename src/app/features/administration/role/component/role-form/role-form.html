@@ -1,1 +1,17 @@
-<p>role-form works!</p>
+<form novalidate>
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <app-input-ng label="Código" [formField]="roleForm.name" [autoFocus]="true" />    
+    <app-input-ng label="Nombre" [formField]="roleForm.roleName" class="col-span-full" />
+    <app-toggle-button-ng [formField]="roleForm.isAdmin" [onLabel]="'Es Adminitrador'" offLabel="No es Administrador" />
+  </div>
+  <div class="mt-5 flex gap-3 justify-end">
+    <p-button label="Guardar" [disabled]="roleForm().submitting()" (onClick)="onSubmit()">
+      <app-icon name="LucideCloud" />
+    </p-button>
+
+    <p-button label="Cancelar" severity="secondary" (onClick)="formClose(false)">
+      <app-icon name="LucideX" />
+    </p-button>
+  </div>
+</form>
+<app-loading-block [visible]="roleForm().submitting()" message="Guardando..."/>

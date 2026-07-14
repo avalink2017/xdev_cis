@@ -8,7 +8,7 @@
   [showToolBar]="false"
 >
   <app-table-column field="numero" header="Número" />
-  <app-table-column field="fechaMovimiento" header="Fecha" type="date" >  
+  <app-table-column field="fechaMovimiento" header="Fecha" type="datetime" >  
     <ng-template #filter let-col let-value="value" let-filterFn="filter">
       <p-datepicker
         dateFormat="dd/mm/yy"

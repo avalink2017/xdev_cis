@@ -128,6 +128,16 @@ export class EgresoForm implements OnInit {
         this.tipoEgreso.set(te);
         this.tipoDocumento.set(td);
         this.cuentasBanco.set(cb);
+
+        const typdoc = td.find((f) => f.id === '06bafaf9-30f4-484c-9401-cd1788935b55');
+
+        if (!this.egid())
+          this.model.update((m) => ({
+            ...m,
+            cuentaBancoId: cb.length > 0 ? cb[0].id : m.cuentaBancoId,
+            tipoEgresoId: te.length > 0 ? te[0].id : m.tipoEgresoId,
+            tipoDocumentoFinancieroId: typdoc ? typdoc.id : m.tipoDocumentoFinancieroId,
+          }));
       },
     });
 
@@ -201,7 +211,7 @@ export class EgresoForm implements OnInit {
   confirm() {
     this._confirm.confirm({
       message: `¿Desea confirmar el Egreso número ${this.form().value().numero ?? ''}?`,
-      header: `Confirmar Ingreso`,
+      header: `Confirmar Egreso`,
       closable: true,
       closeOnEscape: false,
       rejectButtonProps: {
