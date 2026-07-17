@@ -3,7 +3,7 @@ import { urlRole } from '../../../../../core/services/endpoint.service';
 import { RoleDTO, RoleListDTO } from '../role.model.dto';
 import { ConfirmationService } from 'primeng/api';
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
-import { Actives, IS_ADMIN } from '../../../../../core/model/shared.model.dto';
+import { IS_ADMIN } from '../../../../../core/model/shared.model.dto';
 import { ApiService } from '../../../../../core/services/api.service';
 import { rowData, TableView } from '../../../../../shared/components/table/table-view/table-view';
 import { TableColumn } from "../../../../../shared/components/table/table-column/table-column";

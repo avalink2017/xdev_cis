@@ -1,0 +1,119 @@
+<div
+  class="h-full bg-surface-0 dark:bg-surface-900 flex flex-col overflow-hidden rounded-2xl p-3"
+>
+  <div
+    class="flex flex-wrap items-center gap-3 sticky top-0 z-10 py-3 px-5 bg-surface-0 dark:bg-surface-900"
+  >
+    <p-select
+      [options]="roles()"
+      [(ngModel)]="selectedRoleId"
+      optionLabel="roleName"
+      optionValue="id"
+      placeholder="Seleccionar rol..."
+      [loading]="isLoadingRoles()"
+      (ngModelChange)="onRoleChange($event)"
+      appendTo="body"
+      [style]="{ minWidth: '220px' }"
+    />
+    @if (selectedRoleId) {
+      <p-button
+        label="Guardar cambios"
+        icon="pi pi-cloud"
+        size="small"
+        [loading]="isSaving()"
+        [disabled]="isLoadingMatrix()"
+        (onClick)="savePermissions()"
+      />
+    }
+  </div>
+
+  @if (isLoadingMatrix()) {
+    <div class="flex justify-center items-center py-10">
+      <p-progress-spinner strokeWidth="4" [style]="{ width: '48px', height: '48px' }" />
+    </div>
+  }
+
+  @if (!isLoadingMatrix() && nodes().length > 0) {
+    <div class="flex-1 min-h-0">
+      <p-treetable
+        [value]="nodes()"
+        class="p-treetable-sm"
+        showGridlines
+        [scrollable]="true"
+        scrollHeight="flex"
+        [columns]="columns()"
+        [frozenColumns]="frozenColumns()"
+        frozenWidth="250px"
+      >
+        <ng-template #colgroup let-columns>
+          <colgroup>
+            @for (col of columns; track col) {
+              <col/>
+            }
+          </colgroup>
+        </ng-template>
+        <ng-template #header let-columns>
+          <tr>            
+            @for (col of columns; track col.actionKey) {
+              <th class="text-center" style="width: 110px">{{ col.displayName }}</th>
+            }
+          </tr>
+        </ng-template>
+
+        <ng-template #body let-rowNode let-rowData="rowData" let-columns="columns">
+          <tr [ttRow]="rowNode">            
+            @for (col of columns; track col.actionKey) {
+              <td class="text-center" style="width: 110px; height: 36px;">
+                @if (rowData.actionsMap[col.actionKey]) {
+                  @if (rowData.type === 'entity') {
+                    <p-checkbox
+                      [binary]="true"
+                      [ngModel]="isEntityChecked(rowNode.node, col.actionKey)"
+                      (ngModelChange)="toggleEntityAction(rowNode.node, col.actionKey)"
+                    />
+                  } @else {
+                    <p-checkbox
+                      [binary]="true"
+                      [ngModel]="isModuleChecked(rowNode.node, col.actionKey)"
+                      [indeterminate]="isModuleIndeterminate(rowNode.node, col.actionKey)"
+                      (ngModelChange)="toggleModuleAction(rowNode.node, col.actionKey)"
+                    />
+                  }
+                }
+              </td>
+            }
+          </tr>
+        </ng-template>
+
+        <ng-template #frozenbody let-rowNode let-rowData="rowData">
+          <tr [ttRow]="rowNode">
+            <td style="height: 35px;">
+              <div class="flex flex-nowrap truncate items-center">
+                <p-treeTableToggler [rowNode]="rowNode" />
+              @if (rowData.type === 'module') {
+                <span class="font-semibold text-muted-color-emphasis">{{
+                  rowData.displayName
+                }}</span>
+              } @else {
+                <span class="pl-1 text-muted-color truncate">{{ rowData.displayName }}</span>
+              }
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treetable>
+    </div>
+  }
+
+  @if (!selectedRoleId && !isLoadingMatrix()) {
+    <div class="flex flex-col items-center justify-center py-16 gap-2 text-muted-color">
+      <i class="pi pi-shield text-4xl"></i>
+      <p class="text-sm">Selecciona un rol para ver su matriz de permisos</p>
+    </div>
+  }
+</div>
+<!-- <div class="flex flex-col gap-4 overflow-hidden">
+  
+
+  
+</div> -->

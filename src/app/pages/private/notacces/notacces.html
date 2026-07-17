@@ -1,0 +1,13 @@
+<div class="h-full flex">
+    <div class="m-auto flex flex-col gap-3">
+        <app-icon name="LucideShieldX" [size]="64" class="text-red-400 mx-auto"/>
+        <p-message class="text-center! shadow-lg" severity="error">
+            <span class="text-xl font-semibold">Acceso Denegado</span>
+            <p>No tienes acceso a la página o acción solicitada, consulte al Administrador de Sistemas si cree que esto es un error.</p>
+        </p-message>
+
+        <div class="flex justify-center">
+            <p-button label="Ir a Inicio" link routerLink="/app"/>
+        </div>
+    </div> 
+</div>

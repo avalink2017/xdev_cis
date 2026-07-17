@@ -6,7 +6,10 @@ import { PageLayout } from '../../../shared/components/page-layout/page-layout';
 import { Card } from 'primeng/card';
 import { Months } from '../../../core/model/shared.model.dto';
 import { CuentaBancoListDTO } from '../../configuration/bank-account/components/bank-account.model.dto';
-import { urlCuentaBanco, urlReports } from '../../../core/services/endpoint.service';
+import {
+  urlCuentaBanco,
+  urlReportOperationConsolidated,
+} from '../../../core/services/endpoint.service';
 import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { InputNumber } from 'primeng/inputnumber';
@@ -75,7 +78,7 @@ export class ConsolidatedReport implements OnInit {
     this.showLoader.set(true);
     this.api
       .get<ConsolidatedReportDTO>(
-        `${urlReports}/consolidado?accountid=${this.account()}&month=${this.month()}&year=${this.year()}`,
+        `${urlReportOperationConsolidated}/consolidado?accountid=${this.account()}&month=${this.month()}&year=${this.year()}`,
       )
       .subscribe({
         next: (res) => {
@@ -90,7 +93,7 @@ export class ConsolidatedReport implements OnInit {
     this.showLoader.set(true);
     this.api
       .getFile(
-        `${urlReports}/consolidado/pdf?accountid=${this.account()}&month=${this.month()}&year=${this.year()}`,
+        `${urlReportOperationConsolidated}/consolidado/pdf?accountid=${this.account()}&month=${this.month()}&year=${this.year()}`,
       )
       .subscribe({
         next: ({ blob }) => {

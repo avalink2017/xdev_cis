@@ -20,5 +20,5 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadChildren:() => import('./layouts/private-layout/private.routes').then(m => m.PRIVATE_ROUTES)
   },
-  { path: '**', redirectTo: 'app' },
+  { path: '**', redirectTo: '/app' },
 ];

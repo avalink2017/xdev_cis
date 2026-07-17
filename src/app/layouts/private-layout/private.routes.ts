@@ -157,6 +157,14 @@ export const PRIVATE_ROUTES: Routes = [
       },
 
       {
+        path: 'admin/role-permission',
+        loadComponent: () =>
+          import('../../features/administration/role-permission/page/role-permission/role-permission').then(
+            (m) => m.RolePermission,
+          ),
+      },
+
+      {
         path: 'inventory/asset',
         loadComponent: () =>
           import('../../features/inventory/asset/page/asset/asset').then((m) => m.Asset),
@@ -182,6 +190,11 @@ export const PRIVATE_ROUTES: Routes = [
           import('../../features/reports/bankingbook-report/bankingbook-report').then(
             (m) => m.BankingbookReport,
           ),
+      },
+      {
+        path: 'notaccess',
+        loadComponent: () =>
+          import('../../pages/private/notacces/notacces').then((m) => m.Notacces),
       },
     ],
   },

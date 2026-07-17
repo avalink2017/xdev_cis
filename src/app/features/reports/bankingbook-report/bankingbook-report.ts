@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Months } from '../../../core/model/shared.model.dto';
 import { ApiService } from '../../../core/services/api.service';
 import { CuentaBancoListDTO } from '../../configuration/bank-account/components/bank-account.model.dto';
-import { urlCuentaBanco, urlReports } from '../../../core/services/endpoint.service';
+import { urlCuentaBanco, urlReportBankingBook } from '../../../core/services/endpoint.service';
 import { PageLayout } from "../../../shared/components/page-layout/page-layout";
 import { Card } from "primeng/card";
 import { Select } from "primeng/select";
@@ -58,7 +58,7 @@ export class BankingbookReport implements OnInit {
     this.showLoader.set(true);
     this.api
       .get<BankingBookDTO>(
-        `${urlReports}/bankingbook?accountid=${this.account()}&month=${this.month()}&year=${this.year()}`,
+        `${urlReportBankingBook}/bankingbook?accountid=${this.account()}&month=${this.month()}&year=${this.year()}`,
       )
       .subscribe({
         next: (res) => {
@@ -73,7 +73,7 @@ export class BankingbookReport implements OnInit {
     this.showLoader.set(true);
     this.api
       .getFile(
-        `${urlReports}/bankingbook/pdf?accountid=${this.account()}&month=${this.month()}&year=${this.year()}`,
+        `${urlReportBankingBook}/bankingbook/pdf?accountid=${this.account()}&month=${this.month()}&year=${this.year()}`,
       )
       .subscribe({
         next: ({ blob }) => {

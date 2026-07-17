@@ -57,7 +57,7 @@ function currencyFormatter(value: string | number) {
     FormsModule,
     UIChart,
     CurrencyPipe,
-    MeterGroup,    
+    MeterGroup,
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
@@ -82,7 +82,7 @@ export default class DashboardPage implements OnInit {
   }
 
   loadData() {
-    this.dashboardService.load(this.selectedYear());    
+    this.dashboardService.load(this.selectedYear());
   }
 
   /**
@@ -188,7 +188,7 @@ export default class DashboardPage implements OnInit {
         {
           data: items.map((i) => Number(i.value) || 0),
           // backgroundColor: INGRESO_COLORS.slice(0, items.length),
-          borderWidth: 0,
+          borderWidth: 2,
         },
       ],
     };
@@ -202,15 +202,20 @@ export default class DashboardPage implements OnInit {
         {
           data: items.map((i) => Number(i.value) || 0),
           // backgroundColor: EGRESO_COLORS.slice(0, items.length),
-          borderWidth: 0,
+          borderWidth: 2,
         },
       ],
     };
   });
 
+  documentStyle = getComputedStyle(document.documentElement);
+  textColor = this.documentStyle.getPropertyValue('--p-text-color');
+  textColorSecondary = this.documentStyle.getPropertyValue('--p-text-muted-color');
+  surfaceBorder = this.documentStyle.getPropertyValue('--p-content-border-color');
+
   barOptions = {
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { position: 'top' as const },
       tooltip: {
@@ -223,9 +228,12 @@ export default class DashboardPage implements OnInit {
       y: {
         beginAtZero: true,
         ticks: { callback: currencyFormatter },
+        grid: {
+          color: this.surfaceBorder,
+        },
       },
       x: {
-        grid: { display: false },
+        grid: { display:false },
       },
     },
   };
@@ -244,7 +252,7 @@ export default class DashboardPage implements OnInit {
           },
         },
       },
-    },
+    },    
     cutout: '70%',
   };
 }

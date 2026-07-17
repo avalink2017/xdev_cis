@@ -177,6 +177,11 @@ export class SideNavbar {
           icon: 'LucideUserRoundKey',
           routerLink: '/app/admin/role',
         },
+        {
+          label: 'Permisos',
+          icon: 'LucideShieldUser',
+          routerLink: '/app/admin/role-permission',
+        },
       ],
     },
   ];

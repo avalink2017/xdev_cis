@@ -16,7 +16,7 @@
 
     @if (loading()) {
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        @for (_ of [1,2,3,4,5,6]; track $index) {
+        @for (_ of [1, 2, 3, 4, 5, 6]; track $index) {
           <p-skeleton height="110px" borderRadius="12px" />
         }
       </div>
@@ -38,11 +38,23 @@
         @for (kpi of kpiCards(); track kpi.label) {
           <div
             class="flex items-start gap-3 rounded-xl bg-surface-0 p-3 sm:p-4 shadow-sm transition-shadow hover:shadow-md dark:bg-surface-800 border-l-4"
-            [class]="kpi.tone === 'green' ? 'border-green-600 dark:border-green-600' : kpi.tone === 'red' ? 'border-red-600 dark:border-red-800' : 'border-blue-500 dark:border-blue-600'"
+            [class]="
+              kpi.tone === 'green'
+                ? 'border-green-600 dark:border-green-600'
+                : kpi.tone === 'red'
+                  ? 'border-red-600 dark:border-red-800'
+                  : 'border-blue-500 dark:border-blue-600'
+            "
           >
             <div
               class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-white"
-              [class]="kpi.tone === 'green' ? 'bg-green-600' : kpi.tone === 'red' ? 'bg-red-600' : 'bg-blue-600'"
+              [class]="
+                kpi.tone === 'green'
+                  ? 'bg-green-600'
+                  : kpi.tone === 'red'
+                    ? 'bg-red-600'
+                    : 'bg-blue-600'
+              "
             >
               <app-icon [name]="kpi.icon" [size]="20" />
             </div>
@@ -50,9 +62,15 @@
               <p class="truncate text-[0.8rem] text-muted-color">{{ kpi.label }}</p>
               <p
                 class="truncate text-[1.125rem] font-bold tracking-tight"
-                [class]="kpi.tone === 'green' ? 'text-green-600 dark:text-green-400' : kpi.tone === 'red' ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400'"
+                [class]="
+                  kpi.tone === 'green'
+                    ? 'text-green-600 dark:text-green-400'
+                    : kpi.tone === 'red'
+                      ? 'text-red-600 dark:text-red-400'
+                      : 'text-blue-600 dark:text-blue-400'
+                "
               >
-                {{ kpi.value | currency:'USD':'symbol':'1.0-0' }}
+                {{ kpi.value | currency: 'USD' : 'symbol' : '1.0-0' }}
               </p>
               @if (kpi.sub) {
                 <p class="truncate text-[0.7rem] text-muted-color">{{ kpi.sub }}</p>
@@ -68,38 +86,86 @@
            directamente con Tailwind, sin depender del wrapper interno de
            PrimeNG ni de variables de tema. -->
       <div class="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-3">
-        <div class="flex flex-col rounded-xl border border-surface-200 bg-white p-5 dark:border-surface-700 dark:bg-surface-900 lg:col-span-2">
+        <div
+          class="rounded-xl border border-surface-200 bg-white p-5 dark:border-surface-700 dark:bg-surface-900 lg:col-span-2 flex flex-col"
+        >
           <h3 class="mb-4 text-base font-semibold text-color">Evolución Mensual</h3>
-          <div class="relative min-h-60 flex-1">
-            <p-chart type="bar" [data]="barData()" [options]="barOptions" />
+          <div class="relative flex-1 min-h-0 min-h-50">
+            <p-chart
+              type="bar"
+              [data]="barData()"
+              [options]="barOptions"
+              [pt]="{
+                root: {
+                  class: 'absolute inset-0 h-full w-full',
+                },
+                canvas: {
+                  class: 'absolute inset-0 h-full w-full',
+                },
+              }"
+            />
           </div>
         </div>
 
-        <p-card header="Resumen Rápido">
-          <div class="flex flex-col gap-3">
-            <div class="flex items-center justify-between rounded-lg border-l-4 border-green-600 bg-surface-50 p-3 dark:bg-surface-800">
-              <span class="text-sm text-muted-color">Total Ingresos</span>
-              <span class="font-semibold text-green-700 dark:text-green-300">{{ d.kpis.ingresosYTD | currency:'USD':'symbol':'1.0-0' }}</span>
-            </div>
-            <div class="flex items-center justify-between rounded-lg border-l-4 border-red-700 bg-surface-50 p-3 dark:bg-surface-800">
-              <span class="text-sm text-muted-color">Total Egresos</span>
-              <span class="font-semibold text-red-700 dark:text-red-300">{{ d.kpis.egresosYTD | currency:'USD':'symbol':'1.0-0' }}</span>
-            </div>
-            <div class="flex items-center justify-between rounded-lg border-l-4 border-blue-600 bg-surface-50 p-3 dark:bg-surface-800">
-              <span class="text-sm text-muted-color">Balance Neto</span>
-              <span class="font-semibold" [class]="d.kpis.balanceYTD >= 0 ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'">{{ d.kpis.balanceYTD | currency:'USD':'symbol':'1.0-0' }}</span>
-            </div>
-            <div class="text-sm! flex flex-col gap-3 p-3 border-l-4 border-green-300 dark:border-green-600 rounded-xl dark:bg-surface-800 ">
-              <span class="text-green-700 dark:text-green-300 font-semibold">Ingresos: {{dashboardService.countIncomes()}}</span>
-              <p-metergroup [value]="dashboardService.meterIncomes()" [max]="dashboardService.countIncomes()" class="text-muted-color-emphasis!"/>
-            </div>
-
-            <div class="text-sm! flex flex-col gap-3 p-3 border-l-4 border-rose-300 dark:border-red-800 rounded-xl dark:bg-surface-800">
-              <span class="font-semibold text-red-700 dark:text-red-300">Egresos: {{dashboardService.countExpenses()}}</span>
-              <p-metergroup [value]="dashboardService.meterExpenses()" [max]="dashboardService.countExpenses()" class="text-muted-color-emphasis!"/>
-            </div>            
+        <!-- <p-card header="Resumen Rápido"> -->
+        <div class="flex flex-col gap-5">
+          <div
+            class="flex items-center justify-between rounded-lg border-l-4 border-green-600 bg-surface-0 shadow p-3 dark:bg-surface-800"
+          >
+            <span class="text-sm text-muted-color">Total Ingresos</span>
+            <span class="font-semibold text-green-700 dark:text-green-300">{{
+              d.kpis.ingresosYTD | currency: 'USD' : 'symbol' : '1.0-0'
+            }}</span>
           </div>
-        </p-card>
+          <div
+            class="flex items-center justify-between rounded-lg border-l-4 border-red-700 bg-surface-0 shadow p-3 dark:bg-surface-800"
+          >
+            <span class="text-sm text-muted-color">Total Egresos</span>
+            <span class="font-semibold text-red-700 dark:text-red-300">{{
+              d.kpis.egresosYTD | currency: 'USD' : 'symbol' : '1.0-0'
+            }}</span>
+          </div>
+          <div
+            class="flex items-center justify-between rounded-lg border-l-4 border-blue-600 bg-surface-0 shadow p-3 dark:bg-surface-800"
+          >
+            <span class="text-sm text-muted-color">Balance Neto</span>
+            <span
+              class="font-semibold"
+              [class]="
+                d.kpis.balanceYTD >= 0
+                  ? 'text-green-700 dark:text-green-300'
+                  : 'text-red-700 dark:text-red-300'
+              "
+              >{{ d.kpis.balanceYTD | currency: 'USD' : 'symbol' : '1.0-0' }}</span
+            >
+          </div>
+          <div
+            class="text-sm! flex flex-col gap-3 p-3 border-l-4 border-green-500 dark:border-green-600 rounded-xl bg-surface-0 shadow dark:bg-surface-800"
+          >
+            <span class="text-green-700 dark:text-green-300 font-semibold"
+              >Ingresos: {{ dashboardService.countIncomes() }}</span
+            >
+            <p-metergroup
+              [value]="dashboardService.meterIncomes()"
+              [max]="dashboardService.countIncomes()"
+              class="text-muted-color-emphasis!"
+            />
+          </div>
+
+          <div
+            class="text-sm! flex flex-col gap-3 p-3 border-l-4 border-rose-500 dark:border-rose-800 rounded-xl bg-surface-0 shadow dark:bg-surface-800"
+          >
+            <span class="font-semibold text-red-700 dark:text-red-400"
+              >Egresos: {{ dashboardService.countExpenses() }}</span
+            >
+            <p-metergroup
+              [value]="dashboardService.meterExpenses()"
+              [max]="dashboardService.countExpenses()"
+              class="text-muted-color-emphasis!"
+            />
+          </div>
+        </div>
+        <!-- </p-card> -->
       </div>
 
       <!-- Fila 2: los dos donuts en igualdad de condiciones, sin huecos -->
