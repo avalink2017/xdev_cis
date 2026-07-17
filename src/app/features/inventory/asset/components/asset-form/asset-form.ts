@@ -10,6 +10,7 @@ import {
   min,
   required,
   submit,
+  validate,
 } from '@angular/forms/signals';
 import { firstValueFrom } from 'rxjs';
 import { urlAsset, urlPartner } from '../../../../../core/services/endpoint.service';
@@ -91,7 +92,12 @@ export class AssetForm implements OnInit {
     required(schemaPath.assetCategoryId, { message: 'Categoría requerida' });
     required(schemaPath.assetLocationId, { message: 'Ubicación requerida' });
     required(schemaPath.assetStatusId, { message: 'Estado requerido' });
-    disabled(schemaPath.fechaDescargo);
+    validate(schemaPath.fechaDescargo, ({ value }) => {
+      if (!value() && this.selectedStatus()?.disposed) {
+        return { kind: 'fechaDescargoRequerida', message: 'Fecha descargo es requerida' };
+      }
+      return null;
+    });
     disabled(schemaPath.lastUpdatedAt);
   });
 
@@ -103,17 +109,15 @@ export class AssetForm implements OnInit {
       this.textLoading.set('Recuperando...');
       this.isLoading.set(true);
       this.api.get<AssetDTO>(`${urlAsset}/${this.entityId()}`).subscribe({
-        next: (res) => {
-          console.log(res)
+        next: (res) => {          
           res.purchaseDate = new Date(res.purchaseDate);
           if (res.lastUpdatedAt) res.lastUpdatedAt = new Date(res.lastUpdatedAt);
           if (res.fechaDescargo) res.fechaDescargo = new Date(res.fechaDescargo);
           this.model.set(res);
           this.isLoading.set(false);
-          
-          var st = this.assetService.statusList().find(f => f.id === res.assetStatusId)
-          if(st)
-            this.selectedStatus.set(st)
+
+          var st = this.assetService.statusList().find((f) => f.id === res.assetStatusId);
+          if (st) this.selectedStatus.set(st);
         },
         error: () => this.isLoading.set(false),
       });
