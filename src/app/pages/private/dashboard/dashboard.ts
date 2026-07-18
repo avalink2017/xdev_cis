@@ -113,21 +113,21 @@ export default class DashboardPage implements OnInit {
 
     return [
       {
-        label: 'Ingresos YTD',
+        label: 'Ingresos Anuales',
         icon: 'LucideBanknoteArrowUp',
         tone: 'green',
         value: n(d.ingresosYTD),
         sub: `${n(this.dashboardService.getIngresosYTD())} transacciones`,
       },
       {
-        label: 'Egresos YTD',
+        label: 'Egresos Anuales',
         icon: 'LucideBanknoteArrowDown',
         tone: 'red',
         value: n(d.egresosYTD),
         sub: `${n(this.dashboardService.getEgresosYTD())} transacciones`,
       },
       {
-        label: 'Balance YTD',
+        label: 'Balance Anual',
         icon: 'LucideWalletMinimal',
         tone: n(d.balanceYTD) >= 0 ? 'blue' : 'red',
         value: n(d.balanceYTD),

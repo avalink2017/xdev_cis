@@ -12,7 +12,7 @@ import { AutoFocusModule } from 'primeng/autofocus';
     <div class="flex flex-col gap-1">
       <label
         [for]="name()"
-        class="text-sm ms-2"
+        class="text-sm ms-2 font-semibold"
         [class.text-red-400]="required() && invalid() && touched()"
         >{{ label() }}</label
       >
@@ -72,7 +72,7 @@ export class TextAreaNg implements FormValueControl<string> {
 
   onInput(event: Event) {
     const target = event.target as HTMLTextAreaElement;
-    const upper = this.upperCase() ? target.value.toUpperCase(): target.value;
+    const upper = this.upperCase() ? target.value.toUpperCase() : target.value;
     const cursorStart = target.selectionStart;
     const cursorEnd = target.selectionEnd;
 

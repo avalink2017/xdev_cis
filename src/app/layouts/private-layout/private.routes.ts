@@ -165,6 +165,14 @@ export const PRIVATE_ROUTES: Routes = [
       },
 
       {
+        path: 'admin/app-settings',
+        loadComponent: () =>
+          import('../../features/administration/app-settings/page/app-settings/app-settings').then(
+            (m) => m.AppSettings,
+          ),
+      },
+
+      {
         path: 'inventory/asset',
         loadComponent: () =>
           import('../../features/inventory/asset/page/asset/asset').then((m) => m.Asset),

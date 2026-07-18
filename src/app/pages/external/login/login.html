@@ -1,0 +1,94 @@
+<div class="mx-2">
+  <div
+    class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/25 mx-auto"
+  >
+    <span class="text-2xl font-bold text-primary-contrast">CIS</span>
+  </div>
+  <!-- Branding/Heading -->
+  <div class="text-center my-2">
+    <h1 class="text-2xl font-semibold text-primary">Bienvenido de nuevo</h1>
+    <p class="text-muted-color-emphasis text-sm sm:text-base">Introduzca sus credenciales para acceder a su cuenta.</p>
+  </div>
+
+  <div
+    class="rounded-lg p-6 md:p-10 relative overflow-hidden dark:border bg-surface-0 dark:bg-surface-900 dark:border-surface-800 shadow-xl"
+  >
+    <!-- Subtle Decorative Element -->
+    <div class="absolute top-0 left-0 w-full h-1 bg-primary-500"></div>
+    <form class="space-y-6" id="loginForm">
+      <!-- Email Field -->
+      <div class="space-y-2">
+        <label class="font-label-sm text-label-sm text-on-surface block" for="email">Usuario</label>
+        <div class="relative group">
+          <div
+            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-secondary transition-colors"
+          >
+            <span class="material-symbols-outlined text-[20px]">mail</span>
+          </div>
+          <div>
+            <p-iconfield>
+              <p-inputicon class="pi pi-user" />
+              <input
+                type="email"
+                pInputText
+                id="email"
+                [formField]="loginForm.email"
+                fluid
+                [pAutoFocus]="true"
+                placeholder="Correo eletrónico"
+              />
+            </p-iconfield>
+            @if (loginForm.email().touched() && loginForm.email().invalid()) {
+              @for (error of loginForm.email().errors(); track error) {
+                <p-message severity="error" size="small" variant="simple">{{
+                  error.message
+                }}</p-message>
+              }
+            }
+          </div>
+        </div>
+      </div>
+      <!-- Password Field -->
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <label class="font-label-sm text-label-sm text-on-surface block" for="password"
+            >Contraseña</label
+          >
+          <a class="text-sm cursor-pointer text-primary-emphasis" tabindex="2" routerLink="/forgot-password">¿Olvidate la contraseña?</a>
+        </div>
+        <div class="relative group">          
+          <div>
+            <p-iconfield>
+              <p-inputicon class="pi pi-lock" />
+              <input
+                type="password"
+                pInputText
+                id="password"
+                [formField]="loginForm.password"
+                fluid
+              />
+            </p-iconfield>
+            @if (loginForm.password().touched() && loginForm.password().invalid()) {
+              @for (error of loginForm.password().errors(); track error) {
+                <p-message severity="error" size="small" variant="simple">{{
+                  error.message
+                }}</p-message>
+              }
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <p-button
+        [disabled]="loginForm().submitting() || loginForm().invalid()"
+        [label]="loginForm().submitting() ? 'Validando...' : 'Iniciar sesión'"
+        fluid
+        styleClass="w-full!"
+        (onClick)="onLogin()"
+      >
+        <app-icon name="LucideLogIn" />
+      </p-button>
+    </form>
+  </div>
+</div>

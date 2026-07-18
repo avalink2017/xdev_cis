@@ -182,6 +182,11 @@ export class SideNavbar {
           icon: 'LucideShieldUser',
           routerLink: '/app/admin/role-permission',
         },
+        {
+          label: 'Aplicación',
+          icon: 'LucideMonitorCog',
+          routerLink: '/app/admin/app-settings',
+        },
       ],
     },
   ];

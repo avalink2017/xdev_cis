@@ -47,3 +47,4 @@ export const urlReportOperationDetail = 'operationdetail';
 export const urlReportBankingBook = 'bankingbook';
 export const urlRolePermission = 'rolepermission';
 export const urlPermissionMatrix = 'permissionmatrix';
+export const urlAppSettings = 'appsettings'
