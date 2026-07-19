@@ -1,0 +1,49 @@
+<form>
+  <div class="grid grid-cols-1 gap-3 md2:grid-cols-2 2xl:grid-cols-3">
+    <div class="flex flex-col gap-4">
+      <app-select-ng
+        [formField]="entityForm.emailProvider"
+        [options]="emailProvider"
+        optionLabel="label"
+        optionValue="id"
+        label="Proveedor de Correo"
+      />
+      <div class="grid grid-cols-1 gap-4 xs:grid-cols-2">
+        @if (selectedProvider() !== 'None') {
+          @if (selectedProvider() === 'FluentEmail') {
+            <app-input-ng [formField]="entityForm.smtpHost" label="Host" />
+            <app-input-number-ng [formField]="entityForm.smtpPort" label="Puerto" />
+            <app-input-ng [formField]="entityForm.smtpUserName" label="Usuario" />
+            <app-input-ng
+              type="password"
+              [formField]="entityForm.smtpUserPassword"
+              label="Contraseña"
+            />
+            <app-toggle-button-ng
+              [formField]="entityForm.smtpEnableSsl"
+              label="Habilitar Ssl"
+              offLabel="Ssl Inactivo"
+              [onLabel]="'Ssl Activo'"
+            />
+          }@else{
+            <app-input-ng
+              type="password"
+              [formField]="entityForm.apiKey"
+              label="Api Key"
+              class="col-span-full"
+            />
+
+            <app-input-ng
+              type="email"
+              [formField]="entityForm.apiEmail"
+              label="Correo electrónico remitente"
+              class="col-span-full"
+            />
+          }
+          <app-input-ng [formField]="entityForm.sender" label="Nombre remitente" class="col-span-full"/>
+        }        
+      </div>
+    </div>
+  </div>
+</form>
+<app-loading-block [visible]="showLoader()" [message]="textLoader()" />

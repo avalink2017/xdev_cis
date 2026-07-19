@@ -1,0 +1,12 @@
+<app-page-layout title="Aplicación" subtitle="Configuración de aplicación" iconName="LucideMonitorCog">
+  <ng-template #headerActions>
+    <p-buttongroup>
+      <p-button [label]="device.isMobile() ? '':'Guardar'" (onClick)="Save()" [disabled]="!isFormValid()">
+        <app-icon name="LucideCloud" />
+      </p-button>      
+    </p-buttongroup>
+  </ng-template>
+  <p-card>
+    <ng-container #compo />
+  </p-card>
+</app-page-layout>

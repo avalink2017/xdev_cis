@@ -27,6 +27,11 @@ export class App {
     this.theme.initialize();
     afterNextRender(() => this.theme.applyPreset(this.theme.themeState().preset));
 
+    if (window.location.pathname.startsWith('/resetPassword')) {
+      this.shouldShowOverlay.set(false);
+      return;
+    }
+
     this.auth.checkAuth().subscribe({
       next: () => this.resolve(),
       error: (err: HttpErrorResponse) => {
@@ -52,7 +57,7 @@ export class App {
   }
 
   private resolve(): void {
-    if (this.auth.authStatus() === 'unauthenticated') {
+    if (this.auth.authStatus() === 'unauthenticated' && !window.location.pathname.startsWith('/resetPassword')) {
       this.router.navigate(['/login']);
     }
     this.shouldShowOverlay.set(false);

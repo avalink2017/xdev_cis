@@ -12,7 +12,7 @@ import { InputText } from 'primeng/inputtext';
 import { Message } from "primeng/message";
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login2',
   imports: [FormField, Button, Icon, InputIcon, IconField, InputText, Message,AutoFocusModule],
   template: `
     <div class="relative flex flex-col items-center justify-center px-4 py-12">
@@ -67,25 +67,7 @@ import { Message } from "primeng/message";
 
               <div class="flex flex-col gap-1">
                 <label for="password">Contraseña</label>
-                <div>
-                  <p-iconfield>
-                    <p-inputicon class="pi pi-lock" />
-                    <input
-                      type="password"
-                      pInputText
-                      id="password"
-                      [formField]="loginForm.password"
-                      fluid                      
-                    />
-                  </p-iconfield>
-                  @if (loginForm.password().touched() && loginForm.password().invalid()) {
-                    @for (error of loginForm.password().errors(); track error) {
-                      <p-message severity="error" size="small" variant="simple">{{
-                        error.message
-                      }}</p-message>
-                    }
-                  }
-                </div>
+                
               </div>
             </div>
 

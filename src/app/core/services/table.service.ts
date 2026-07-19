@@ -7,6 +7,7 @@ import { tap } from 'rxjs';
 import { PaginationDTO } from '../model/paginatio.model.dto';
 import { ApiPagedService } from './api.paged.service';
 import { NotificationService } from './notification.service';
+import { Router } from '@angular/router';
 
 export interface TableConfig {
   url: string;
@@ -20,6 +21,7 @@ export interface Column {
 @Injectable()
 export class TableService<T> {
   private config?: TableConfig;
+  private router = inject(Router);
 
   nt = inject(NotificationService);
   api = inject(ApiPagedService);
@@ -50,7 +52,11 @@ export class TableService<T> {
         //     console.log(resp.body);
         //   }),
         // )
-        .subscribe({ error: (error) => {} });
+        .subscribe({
+          error: (error) => {
+            if (error && error.status === 403) this.router.navigate(['/app/notaccess']);
+          },
+        });
 
     if (!this.config || !this.config.url)
       this.nt.showError('API Service', 'Revise la configuración del servicio');

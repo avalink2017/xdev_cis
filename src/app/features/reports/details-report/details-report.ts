@@ -8,7 +8,7 @@ import { CuentaBancoListDTO } from '../../configuration/bank-account/components/
 import { FormsModule } from '@angular/forms';
 import { DatePicker } from 'primeng/datepicker';
 import { ApiService } from '../../../core/services/api.service';
-import { urlCuentaBanco, urlReports } from '../../../core/services/endpoint.service';
+import { urlCuentaBanco, urlReportOperationDetail } from '../../../core/services/endpoint.service';
 import { DetailOperationsListDTO } from './detail.report.model.dto';
 import { TableModule } from "primeng/table";
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -72,7 +72,7 @@ export class DetailsReport implements OnInit {
     this.api
       .get<
         DetailOperationsListDTO[]
-      >(`${urlReports}/detail?tipo=${this.tipoReport()}&accountid=${this.account()}&month=${this.month()}&year=${this.year()}`)
+      >(`${urlReportOperationDetail}/detail?tipo=${this.tipoReport()}&accountid=${this.account()}&month=${this.month()}&year=${this.year()}`)
       .subscribe({
         next: (res) => {
           this.data.set(res);

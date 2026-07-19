@@ -21,7 +21,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401) {
         auth.user.set(null);
         auth.authStatus.set('unauthenticated');
-        router.navigate(['/login']);
+        if (!window.location.pathname.startsWith('/resetPassword')) {
+          router.navigate(['/login']);
+        }
       }else{
         messageService.add({
           key: 'global-toast',
@@ -46,7 +48,7 @@ function getServerErrorMessage(error: HttpErrorResponse): string {
     case 0:
       return 'No se pudo conectar al servidor';
     case 400:
-      return error.error?.message ?? 'Solicitud incorrecta';
+      return extractErrorMessage(error.error);
     case 401:
       return 'Usuario no autorizado';
     case 403:
@@ -62,4 +64,36 @@ function getServerErrorMessage(error: HttpErrorResponse): string {
     default:
       return error.error?.message || error.message;
   }
+}
+
+type ErrorDictionary = { [code: string]: string[] };
+
+type ApiErrorShape =
+  | string
+  | string[]
+  | ErrorDictionary
+  | { errors?: ErrorDictionary | string[] }
+  | undefined;
+
+function extractErrorMessage(error: ApiErrorShape): string {
+  if (!error) return 'Solicitud incorrecta';
+
+  if (typeof error === 'string') return error;
+
+  if (Array.isArray(error)) {
+    return error[0] ?? 'Solicitud incorrecta';
+  }
+
+  // A partir de aquí, error es ErrorDictionary | { errors?: ErrorDictionary | string[] }
+  const errors: ErrorDictionary | string[] | undefined =
+    'errors' in error ? error.errors : (error as ErrorDictionary);
+
+  if (!errors) return 'Solicitud incorrecta';
+
+  if (Array.isArray(errors)) {
+    return errors[0] ?? 'Solicitud incorrecta';
+  }
+
+  const firstKey = Object.keys(errors)[0];
+  return firstKey ? (errors[firstKey]?.[0] ?? 'Solicitud incorrecta') : 'Solicitud incorrecta';
 }

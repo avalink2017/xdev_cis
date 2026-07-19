@@ -10,7 +10,7 @@ import { Message } from 'primeng/message';
   template: `<div class="flex flex-col gap-1">
     <label
       [for]="name()"
-      class="text-sm ms-2"
+      class="text-sm ms-2 font-semibold"
       [class.text-red-400]="required() && invalid() && touched()"
       >{{ label() }}</label
     >
@@ -63,14 +63,14 @@ export class SelectNg implements FormValueControl<string> {
   optionValue = input<string>('id');
   placeholder = input<string>('');
   size = input<'small' | 'large' | undefined>(undefined);
-  showClear = input(false);  
-  selectChange = output<any>()
+  showClear = input(false);
+  selectChange = output<any>();
 
-  onChange(val:any){
-    if(val && val.value){
-      if(this.options()){
-        var exists = this.options()?.find(f => f[this.optionValue()] === val.value)
-        this.selectChange.emit(exists)
+  onChange(val: any) {
+    if (val && val.value) {
+      if (this.options()) {
+        var exists = this.options()?.find((f) => f[this.optionValue()] === val.value);
+        this.selectChange.emit(exists);
       }
     }
   }

@@ -11,7 +11,7 @@ import { Message } from "primeng/message";
     <div class="flex flex-col gap-1">
       <label
         [for]="name()"
-        class="text-sm ms-2"
+        class="text-sm ms-2 font-semibold"
         [class.text-red-400]="required() && invalid() && touched()"
         >{{ label() }}</label
       >
