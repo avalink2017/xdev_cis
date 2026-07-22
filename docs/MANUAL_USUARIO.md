@@ -23,7 +23,7 @@
 
 ## 1. Introducción
 
-**CIS** (Control de Ingresos y Salidas) es un sistema web de gestión financiera y administrativa. Permite registrar y controlar ingresos y egresos, administrar activos fijos, gestionar socios comerciales, generar reportes consolidados y configurar catálogos maestros.
+**CIS** (Control de Ingresos y Salidas) es un sistema web de gestión financiera y administrativa. Permite registrar y controlar ingresos y egresos, administrar activos fijos, gestionar socios comerciales, generar reportes consolidados y detallados, y configurar catálogos maestros.
 
 ### Requisitos técnicos
 - Navegador web moderno (Chrome, Firefox, Edge, Safari).
@@ -37,17 +37,25 @@
 
 Al ingresar a la aplicación verá una pantalla con el logo **CIS** y un formulario de inicio de sesión.
 
-![Login](placeholder-login.png)
-
 **Campos:**
 - **Correo electrónico** — su correo registrado en el sistema.
 - **Contraseña** — su contraseña.
 
 Presione **Iniciar sesión** para ingresar.
 
-### 2.2 Recuperación de acceso
+### 2.2 Recuperación de contraseña
 
-Si no recuerda su contraseña, contacte al administrador del sistema para restablecerla.
+Si no recuerda su contraseña:
+
+1. En la pantalla de login, presione el enlace **¿Olvidaste tu contraseña?**.
+2. Ingrese su **correo electrónico** registrado.
+3. Presione **Enviar** — recibirá un código de restablecimiento en su correo.
+4. En la pantalla de **Restablecer contraseña** (a la que llega desde el enlace del correo):
+   - **Nueva contraseña** — ingrese la nueva clave.
+   - **Confirmar contraseña** — repita la nueva clave.
+5. Presione **Guardar** para completar el cambio.
+
+> Nota: Los campos de correo y código se cargan automáticamente desde el enlace recibido por email.
 
 ---
 
@@ -62,12 +70,12 @@ Menú de navegación colapsable con las siguientes secciones:
 | Sección | Rutas |
 |---|---|
 | **INICIO** | Dashboard |
-| **OPERACIONES** | Ingresos, Egreso, Períodos |
+| **OPERACIONES** | Ingresos, Egresos, Períodos |
 | **INVENTARIO** | Activo Fijo |
-| **INFORMES** | Consolidado |
-| **CATALOGOS** | Bancos, Tipo Ingreso, Tipo Egreso, Tipo Documento, Cuentas Bancarias, Categoría Activo, Ubicación Activo, Estado Activo, Marca |
+| **INFORMES** | Consolidado, Detallado, Libro Bancario |
 | **SOCIOS COMERCIALES** | Socios, Categorías, Tipos, Roles |
-| **ADMINISTRACION** | Usuarios, Roles |
+| **CATALOGOS** | Bancos, Tipo Ingreso, Tipo Egreso, Tipo Documento, Cuentas Bancarias, Categoría Activo, Ubicación Activo, Estado Activo, Marca |
+| **ADMINISTRACION** | Usuarios, Roles, Permisos por Rol, Configuración App |
 
 Cada grupo se expande/colapsa al hacer clic en su encabezado.
 
@@ -123,6 +131,7 @@ Seis indicadores principales:
 
 - **Gráfico de barras mensual:** evolución de ingresos, egresos y balance mes a mes.
 - **Gráficos de dona:** distribución de ingresos por tipo y egresos por tipo.
+- **Medidor de estado:** cantidad de operaciones en borrador, confirmadas y anuladas.
 
 ---
 
@@ -133,78 +142,89 @@ Seis indicadores principales:
 Registro de transacciones de ingreso (dinero que entra).
 
 #### Listado de Ingresos
-Muestra una tabla paginada con todos los ingresos. Cada fila es clickeable para editar. Botón **Crear** para registrar un nuevo ingreso.
+Muestra una tabla paginada con todos los ingresos, incluyendo indicador de estado (Borrador / Confirmado / Anulado). Cada fila es clickeable para editar. Botón **Crear** para registrar un nuevo ingreso.
 
 #### Campos del formulario de Ingreso
 
 | Campo | Descripción |
 |---|---|
-| Número | Generado automáticamente (solo lectura) |
-| Fecha de movimiento | Fecha del ingreso |
+| Número | Generado automáticamente por el sistema (solo lectura) |
+| Fecha de movimiento | Fecha en que se realizó el ingreso |
 | Cuenta bancaria | Seleccione la cuenta destino |
 | Tipo Ingreso | Categoría del ingreso (ej. Venta, Servicio) |
 | Tipo Documento | Tipo de documento asociado (Factura, Recibo, etc.) |
-| Socio | Seleccione un socio comercial cliente (autocompletado) |
+| Socio | Seleccione un socio comercial cliente (búsqueda con autocompletado) |
 | Descripción | Detalle del ingreso (máx. 500 caracteres) |
 | No. Documento | Número del documento asociado |
-| Monto | Valor del ingreso |
-| Archivo adjunto | Opcional: suba una imagen o documento PDF (máx. 1 MB) |
+| Monto | Valor del ingreso en la moneda configurada |
+| Archivo adjunto | Opcional: suba una imagen o documento PDF (máx. 1 MB, formatos: PDF, JPG, PNG, DOC, DOCX) |
 
 #### Estados del Ingreso
 
-- **Borrador:** puede editar todos los campos.
-- **Confirmado:** congelado, no permite edición. Puede imprimir o descargar el comprobante.
-- **Anulado:** estado final irreversible.
+- **Borrador:** puede editar todos los campos. El comprobante aún no está confirmado.
+- **Confirmado:** registro congelado, no permite edición. Puede imprimir o descargar el comprobante en PDF.
+- **Anulado:** estado final irreversible. El registro permanece para auditoría pero no afecta saldos.
 
 #### Acciones por estado
 
 | Estado | Acciones disponibles |
 |---|---|
-| Borrador | Guardar, Confirmar |
-| Confirmado | Imprimir, Descargar |
-| Activo (no anulado) | Anular |
+| Borrador | Guardar cambios, Confirmar ingreso |
+| Confirmado | Imprimir comprobante, Descargar PDF |
+| Confirmado (no anulado) | Anular ingreso |
+| Anulado | Solo visualización |
 
 ### 6.2 Egresos
 
 Registro de transacciones de egreso (dinero que sale). Funciona de manera similar a Ingresos.
 
-#### Campos adicionales vs Ingreso
+#### Campos del formulario de Egreso
 
 | Campo | Descripción |
 |---|---|
+| Número | Generado automáticamente por el sistema (solo lectura) |
+| Fecha de movimiento | Fecha en que se realizó el egreso |
+| Cuenta bancaria | Seleccione la cuenta de origen |
+| Tipo Egreso | Categoría del egreso (ej. Compra, Servicio público) |
+| Tipo Documento | Tipo de documento asociado |
+| Socio | Seleccione un socio comercial **proveedor** (búsqueda con autocompletado filtrada por rol Proveedor) |
+| Descripción | Detalle del egreso (máx. 500 caracteres) |
+| No. Documento | Número del documento asociado |
 | No. Cheque | Número de cheque asociado (obligatorio) |
-| Tipo Egreso | Categoría del egreso |
-| Socio | Seleccione un socio comercial proveedor (autocompletado) |
+| Monto | Valor del egreso |
+| Archivo adjunto | Opcional: suba una imagen o documento PDF (máx. 1 MB) |
 
 #### Estados y acciones
 
-Mismos estados que Ingresos: Borrador → Confirmado → Anulado.
+Mismos estados que Ingresos: Borrador → Confirmado → Anulado, con las mismas acciones disponibles.
 
 ### 6.3 Períodos
 
-Gestión de apertura y cierre de meses por cuenta bancaria.
+Gestión de apertura y cierre de meses por cuenta bancaria. Controla que no se puedan registrar operaciones en meses cerrados.
 
 #### Apertura de período
 1. Presione **Crear**.
-2. Seleccione: Cuenta bancaria, Mes y Año.
+2. Seleccione: **Cuenta bancaria**, **Mes** y **Año**.
 3. El sistema registrará la apertura con el saldo inicial de la cuenta.
 
 #### Cierre de período
 1. En la lista, presione el icono de cierre en el período deseado.
-2. Agregue una observación opcional.
-3. Confirme el cierre. Una vez cerrado un período, no se pueden registrar más movimientos en ese mes para esa cuenta.
+2. Agregue una **observación** opcional (ej. "Cierre mensual sin novedades").
+3. Confirme el cierre. Una vez cerrado un período, no se pueden registrar más movimientos en ese mes para esa cuenta. Para registrar operaciones adicionales deberá aperturar un nuevo período o solicitar la reapertura al administrador.
 
 #### Columnas del listado
 
 | Columna | Descripción |
 |---|---|
 | Cuenta Bancaria | Nombre y número de cuenta |
-| Mes/Año | Período |
+| Mes/Año | Período contable |
 | Saldo Inicial | Saldo al abrir el mes |
 | Total Ingresos | Suma de ingresos del mes |
 | Total Egresos | Suma de egresos del mes |
-| Saldo Final | Saldo calculado al cierre |
+| Saldo Final | Saldo calculado (Inicial + Ingresos - Egresos) |
 | Estado | Abierto / Cerrado |
+| Cerrado por | Usuario que realizó el cierre |
+| Fecha de cierre | Fecha y hora del cierre |
 
 ---
 
@@ -212,27 +232,29 @@ Gestión de apertura y cierre de meses por cuenta bancaria.
 
 ### 7.1 Listado de Activos
 
-Tabla paginada con todos los activos fijos registrados. Botón **Crear** para agregar uno nuevo.
+Tabla paginada con todos los activos fijos registrados. Botón **Crear** para agregar uno nuevo. Cada fila es clickeable para editar.
 
 ### 7.2 Formulario de Activo
 
 | Campo | Descripción |
 |---|---|
-| Código de inventario | Código único del activo (solo lectura en edición) |
+| Código de inventario | Código único del activo (generado automáticamente, solo lectura en edición) |
 | Descripción | Nombre o descripción del activo |
-| Marca | Seleccione la marca |
-| Modelo | Modelo del activo |
+| Marca | Seleccione la marca (ej. Dell, Sony, Toyota) |
+| Modelo | Modelo específico del activo |
 | Número de serie | Serie del activo |
 | Color | Color del activo |
 | Precio | Valor de adquisición |
-| Proveedor | Socio comercial proveedor (autocompletado) |
+| Proveedor | Socio comercial proveedor (búsqueda con autocompletado) |
 | Factura No. | Número de factura de compra |
 | Fecha de compra | Fecha de adquisición |
-| Categoría | Categoría del activo |
-| Ubicación | Ubicación física |
-| Estado | Estado actual (Bueno, Dañado, etc.) |
+| Fecha de descargo | Fecha en que se dio de baja (si aplica) |
+| Categoría | Categoría del activo (ej. Equipo de cómputo, Mobiliario) |
+| Ubicación | Ubicación física (ej. Oficina central, Bodega) |
+| Estado | Estado actual (Bueno, Regular, Dañado, En reparación, Dado de baja) |
 | Notas | Observaciones adicionales |
-| Activo | Si está operativo o dado de baja |
+| Archivo adjunto | Opcional: suba una imagen o documento PDF |
+| Activo | Indica si el activo está operativo o fue dado de baja |
 
 ---
 
@@ -240,60 +262,65 @@ Tabla paginada con todos los activos fijos registrados. Botón **Crear** para ag
 
 ### 8.1 Socios
 
-Registro de personas o empresas con las que se comercia (clientes, proveedores, etc.).
+Registro de personas o empresas con las que se comercia (clientes, proveedores, etc.). El formulario se despliega en un panel lateral (drawer).
 
 #### Campos del formulario
 
 | Campo | Descripción |
 |---|---|
-| Código | Código único del socio (solo lectura en edición) |
-| Nombre | Nombre o razón social |
-| Nombre comercial | Nombre de fantasía |
-| Tipo de socio | Cliente, Proveedor, Ambos |
-| Categoría | Categoría del socio |
-| Roles | Roles que cumple (ej. Cliente, Proveedor) |
-| Email | Correo electrónico |
+| Código | Código único del socio (generado automáticamente, solo lectura en edición) |
+| Nombre | Nombre completo o razón social |
+| Nombre comercial | Nombre de fantasía o comercial |
+| Tipo de socio | Persona Natural o Jurídica |
+| Categoría | Categoría del socio (ej. Mayorista, Minorista) |
+| Roles | Roles que cumple: Cliente, Proveedor, Ambos (selección múltiple) |
+| Email | Correo electrónico de contacto |
 | Teléfono | Número de contacto |
 | NIT | Número de Identificación Tributaria |
 | NRC | Número de Registro de Contribuyente |
-| DUI | Documento Único de Identidad |
-| Pasaporte | Número de pasaporte |
-| Dirección | Dirección física |
-| País / Región / Ciudad / Distrito | Ubicación geográfica (en cascada) |
+| DUI | Documento Único de Identidad (para personas naturales) |
+| Pasaporte | Número de pasaporte (para extranjeros) |
+| Dirección | Dirección física completa |
+| País / Región / Ciudad / Distrito | Ubicación geográfica en cascada (al seleccionar un país se cargan sus regiones, etc.) |
+
+> Nota: Al crear un socio, este aparecerá en los campos de autocompletado de Ingresos (clientes) y Egresos (proveedores) según los roles asignados.
 
 ### 8.2 Catálogos auxiliares de Socios
 
-- **Categorías:** agrupación de socios (ej. Mayorista, Minorista).
-- **Tipos:** clasificación por tipo (Persona Natural, Jurídica).
-- **Roles:** funciones del socio (Cliente, Proveedor).
+- **Categorías:** agrupación de socios (ej. Mayorista, Minorista, VIP).
+- **Tipos:** clasificación por tipo (Persona Natural, Persona Jurídica).
+- **Roles:** funciones del socio (Cliente, Proveedor). El rol determina si el socio aparece en los autocompletados de Ingresos o Egresos.
 
 ---
 
 ## 9. Catálogos de Configuración
 
-Estos catálogos alimentan las listas desplegables en los formularios principales.
+Estos catálogos alimentan las listas desplegables en los formularios principales. Todos se gestionan mediante tablas con paginación y filtros, y se editan en ventanas modales (diálogos).
 
 ### 9.1 Bancos
 Registro de instituciones bancarias.
 - **Código** (máx. 2 caracteres, no editable tras crear).
 - **Nombre** (máx. 100 caracteres).
-- **Activo** — inhabilitar un banco lo oculta en los formularios.
+- **Activo** — inhabilitar un banco lo oculta en los formularios de selección.
 
 ### 9.2 Cuentas Bancarias
-Cuentas específicas por banco.
+Cuentas específicas por banco. Se editan en un panel lateral (drawer).
+
 | Campo | Descripción |
 |---|---|
-| Nombre | Identificador de la cuenta |
-| Número de cuenta | Número de cuenta bancaria |
+| Nombre | Identificador interno de la cuenta |
+| Número de cuenta | Número de cuenta bancaria (no editable tras crear) |
 | Banco | Seleccione el banco |
 | Tipo de cuenta | Ahorros o Corriente |
-| Fecha de apertura | Fecha de creación |
+| Fecha de apertura | Fecha de creación de la cuenta |
 | Saldo inicial | Saldo al momento del registro |
+| Activo | Habilita o deshabilita la cuenta |
 
 ### 9.3 Tipos de Ingreso
 Categorías para clasificar ingresos (ej. Venta, Servicio, Alquiler).
 - **Código** (máx. 4 caracteres, no editable tras crear).
 - **Nombre** (máx. 100 caracteres).
+- **Categoría de socio** — opcional: asocia el tipo de ingreso a una categoría de socio específica.
 
 ### 9.4 Tipos de Egreso
 Categorías para clasificar egresos (ej. Compra, Servicio público, Salario).
@@ -302,16 +329,16 @@ Categorías para clasificar egresos (ej. Compra, Servicio público, Salario).
 
 ### 9.5 Tipos de Documento
 Tipos de documentos financieros (Factura, Recibo, Nota de crédito, etc.).
-- **Código** (máx. 4 caracteres).
+- **Código** (máx. 4 caracteres, no editable tras crear).
 - **Nombre** (máx. 100 caracteres).
 - **Activo.**
 
 ### 9.6 Activos Fijos — Catálogos
 
-- **Categoría de Activo:** clasificación del activo (ej. Equipo de cómputo, Mobiliario).
-- **Ubicación de Activo:** lugar físico donde se encuentra (ej. Oficina central, Bodega).
-- **Estado de Activo:** condición actual (Bueno, Regular, Dañado, En reparación, Dado de baja).
-- **Marca:** marcas de los activos (ej. Dell, Sony, Toyota).
+- **Categoría de Activo:** clasificación del activo (ej. Equipo de cómputo, Mobiliario, Vehículo).
+- **Ubicación de Activo:** lugar físico donde se encuentra (ej. Oficina central, Bodega, Sucursal).
+- **Estado de Activo:** condición actual. Incluye bandera **Dado de baja** para activos fuera de servicio (Bueno, Regular, Dañado, En reparación, Dado de baja).
+- **Marca:** marcas de los activos (ej. Dell, Sony, Toyota, Caterpillar).
 
 ---
 
@@ -319,19 +346,51 @@ Tipos de documentos financieros (Factura, Recibo, Nota de crédito, etc.).
 
 ### 10.1 Reporte Consolidado
 
-Genera un resumen mensual detallado de ingresos y egresos.
+Genera un resumen mensual detallado de ingresos y egresos agrupados por tipo.
 
 **Parámetros:**
 - **Cuenta bancaria:** seleccione la cuenta a reportar.
 - **Mes y Año:** período del reporte.
 
-Presione **Generar** para visualizar el reporte.
-
 **Estructura del reporte:**
 - Encabezado con datos de la cuenta bancaria y período.
-- Líneas detalladas con concepto y monto, agrupadas por tipo (ingresos/egresos).
-- Subtotales por tipo.
-- Resumen final con total de ingresos, egresos y balance.
+- Líneas detalladas con concepto, tipo y monto, agrupadas por tipo (ingresos/egresos).
+- Subtotales por tipo de operación.
+- Resumen final con total de ingresos, total de egresos y balance.
+- **Gráfico de dona:** distribución visual del consolidado.
+
+**Acciones:** Presione **Descargar PDF** para obtener una copia imprimible del reporte.
+
+### 10.2 Reporte Detallado
+
+Genera un listado detallado de todas las operaciones individuales (ingresos y egresos) en un período.
+
+**Parámetros:**
+- **Cuenta bancaria:** seleccione la cuenta.
+- **Mes y Año:** período del reporte.
+- **Tipo de operación:** Ingresos, Egresos o Todos.
+
+**Estructura:**
+- Tabla con cada operación: fecha, tipo, socio, referencia, número de cheque (si aplica), concepto e importe.
+- Total calculado al pie de la tabla.
+- Cada fila contiene un enlace para editar la operación directamente.
+
+**Acciones:** Presione **Descargar PDF** para obtener una copia imprimible.
+
+### 10.3 Libro Bancario (Banking Book)
+
+Genera el libro bancario mensual con saldo corriente (running balance).
+
+**Parámetros:**
+- **Cuenta bancaria:** seleccione la cuenta.
+- **Mes y Año:** período del reporte.
+
+**Estructura:**
+- Tabla cronológica con: fecha, tipo de transacción, concepto, referencia, número de cheque, débito, crédito y **saldo** actualizado línea por línea.
+- El saldo inicial corresponde al saldo de apertura del período.
+- Cada transacción actualiza el saldo de forma acumulativa.
+
+**Acciones:** Presione **Descargar PDF** para obtener una copia imprimible.
 
 ---
 
@@ -339,27 +398,72 @@ Presione **Generar** para visualizar el reporte.
 
 ### 11.1 Usuarios
 
-Gestión de usuarios del sistema.
+Gestión de usuarios del sistema. Se editan en un panel lateral (drawer).
 
 **Campos:**
 
 | Campo | Descripción |
 |---|---|
-| Email | Correo electrónico del usuario |
-| Nombre | Nombre completo |
-| Contraseña | Solo al crear o restablecer |
+| Email | Correo electrónico del usuario (usado para iniciar sesión) |
+| Nombre | Nombre completo del usuario |
+| Contraseña | Solo al crear o restablecer; opcional en edición |
 | Confirmar contraseña | Debe coincidir con la anterior |
-| Roles | Selección de roles (Administrador, Usuario, etc.) |
-| Activo | Habilitar o deshabilitar el acceso |
+| Roles | Selección múltiple de roles (Administrador, Usuario, etc.) |
+| Activo | Habilitar o deshabilitar el acceso al sistema |
 
 **Acciones:**
-- **Crear usuario** — formulario con todos los campos.
+- **Crear usuario** — formulario completo con contraseña obligatoria.
 - **Editar usuario** — haga clic en una fila de la tabla.
-- **Eliminar usuario** — confirme la eliminación en el diálogo.
+- **Eliminar usuario** — confirme la eliminación en el diálogo de confirmación.
 
 ### 11.2 Roles
 
-Gestión de roles del sistema (en desarrollo). Define los permisos y niveles de acceso.
+Gestión de roles del sistema.
+
+| Campo | Descripción |
+|---|---|
+| Nombre | Nombre del rol (ej. Administrador, Usuario, Auditor) |
+| Nombre interno | Identificador único del rol usado en el sistema |
+| Es administrador | Marque si este rol tiene permisos administrativos totales |
+
+### 11.3 Permisos por Rol
+
+Asignación detallada de permisos a cada rol mediante una matriz de permisos.
+
+**Interfaz:**
+- **Selector de rol:** elija el rol a configurar en la parte superior.
+- **Tabla de matriz:** muestra módulos del sistema (filas) y acciones (columnas: Ver, Crear, Editar, Eliminar, Confirmar, Anular, Imprimir, etc.).
+- **Casillas de verificación:** marque o desmarque permisos individuales. Al marcar un módulo completo, se seleccionan todas sus acciones.
+- **Estados indeterminados:** si solo algunas acciones de un módulo están seleccionadas, la casilla del módulo se muestra parcialmente marcada.
+
+**Funcionamiento:**
+1. Seleccione un rol.
+2. Marque las acciones permitidas para cada módulo.
+3. Presione **Guardar** para aplicar los cambios.
+
+**Restricciones:**
+- El rol Administrador tiene todos los permisos por defecto.
+- Los cambios aplican inmediatamente a todos los usuarios con ese rol (deberán volver a iniciar sesión para refrescar permisos).
+
+### 11.4 Configuración de la Aplicación
+
+Configuración global del sistema para el envío de correos electrónicos.
+
+**Campos:**
+
+| Campo | Descripción |
+|---|---|
+| Proveedor de email | Ninguno, SMTP, Resend o SendGrid |
+| Servidor SMTP | Solo si el proveedor es SMTP |
+| Puerto SMTP | Puerto del servidor SMTP |
+| Usuario SMTP | Usuario de autenticación SMTP |
+| Contraseña SMTP | Contraseña de autenticación SMTP |
+| SSL | Habilita conexión segura SSL/TLS |
+| Correo remitente | Dirección de correo que aparece como remitente |
+| API Key | Clave API (para proveedores Resend o SendGrid) |
+| API Email | Correo asociado a la API |
+
+> Nota: Los campos se habilitan/deshabilitan automáticamente según el proveedor de email seleccionado.
 
 ---
 
@@ -371,15 +475,19 @@ Haga clic en su nombre (esquina superior derecha) para abrir el menú:
 
 | Opción | Acción |
 |---|---|
-| Perfil | Ver información del perfil (en desarrollo) |
+| Perfil | Ver información del perfil (próximamente) |
 | Cambiar contraseña | Abre un diálogo para cambiar la contraseña |
 | Cerrar sesión | Finaliza la sesión y redirige al login |
 
 ### 12.2 Cambiar contraseña
 
 1. Seleccione **Cambiar contraseña** del menú de usuario.
-2. Ingrese: Contraseña actual, Nueva contraseña, Confirmar nueva contraseña.
+2. Ingrese:
+   - **Contraseña actual**
+   - **Nueva contraseña**
+   - **Confirmar nueva contraseña**
 3. Presione **Guardar**.
+4. Si el cambio es exitoso, verá un mensaje de confirmación.
 
 ---
 
@@ -389,7 +497,9 @@ Haga clic en su nombre (esquina superior derecha) para abrir el menú:
 
 ```
 /login                          → Login
-/app                            → Layout privado
+/forgot-password                → Recuperar contraseña
+/resetPassword                  → Restablecer contraseña
+/app                            → Layout privado (requiere autenticación)
   /app/dashboard                → Dashboard
   /app/operation/ingreso        → Listado de Ingresos
   /app/operation/ingreso/create → Nuevo Ingreso
@@ -397,7 +507,7 @@ Haga clic en su nombre (esquina superior derecha) para abrir el menú:
   /app/operation/egreso         → Listado de Egresos
   /app/operation/egreso/create  → Nuevo Egreso
   /app/operation/egreso/edit/:id → Editar Egreso
-  /app/operation/periodo        → Períodos
+  /app/operation/periodo        → Períodos (apertura/cierre)
   /app/inventory/asset          → Activo Fijo
   /app/partner                  → Socios Comerciales
   /app/partner/category         → Categorías de Socio
@@ -414,15 +524,23 @@ Haga clic en su nombre (esquina superior derecha) para abrir el menú:
   /app/config/brand             → Marcas
   /app/admin/user               → Usuarios
   /app/admin/role               → Roles
+  /app/admin/role-permission    → Permisos por Rol
+  /app/admin/app-settings       → Configuración de la App
   /app/report/consolidated      → Reporte Consolidado
+  /app/report/detail-operation  → Reporte Detallado
+  /app/report/bankingbook       → Libro Bancario
+  /app/notaccess                → Sin Acceso (403)
 ```
 
 ### Convenciones de la interfaz
 
-- **Tablas:** todas las tablas tienen paginación, ordenamiento por columnas y filtros de búsqueda.
-- **Formularios en diálogo:** catálogos simples se editan en ventanas modales (dinámicas).
-- **Formularios en panel lateral:** entidades complejas (Socios, Activos, Usuarios) se editan en un drawer lateral.
-- **Formularios en página completa:** Ingresos y Egresos usan una página dedicada para crear/editar.
+- **Tablas:** todas las tablas tienen paginación, ordenamiento por columnas (clic en encabezado) y filtros de búsqueda por texto.
+- **Formularios en diálogo:** catálogos simples (Bancos, Tipos, etc.) se editan en ventanas modales.
+- **Formularios en panel lateral (drawer):** entidades complejas (Socios, Activos, Usuarios, Cuentas Bancarias) se editan en un drawer lateral que se desliza desde la derecha.
+- **Formularios en página completa:** Ingresos y Egresos usan una página dedicada para crear/editar, con barra de estado y acciones contextuales según el estado del documento.
+- **Búsqueda con autocompletado:** los campos de Socio en Ingresos/Egresos/Activos usan búsqueda inteligente mientras escribe.
+- **Validación en tiempo real:** los formularios validan los campos mientras escribe, mostrando mensajes de error claros.
+- **Cierre de período:** los meses cerrados no permiten nuevos movimientos en la cuenta correspondiente.
 
 ---
 

@@ -48,3 +48,5 @@ export const urlReportBankingBook = 'bankingbook';
 export const urlRolePermission = 'rolepermission';
 export const urlPermissionMatrix = 'permissionmatrix';
 export const urlAppSettings = 'appsettings'
+export const urlSigner = 'signer'
+export const urlNumberRange = 'numberrange'

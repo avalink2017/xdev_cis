@@ -1,0 +1,56 @@
+<app-table-view
+  [url]="url"
+  dataKey="id"
+  [(refresh)]="refresh"
+  [clickable]="true"
+  (rowClick)="onRowClick($event)"
+  (onDelete)="onDelete($event)"
+  (onAddNew)="onAddNew()"
+>
+  <app-table-column field="name" header="Nombre" />
+  <app-table-column field="prefix" header="Prefijo" />
+  <app-table-column type="integer" field="numStart" header="Desde" />
+  <app-table-column type="integer" field="numEnd" header="Final" />
+  <app-table-column type="integer" field="numCurrent" header="Actual" />
+  <app-table-column field="active" header="Activo" [filterable]="true" type="boolean" width="10">
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <div>
+        <p-select
+          [options]="actives"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="value"
+          (ngModelChange)="filterFn($event)"
+          appendTo="body"
+          [showClear]="true"
+          placeholder="Seleccionar"
+          size="small"
+          class="border-0! bg-transparent! shadow-none!"
+        />
+      </div>
+    </ng-template>    
+  </app-table-column>
+</app-table-view>
+
+<p-drawer
+  #drawerRef
+  [header]="drawerTitle()"
+  [(visible)]="showDrawer"
+  modal
+  position="right"
+  styleClass="w-full! sm:w-[600px]!"
+>
+  <ng-container #compo />
+
+  <ng-template #footer>
+    <div class="mt-5 flex gap-3 justify-end">
+      <p-button label="Guardar" [disabled]="!isFormValid()" (onClick)="submit()">
+        <app-icon name="LucideCloud" />
+      </p-button>
+
+      <p-button label="Cancelar" severity="secondary" (onClick)="formClose()">
+        <app-icon name="LucideX" />
+      </p-button>
+    </div>
+  </ng-template>
+</p-drawer>
