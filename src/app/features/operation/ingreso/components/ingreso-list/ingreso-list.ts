@@ -14,7 +14,7 @@ import { forkJoin } from 'rxjs';
 import { Select } from 'primeng/select';
 import { Router } from '@angular/router';
 import { Tag } from "primeng/tag";
-import { severityNG, statusOperation } from '../../../../../core/model/shared.model.dto';
+import { FilterObservation, severityNG, statusOperation } from '../../../../../core/model/shared.model.dto';
 
 @Component({
   selector: 'app-ingreso-list',
@@ -35,6 +35,7 @@ export class IngresoList implements OnInit {
   tipoIngreso = signal<TipoIngresoListDTO[]>([])
 
   status = statusOperation;
+  observationFilter = FilterObservation;
 
   ngOnInit(): void {
     forkJoin({

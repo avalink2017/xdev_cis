@@ -24,7 +24,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         if (!window.location.pathname.startsWith('/resetPassword')) {
           router.navigate(['/login']);
         }
-      }else{
+      } else {
         messageService.add({
           key: 'global-toast',
           severity: 'error',
@@ -68,10 +68,19 @@ function getServerErrorMessage(error: HttpErrorResponse): string {
 
 type ErrorDictionary = { [code: string]: string[] };
 
+type ApiErrorMessageShape = {
+  message: string;
+  statusCode?: string | number;
+  success?: boolean;
+  type?: string;
+  details?: unknown;
+};
+
 type ApiErrorShape =
   | string
   | string[]
   | ErrorDictionary
+  | ApiErrorMessageShape
   | { errors?: ErrorDictionary | string[] }
   | undefined;
 
@@ -82,6 +91,11 @@ function extractErrorMessage(error: ApiErrorShape): string {
 
   if (Array.isArray(error)) {
     return error[0] ?? 'Solicitud incorrecta';
+  }
+
+  // Caso nuevo: { message, statusCode, success, type, details }
+  if ('message' in error && typeof error.message === 'string') {
+    return error.message;
   }
 
   // A partir de aquí, error es ErrorDictionary | { errors?: ErrorDictionary | string[] }

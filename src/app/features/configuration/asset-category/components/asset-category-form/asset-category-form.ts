@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { form, FormField, maxLength, required, submit } from '@angular/forms/signals';
+import { disabled, form, FormField, maxLength, required, submit } from '@angular/forms/signals';
 import { AssetCategoryDTO } from '../asset-category.model.dto';
 import { InputNg } from '../../../../../shared/custom/input-ng/input-ng';
 import { Button } from 'primeng/button';
@@ -11,10 +11,11 @@ import { LoadingBlock } from "../../../../../shared/components/loading-block/loa
 import { firstValueFrom } from 'rxjs';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { NotificationService } from '../../../../../core/services/notification.service';
+import { SearchAutocomplete } from "../../../../../shared/custom/search-autocomplete/search-autocomplete";
 
 @Component({
   selector: 'app-asset-category-form',
-  imports: [FormField, InputNg, Button, Icon, LoadingBlock],
+  imports: [FormField, InputNg, Button, Icon, LoadingBlock, SearchAutocomplete],
   templateUrl: './asset-category-form.html',
   styleUrl: './asset-category-form.css',
 })
@@ -23,15 +24,21 @@ export class AssetCategoryForm implements OnInit {
   private ref = inject(DynamicDialogRef);
   private nt = inject(NotificationService);
   private config = inject(DynamicDialogConfig);
-  private isNew = signal(true)
+  isNew = signal(true)
   private model = signal<AssetCategoryDTO>({
     id: '',
+    code:'',
     name: '',
+    rangeId:'',
     concurrencyStamp: '',
   });
 
   form = form<AssetCategoryDTO>(this.model, (schemaPath) => {
     required(schemaPath.name, { message: 'Nombre requerido' });
+    required(schemaPath.code,{message:'Código requerido'});
+    disabled(schemaPath.code, ({ valueOf }) => valueOf(schemaPath.id) !== '');
+    maxLength(schemaPath.code, 10, { message: 'Longitud máxima 10' });
+    required(schemaPath.rangeId,{message:'Rango de números requerido'})
     maxLength(schemaPath.name, 100, { message: 'Longitud máxima 100' });
   });
 

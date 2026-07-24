@@ -9,9 +9,10 @@ export interface IngresoListDTO {
   tipoIngresoName: string;
   tipoDocumentoFinancieroId: string;
   tipoDocumentoFinancieroName: string;
-  noDocumento: string;  
+  noDocumento: string;
   monto: number;
-  status:string;
+  status: string;
+  hasObservation: boolean;
 }
 
 export interface IngresoDTO {
@@ -29,6 +30,7 @@ export interface IngresoDTO {
   fileName: string;
   file: File | undefined;
   status: string;
+  observacion: string;  
   concurrencyStamp: string;
 }
 

@@ -14,7 +14,7 @@ import { DatePicker } from "primeng/datepicker";
 import { Select } from "primeng/select";
 import { FormsModule } from '@angular/forms';
 import { Tag } from "primeng/tag";
-import { severityNG, statusOperation } from '../../../../../core/model/shared.model.dto';
+import { FilterObservation, severityNG, statusOperation } from '../../../../../core/model/shared.model.dto';
 
 @Component({
   selector: 'app-egreso-list',
@@ -35,6 +35,7 @@ export class EgresoList implements OnInit {
   tipoEgreso = signal<TipoEgresoListDTO[]>([]);
 
   status = statusOperation;
+  observationFilter = FilterObservation;
 
   ngOnInit(): void {
     forkJoin({
@@ -84,10 +85,9 @@ export class EgresoList implements OnInit {
     });
   }
 
-  resolveTagValue(val:string){
-    const rec = this.status.find(f => f.id === val)
-    if(rec)
-    return rec.label
+  resolveTagValue(val: string) {
+    const rec = this.status.find((f) => f.id === val);
+    if (rec) return rec.label;
 
     return '';
   }

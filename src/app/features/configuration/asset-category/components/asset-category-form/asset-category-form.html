@@ -1,6 +1,21 @@
 <form novalidate>
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-    <app-input-ng label="Nombre" [formField]="form.name" [autoFocus]="true" class="col-span-full" />
+    <app-input-ng label="Código" [formField]="form.code" [autoFocus]="true" />
+    <app-input-ng
+      label="Nombre"
+      [formField]="form.name"
+      [autoFocus]="isNew() ? false : true"
+      class="col-span-full"
+    />
+    <app-search-autocomplete
+      urlList="numberrange/search"
+      urlEntity="numberrange/{id}"
+      label="Rango de número"
+      [formField]="form.rangeId"
+      class="col-span-full"
+      optionLabel="name"
+      optionValue="id"
+    />
   </div>
   <div class="mt-5 flex gap-3 justify-end">
     <p-button label="Guardar" [disabled]="form().submitting()" (onClick)="onSubmit()">

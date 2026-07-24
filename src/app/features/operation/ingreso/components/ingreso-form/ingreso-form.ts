@@ -80,6 +80,7 @@ export class IngresoForm implements OnInit {
     fileName: '',
     file: undefined,
     status: 'draft',
+    observacion:'',
     concurrencyStamp: '',
   });
 

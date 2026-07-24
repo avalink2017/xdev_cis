@@ -16,6 +16,7 @@ export function Ingreso2FormData(dto: IngresoDTO): FormData {
   formData.append('monto', dto.monto.toString());
   if (dto.urlDocument) formData.append('urlDocument', dto.urlDocument);
   formData.append('concurrencyStamp', dto.concurrencyStamp);
+if (dto.observacion) formData.append('observacion', dto.observacion);
 
   return formData;
 }
@@ -33,9 +34,12 @@ export function Egreso2FormData(dto: EgresoDTO): FormData {
   formData.append('descripcion', dto.descripcion);
   formData.append('noDocumento', dto.noDocumento);
   formData.append('noCheque', dto.noCheque);
+  if (dto.fechaCheque) formData.append('fechaCheque', dto.fechaCheque.toISOString());
+
   formData.append('monto', dto.monto.toString());
   if (dto.urlDocument) formData.append('urlDocument', dto.urlDocument);
   formData.append('concurrencyStamp', dto.concurrencyStamp);
+  if (dto.observacion) formData.append('observacion', dto.observacion);
 
   return formData;
 }

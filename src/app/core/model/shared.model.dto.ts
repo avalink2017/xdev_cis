@@ -5,6 +5,11 @@ export const Actives = [
   { label: 'Inactivo', value: false },
 ];
 
+export const FilterObservation = [
+  { label: 'Observado', value: true },
+  { label: 'Sin Observación', value: false },
+];
+
 export const IS_ADMIN = [
   { label: 'Es Administrador', value: true },
   { label: 'No es Administrador', value: false },

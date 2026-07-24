@@ -1,4 +1,4 @@
-<form [formRoot]="form">
+<form >
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <app-select-ng
       label="Cuenta de Banco"
@@ -24,7 +24,7 @@
   </div>
 
   <div class="mt-5 flex gap-3 justify-end">
-    <p-button type="submit" label="Cerrar Período" [disabled]="form().submitting() || form().invalid()" severity="warn">
+    <p-button type="submit" label="Cerrar Período" [disabled]="form().submitting() || form().invalid()" severity="warn" (onClick)="onClosePeriodo()">
       <app-icon name="LucideCalendarX" />
     </p-button>
 
@@ -34,5 +34,5 @@
   </div>
 </form>
 
-<app-loading-block [visible]="form().submitting()" message="Abriendo período..."/>
+<app-loading-block [visible]="form().submitting()" [message]="textLoading()"/>
 

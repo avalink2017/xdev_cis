@@ -4,7 +4,7 @@
   [clickable]="true"
   [(refresh)]="refresh"
   (rowClick)="onRowClick($event)"
-  (onDelete)="onDelete($event)"
+  [allowDelete]="false"
   [showToolBar]="false"
 >
   <app-table-column field="numero" header="Número" />
@@ -83,6 +83,30 @@
         name="ambiente"
         appendTo="body"
         fluid
+      />
+    </ng-template>
+  </app-table-column>
+
+  <app-table-column field="hasObservation" header="Observado" align="center" type="boolean" >
+    <ng-template #cell let-row>
+      @if(row.hasObservation){
+        <p-tag value="Observado" severity="info" [pt]="{label:{class:'animate-pulse!'}}"/>
+      }
+    </ng-template>
+
+    <ng-template #filter let-col let-value="value" let-filterFn="filter">
+      <p-select
+        [options]="observationFilter"
+        optionLabel="label"
+        optionValue="value"
+        [ngModel]="value"
+        (ngModelChange)="filterFn($event)"
+        size="small"
+        class="border-0! bg-transparent! shadow-none!"
+        placeholder="Seleccionar"
+        [showClear]="true"
+        name="ambiente"
+        appendTo="body"
       />
     </ng-template>
   </app-table-column>

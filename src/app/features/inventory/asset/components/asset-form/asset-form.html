@@ -2,14 +2,14 @@
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <app-input-ng
       [formField]="form.inventoryCode"
-      label="Código"
-      [autoFocus]="isNew()"
+      label="Código"      
       class="col-span-full"
     />
     <app-text-area-ng
       [rows]="3"
       [formField]="form.description"
       label="Descripción"
+      [autoFocus]="isNew()"
       class="col-span-full"
     />
 

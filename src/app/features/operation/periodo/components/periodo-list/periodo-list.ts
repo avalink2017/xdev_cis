@@ -32,6 +32,7 @@ import { FormsModule } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
 import { InputNumber } from 'primeng/inputnumber';
 import { DatePicker } from 'primeng/datepicker';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-periodo-list',
@@ -64,6 +65,8 @@ export class PeriodoList implements OnInit {
 
   private container = viewChild.required('compo', { read: ViewContainerRef });
   private drawerRef = viewChild.required<Drawer>('drawerRef');
+  private confirm = inject(ConfirmationService);
+  
   showDrawer = signal(false);
   drawerTitle = signal<string>('');
   device = inject(DeviceService);
@@ -104,7 +107,7 @@ export class PeriodoList implements OnInit {
 
   onSortFieldChange(field: string | undefined) {
     if (this.sortField() === field && field) {
-      this.sortOrder.update(o => (o === 1 ? -1 : 1));
+      this.sortOrder.update((o) => (o === 1 ? -1 : 1));
     } else if (field) {
       this.sortOrder.set(1);
     }
@@ -116,7 +119,7 @@ export class PeriodoList implements OnInit {
     const field = this.sortField();
     if (!field) return;
 
-    this.sortOrder.update(o => (o === 1 ? -1 : 1));
+    this.sortOrder.update((o) => (o === 1 ? -1 : 1));
     this.applySortFilter();
   }
 
@@ -159,9 +162,31 @@ export class PeriodoList implements OnInit {
   }
 
   onClose(val: string) {
-    this.drawerTitle.set('Cerrar Período');
-    this.showDrawer.set(true);
-    this.createCloseComponent(val);
+    this.confirm.confirm({
+      message: `¿Está seguro de cerrar el período? Una vez cerrado, no podrá hacer ingresos o egresos para este período`,
+      header: `Cerrar Período`,
+      closable: true,
+      closeOnEscape: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'contrast',
+        outlined: true,
+        size: 'small',
+      },
+      acceptButtonProps: {
+        label: '¡Si, Cerrar período!',
+        size: 'small',
+        styleClass: 'ml-2!',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.drawerTitle.set('Cerrar Período');
+        this.showDrawer.set(true);
+        this.createCloseComponent(val);
+      },
+    });
+
+    
   }
 
   private createComponent() {

@@ -38,6 +38,7 @@
 
       <app-input-ng [formField]="form.noDocumento" label="N° Factura" />
       <app-input-ng [formField]="form.noCheque" label="N° Cheque" />
+      <app-date-picker-ng [formField]="form.fechaCheque" label="Fecha Cheque" />
 
       <app-input-number-ng
         [formField]="form.monto"
@@ -92,6 +93,11 @@
 
       <app-text-area-ng [formField]="form.descripcion" label="Descripción" [rows]="5" [upperCase]="true"/>
     </div>
+  </div>
+  <div class="mt-5">
+    <p-panel header="Observación" toggable>
+      <app-text-area-ng [rows]="5" [formField]="form.observacion"></app-text-area-ng>
+    </p-panel>
   </div>
 </form>
 <app-loading-block [visible]="form().submitting() || showLoader()" />

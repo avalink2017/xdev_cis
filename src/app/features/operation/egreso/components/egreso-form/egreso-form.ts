@@ -75,11 +75,13 @@ export class EgresoForm implements OnInit {
     descripcion: '',
     noDocumento: '',
     noCheque: '',
+    fechaCheque: new Date(),
     monto: 0,
     urlDocument: '',
     fileName: '',
     file: undefined,
     status: 'draft',
+    observacion:'',    
     concurrencyStamp: '',
   });
 
@@ -181,6 +183,8 @@ export class EgresoForm implements OnInit {
 
   private patchModel(data: EgresoDTO) {
     data.fechaMovimiento = new Date(data.fechaMovimiento);
+    if(data.fechaCheque)
+      data.fechaCheque = new Date(data.fechaCheque)
     this.model.set(data);
   }
 
