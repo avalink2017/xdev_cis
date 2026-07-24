@@ -23,8 +23,8 @@ import { Message } from "primeng/message";
         [invalid]="invalid()"
         (onBlur)="touched.set(true)"
         [disabled]="disabled()"
-        [min]="min()"
-        [max]="max()"
+        [min]="minimun()"
+        [max]="maximun()"
         [minFractionDigits]="minFractionDigits()"
         [maxFractionDigits]="maxFractionDigits()"
         fluid
@@ -63,8 +63,8 @@ export class InputNumberNg implements FormValueControl<number> {
   size = input<'small' | 'large' | undefined>(undefined);
   showClear = input(false);
   showButtons = input<boolean>(false);
-  min = input<number | undefined>(undefined);
-  max = input<number | undefined>(undefined);
+  minimun = input<number | undefined>(undefined);
+  maximun = input<number | undefined>(undefined);
   minFractionDigits = input<number>(0);
   maxFractionDigits = input<number>(0);
   useGrouping = input(true);

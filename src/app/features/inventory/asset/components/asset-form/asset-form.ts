@@ -78,8 +78,7 @@ export class AssetForm implements OnInit {
   });
 
   form = form(this.model, (schemaPath) => {
-    disabled(schemaPath.inventoryCode, ({ valueOf }) => valueOf(schemaPath.id) !== '');
-    required(schemaPath.inventoryCode, { message: 'Código requerido' });
+    disabled(schemaPath.inventoryCode);    
     maxLength(schemaPath.inventoryCode, 50, { message: 'Longitud máxima 50' });
     required(schemaPath.description, { message: 'Número de cuenta requerido' });
     required(schemaPath.brandId, { message: 'Marca requerida' });

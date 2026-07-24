@@ -1,0 +1,19 @@
+<form >
+    <div class="flex flex-col gap-4">
+
+      <app-input-ng [formField]="entityForm.name" label="Nombre" [autoFocus]="true" />
+
+      <div class="grid grid-cols-1 xs:grid-cols-2 gap-4">
+        <app-input-number-ng [formField]="entityForm.numStart" label="Inicial" [minimun]="1" [maximun]="999999999999999" />
+        <app-input-number-ng [formField]="entityForm.numEnd" label="Final" [minimun]="1" [maximun]="999999999999999" />
+      </div>
+
+      <div class="grid grid-cols-1 xs:grid-cols-2 gap-4">
+        <app-input-number-ng [formField]="entityForm.numCurrent" label="Actual" [minimun]="1" [maximun]="999999999999999" />
+        <app-input-ng [formField]="entityForm.prefix" label="Prefijo (opcional)" />
+      </div>
+      
+      <app-toggle-button-ng [formField]="entityForm.active" onLabel="Activo" offLabel="Inactivo" />
+
+    </div>
+</form>

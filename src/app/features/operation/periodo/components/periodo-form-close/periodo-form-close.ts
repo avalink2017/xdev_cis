@@ -1,5 +1,5 @@
 import { Component, inject, input, OnInit, output, signal } from '@angular/core';
-import { disabled, form, FormField, FormRoot } from '@angular/forms/signals';
+import { disabled, form, FormField, submit } from '@angular/forms/signals';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { Months } from '../../../../../core/model/shared.model.dto';
 import { ApiService } from '../../../../../core/services/api.service';
@@ -14,6 +14,7 @@ import { Button } from 'primeng/button';
 import { Icon } from '../../../../../shared/components/icon/icon';
 import { LoadingBlock } from '../../../../../shared/components/loading-block/loading-block';
 import { TextAreaNg } from '../../../../../shared/custom/text-area-ng/text-area-ng';
+import { ConfirmationService } from 'primeng/api';
 
 interface ModelDTO {
   id: string;
@@ -26,8 +27,7 @@ interface ModelDTO {
 @Component({
   selector: 'app-periodo-form-close',
   imports: [
-    FormField,
-    FormRoot,
+    FormField,    
     FormsModule,
     SelectNg,
     InputNumberNg,
@@ -45,9 +45,12 @@ export class PeriodoFormClose implements OnInit {
 
   private api = inject(ApiService);
   private nt = inject(NotificationService);
+  private confirm = inject(ConfirmationService);
 
   cuentas = signal<CuentaBancoListDTO[]>([]);
   months = Months;
+
+  textLoading = signal<string>('');
 
   private model = signal<ModelDTO>({
     id: '',
@@ -64,21 +67,21 @@ export class PeriodoFormClose implements OnInit {
       disabled(schemaPath.month);
       disabled(schemaPath.year);
     },
-    {
-      submission: {
-        action: async (raw) => {
-          const result = await firstValueFrom(
-            this.api.post<ModelDTO>(`${urlCierreMes}/cierre`, {
-              id: raw().value().id,
-              observacion: raw().value().observacion,
-            }),
-          );
-          this.nt.showSuccess('Éxito', 'Período cerrado');
-          this.formClose.emit(true);
-          return;
-        },
-      },
-    },
+    // {
+    //   submission: {
+    //     action: async (raw) => {
+    //       const result = await firstValueFrom(
+    //         this.api.post<ModelDTO>(`${urlCierreMes}/cierre`, {
+    //           id: raw().value().id,
+    //           observacion: raw().value().observacion,
+    //         }),
+    //       );
+    //       this.nt.showSuccess('Éxito', 'Período cerrado');
+    //       this.formClose.emit(true);
+    //       return;
+    //     },
+    //   },
+    // },
   );
 
   ngOnInit(): void {
@@ -97,6 +100,47 @@ export class PeriodoFormClose implements OnInit {
         });
       },
     });
+  }
+
+  onClosePeriodo() {
+    this.confirm.confirm({
+      message: `¿Está realmente seguro de cerrar el período?`,
+      header: `Cerrar Período`,
+      closable: true,
+      closeOnEscape: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'contrast',
+        outlined: true,
+        size: 'small',
+      },
+      acceptButtonProps: {
+        label: '¡Si, Cerrar período!',
+        size: 'small',
+        styleClass: 'ml-2!',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.closePeriodo()
+      },
+    });
+  }
+
+  async closePeriodo(){
+    this.textLoading.set('Cerrando período...');
+    const ok = await submit(this.form, {
+      action: async (raw) => {
+        const result = await firstValueFrom(
+          this.api.post<ModelDTO>(`${urlCierreMes}/cierre`, {
+            id: raw().value().id,
+            observacion: raw().value().observacion,
+          }),
+        );
+        this.nt.showSuccess('Éxito', 'Período cerrado');
+        this.formClose.emit(true);
+        return;
+      },
+    });    
   }
 
   resolveMonth(mes: number) {

@@ -72,6 +72,18 @@ export const PRIVATE_ROUTES: Routes = [
       },
 
       {
+        path: 'config/signer',
+        loadComponent: () =>
+          import('../../features/configuration/signer/page/signer/signer').then((m) => m.Signer),
+      },
+
+      {
+        path: 'config/number-range',
+        loadComponent: () =>
+          import('../../features/configuration/number-range/page/number-range/number-range').then((m) => m.NumberRange),
+      },
+
+      {
         path: 'partner/category',
         loadComponent: () =>
           import('../../features/partner/pages/partner-category/partner-category').then(

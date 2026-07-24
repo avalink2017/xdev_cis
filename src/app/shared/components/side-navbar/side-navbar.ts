@@ -137,6 +137,16 @@ export class SideNavbar {
           icon: 'LucideTag',
           routerLink: '/app/config/brand',
         },
+        {
+          label: 'Firmadores',
+          icon: 'LucideSignature',
+          routerLink: '/app/config/signer',
+        },
+        {
+          label: 'Rango de número',
+          icon: 'LucideTally5',
+          routerLink: '/app/config/number-range',
+        },
       ],
     },
     {
